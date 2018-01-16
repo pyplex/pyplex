@@ -353,9 +353,8 @@ class Context:
         self.glBufferSubData(target, offset, data.nbytes, data.ctypes.data_as(c_void_p))
 
     def get_buffer_sub_data(self, target: BufferTarget, offset: int, size: int) -> np.ndarray:
-        data = (c_byte * size)()
-        data_ptr = pointer(data)
-        self.glGetBufferSubData(target, offset, size, data_ptr)
+        data = (c_uint8 * size)()
+        self.glGetBufferSubData(target, offset, size, pointer(data))
         return np.ctypeslib.as_array(data)
 
     def buffer_parameter(self, target: BufferTarget, parameter: BufferParameter):

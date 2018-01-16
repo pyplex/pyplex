@@ -22,13 +22,16 @@ class Buffer(ContextObject):
         usage: gl.BufferUsage
             Buffer Usage Hint
         """
+
         self._ctx = ctx
+        self._ptr = self.ctx.create_buffer()
         self._target = target
         self._usage = usage
-        self._shape = data.shape
-        self._dtype = data.dtype
 
-        self._ptr = self.ctx.create_buffer()
+        self._dtype = data.dtype
+        self._shape = data.shape
+        self._stride = np.prod(self.shape[1:]) * self.dtype.itemsize
+
         self.data = data
 
     @property
@@ -72,16 +75,6 @@ class Buffer(ContextObject):
         return self._usage
 
     @property
-    def shape(self) -> tuple:
-        """
-        Returns
-        -------
-        shape: np.ndarray
-            Buffer Shape
-        """
-        return self._shape
-
-    @property
     def dtype(self) -> np.dtype:
         """
         Returns
@@ -89,8 +82,27 @@ class Buffer(ContextObject):
         dtype: np.dtype
             Buffer dtype
         """
-        # TODO: No Reference to gloo.Type?
         return self._dtype
+
+    @property
+    def shape(self) -> tuple:
+        """
+        Returns
+        -------
+        shape: tuple
+            Buffer Shape
+        """
+        return self._shape
+
+    @property
+    def stride(self) -> int:
+        """
+        Returns
+        -------
+        stride: int
+            Buffer Stride
+        """
+        return self._stride
 
     @property
     def data(self) -> np.ndarray:
@@ -116,9 +128,13 @@ class Buffer(ContextObject):
         value: np.ndarray
         """
         with self:
+            self._dtype = value.dtype
+            self._shape = value.shape
+            self._stride = np.prod(self.shape[1:]) * self.dtype.itemsize
             self.ctx.buffer_data(self.target, value, self.usage)
 
     def delete(self):
+        """Delete Buffer"""
         self.ctx.delete_buffer(self.ptr)
 
     def bind(self):
@@ -129,33 +145,69 @@ class Buffer(ContextObject):
         """Unbind Buffer"""
         self.ctx.bind_buffer(self.target, None)
 
-    def __getitem__(self, index: Iterable[Union[int, slice]]) -> np.ndarray:
+    def __getitem__(self, index: Union[Iterable[Union[int, slice]], int, slice]) -> np.ndarray:
         """
         Slice Buffer Sub Data
 
         Parameters
         ----------
-        index: tuple of (int or slice)
+        index: int, slice or tuple of (int or slice)
             Slicing Index
 
         Returns
         -------
         data: np.ndarray
         """
-        raise NotImplementedError()
 
-    def __setitem__(self, index: Iterable[Union[int, slice]], value: np.ndarray):
+        indices = [[0, size, 1] for size in self.shape]
+
+        if isinstance(index, slice):
+            indices[0] = index.indices(self.shape[0])
+        elif isinstance(index, int):
+            indices[0] = (index, index+1, 1)
+        else:
+            for i, (s, n) in enumerate(zip(index, self.shape)):
+                if isinstance(s, slice):
+                    indices[i] = s.indices(n)
+                elif isinstance(s, int):
+                    indices[i] = [s, s+1, 1]
+
+        start, stop, step = indices[0]
+        size = stop - start
+
+        with self:
+            data = self.ctx.get_buffer_sub_data(self.target, start * self.stride, size * self.stride)
+            data = data.view(self.dtype).reshape(size, *self.shape[1:])
+            slicing = [slice(0, size, step)] + [slice(*idx) for idx in indices[1:]]
+            return np.squeeze(data[slicing])
+
+    def __setitem__(self, index: Union[int, slice], value: np.ndarray):
         """
         Set Buffer Sub Data
 
         Parameters
         ----------
-        index: tuple of (int or slice)
+        index: int or slice
             Slicing Index
         value: np.ndarray
             New Data
         """
-        raise NotImplementedError()
+
+        if isinstance(index, slice):
+            start, stop, step = index.indices(self.shape[0])
+            if step != 1: raise ValueError("Buffer slice step must be equal to 1")
+        elif isinstance(index, int): start, stop, step = (index, index + 1, 1)
+        else: raise ValueError("Setter index should be slice or int")
+
+        shape = (stop - start, *self.shape[1:])
+
+        if value.shape != shape:
+            raise ValueError("could not broadcast input array from shape {} into shape {}".format(value.shape, shape))
+        if not value.dtype == self.dtype:
+            raise ValueError("value dtype ({}) does not match Buffer dtype ({})".format(value.dtype, self.dtype))
+
+        with self:
+            self.ctx.buffer_sub_data(self.target, start * self.stride, value)
 
     def __str__(self):
         """
@@ -171,7 +223,7 @@ class Buffer(ContextObject):
 class ArrayBuffer(Buffer):
     def __init__(self, ctx: gl.Context, data: np.ndarray, usage: gl.BufferUsage = gl.BufferUsage.STATIC_DRAW):
         """
-        Create Array Buffer
+        Create Array Buffer | Source for Vertex Data
 
         Parameters
         ----------
@@ -188,7 +240,7 @@ class ArrayBuffer(Buffer):
 class IndexBuffer(Buffer):
     def __init__(self, ctx: gl.Context, data: np.ndarray, usage: gl.BufferUsage = gl.BufferUsage.STATIC_DRAW):
         """
-        Create Index Buffer
+        Create Index Buffer | Indexed Rendering
 
         Parameters
         ----------
@@ -205,7 +257,7 @@ class IndexBuffer(Buffer):
 class UniformBuffer(Buffer):
     def __init__(self, ctx: gl.Context, data: np.ndarray, usage: gl.BufferUsage = gl.BufferUsage.STATIC_DRAW):
         """
-        Create Uniform Buffer
+        Create Uniform Buffer | Storage for Uniform Blocks
 
         Parameters
         ----------

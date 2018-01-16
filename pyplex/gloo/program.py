@@ -172,7 +172,7 @@ class Program(ContextObject):
                 input_type, name, input_type.dtype, buffer.dtype))
         if buffer.shape[-len(input_type.shape):] != input_type.shape:
             raise TypeError("Shape mismatch for 'in {} {}': expected {}, got {}".format(
-                input_type, name, '(:, {})'.format(', '.join(str(i) for i in input_type.shape)), buffer.shape
+                input_type, name, '(..., {})'.format(', '.join(str(i) for i in input_type.shape)), buffer.shape
             ))
 
         # TODO: Clean this out!
