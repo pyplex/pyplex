@@ -1,11 +1,11 @@
 #version 430
 
 uniform int iterations;
-uniform vec3 colormap[8];
-uniform float time;
+uniform vec3 colormap[10];
 
 in vec2 coordinate;
 out vec4 color;
+
 
 int mandelbrot(float creal, float cimag){
     float real = creal;
@@ -22,15 +22,15 @@ int mandelbrot(float creal, float cimag){
         imag = 2 * real * imag + cimag;
         real = real2 - imag2 + creal;
     }
-
     return 0;
 }
 
 void main() {
-    float offset = sqrt(mandelbrot(coordinate.x, coordinate.y) / float(iterations))*(colormap.length() - 1) + time;
-    int index = int(offset);
-    float factor = offset - index;
+    // Calculate Mandelbrot for Fragment
+    int mandelbrot_result = mandelbrot(coordinate.x, coordinate.y);
 
-    vec3 c = (1-factor) * colormap[index % colormap.length()] + factor * colormap[(index+1) % colormap.length()];
-    color = vec4(c, 1.0);
+    // Color according to colormap
+    float colormap_offset = sqrt(mandelbrot_result / float(iterations))*(colormap.length() - 1);
+    int colormap_index = int(colormap_offset); float colormap_factor = colormap_offset - colormap_index;
+    color = vec4((1-colormap_factor) * colormap[colormap_index] + colormap_factor * colormap[colormap_index+1], 1.0);
 }
