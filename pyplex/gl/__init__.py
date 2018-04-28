@@ -1,3 +1,1 @@
-from .constant import *
-from .object import Object, Buffer, Texture, Shader, Program, VertexArray, Sampler
-from .context import Context
+from .gl import GL20, GL21, GL30, GL31, GL32, GL33, GL40, GL41, GL42, GL43, GL44, GL45, GL_ANY

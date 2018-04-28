@@ -1,10 +1,6 @@
-VERSION = 0,1
-VERSION_GL = 4,3
-VERSION_GLFW = 3,2
+from . import glfw, gl
 
-from .gl.constant import *
-from .gloo import *
+from .glfw.contants import Key, Button, Joystick, Action, Modifiers, ConnectionEvent, CursorMode, CursorShape
 
-from .transform import *
-from .input import *
-from .canvas import *
+from .canvas import Canvas, CanvasConfig, CanvasEventFunction, \
+    ImageCursor, ArrowCursor, IBeamCursor, CrosshairCursor, HandCursor, HResizeCursor, VResizeCursor

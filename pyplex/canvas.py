@@ -1,900 +1,751 @@
-from pyplex import gl, glfw, VERSION_GL, Key, Button, Action, Modifier
-
+from pyplex import *
+from ctypes import *
 import numpy as np
 
-from time import time
+from threading import Thread
 from typing import List, Optional
+from enum import Enum
 
 
 class VideoMode:
-    def __init__(self, video_mode: glfw.VideoMode):
-        """
-        Supported video mode for monitor
-
-        Parameters
-        ----------
-        video_mode: pyplex.glfw.VideoMode
-            GLFW VideoMode object
-        """
-
-        self._resolution = np.array([video_mode.width, video_mode.height], np.uint32)
-        self._bit_depth = np.array([video_mode.red_bits, video_mode.green_bits, video_mode.blue_bits], np.uint8)
-        self._refresh_rate = video_mode.refresh_rate
-
-    @property
-    def resolution(self) -> np.ndarray:
-        """
-        VideoMode resolution (w,h) in pixels
-
-        Returns
-        -------
-        resolution: np.ndarray
-        """
-        return self._resolution
+    def __init__(self, mode: glfw.VideoMode):
+        self._resolution = np.array([mode.width, mode.height])
+        self._bit_depth = np.array([mode.red_bits, mode.green_bits, mode.blue_bits])
+        self._refresh_rate = mode.refresh_rate
 
     @property
     def width(self) -> int:
-        """
-        VideoMode width in pixels
-
-        Returns
-        -------
-        width: int
-        """
         return self._resolution[0]
 
     @property
     def height(self) -> int:
-        """
-        VideoMode height in pixels
-
-        Returns
-        -------
-        height: int
-        """
         return self._resolution[1]
 
     @property
-    def bit_depth(self) -> np.ndarray:
-        """
-        VideoMode bit depth (r,g,b)
+    def resolution(self) -> np.ndarray:
+        return self._resolution
 
-        Returns
-        -------
-        bit_depth: np.ndarray
-        """
+    @property
+    def bit_depth(self) -> np.ndarray:
         return self._bit_depth
 
     @property
     def refresh_rate(self) -> int:
-        """
-        VideoMode refresh rate
-
-        Returns
-        -------
-        refresh_rate: int
-        """
         return self._refresh_rate
 
     def __str__(self):
-        """
-        String representation of VideoMode: <width>x<height>@<refresh_rate>Hz
-
-        Returns
-        -------
-        __str__: str
-        """
         return "{}x{}@{}Hz".format(self.width, self.height, self.refresh_rate)
 
 
 class Monitor:
     def __init__(self, monitor: glfw.Monitor):
-        """
-        Currently connected monitor
-
-        Parameters
-        ----------
-        monitor: pyplex.glfw.Monitor
-            GLFW Monitor object
-        """
         self._monitor = monitor
-
-    @classmethod
-    def primary(cls):
-        """
-        Retrieve primary monitor
-
-        Returns
-        -------
-        monitor: Monitor
-        """
-        return cls(glfw.get_primary_monitor())
-
-    @staticmethod
-    def monitors() -> list:
-        """
-        Retrieve all connected monitors
-
-        Returns
-        -------
-        monitors: list of Monitor
-        """
-        return [Monitor(monitor) for monitor in glfw.get_monitors()]
-
-    @property
-    def name(self) -> str:
-        """
-        Human-readable monitor name
-
-        Returns
-        -------
-        name: str
-        """
-        return glfw.get_monitor_name(self._monitor)
 
     @property
     def position(self) -> np.ndarray:
-        """
-        Monitor position (x,y) in screen coordinates
-
-        see: http://www.glfw.org/docs/latest/intro_guide.html#coordinate_systems
-
-        Returns
-        -------
-        position: np.ndarray
-        """
-        return np.array(glfw.get_monitor_pos(self._monitor), np.int32)
+        position = np.empty(2, np.int)
+        Canvas.GLFW.get_monitor_pos(self._monitor,
+                                    cast(position.ctypes.data, POINTER(c_int)),
+                                    cast(position.ctypes.data + sizeof(c_int), POINTER(c_int)))
+        return position
 
     @property
-    def physical_size(self) -> np.ndarray:
-        """
-        Monitor physical size (w,h) in millimetres
+    def size(self) -> np.ndarray:
+        size = np.empty(2, np.int)
+        Canvas.GLFW.get_monitor_physical_size(self._monitor,
+                                              cast(size.ctypes.data, POINTER(c_int)),
+                                              cast(size.ctypes.data + sizeof(c_int), POINTER(c_int)))
+        return size
 
-        Returns
-        -------
-        physical_size: np.ndarray
-        """
-        return np.array(glfw.get_monitor_physical_size(self._monitor), np.int32)
+    @property
+    def name(self) -> str:
+        return Canvas.GLFW.get_monitor_name(self._monitor).decode()
 
     @property
     def video_mode(self) -> VideoMode:
-        """
-        Current video mode of monitor
-
-        Returns
-        -------
-        mode: VideoMode
-        """
-        return VideoMode(glfw.get_video_mode(self._monitor))
+        return VideoMode(Canvas.GLFW.get_video_mode(self._monitor)[0])
 
     @property
     def video_modes(self) -> List[VideoMode]:
-        """
-        Supported video modes of monitor
+        count = c_int(0)
+        video_modes = Canvas.GLFW.get_video_modes(self._monitor, pointer(count))
+        return [VideoMode(video_modes[i]) for i in range(count.value)]
 
-        Returns
-        -------
-        modes: list of VideoMode
-        """
-        return [VideoMode(video_mode) for video_mode in glfw.get_video_modes(self._monitor)]
+    @property
+    def gamma_ramp(self) -> np.ndarray:
+        ramp = Canvas.GLFW.get_gamma_ramp(self._monitor)[0]
+        return np.concatenate([
+            (np.ctypeslib.as_array(ramp.red, (ramp.size, 1))),
+            (np.ctypeslib.as_array(ramp.green, (ramp.size, 1))),
+            (np.ctypeslib.as_array(ramp.blue, (ramp.size, 1)))], axis=1)
 
-    def __str__(self):
-        """
-        String representation of monitor: <name> : <video_mode>
+    @gamma_ramp.setter
+    def gamma_ramp(self, value: np.ndarray):
+        if not (value.dtype == np.uint16 and value.shape == (256, 3)):
+            raise ValueError("Gamma Ramp should be in format uint16[256, 3]")
 
-        Returns
-        -------
-        __str__: str
-        """
-        return "{} : {}".format(self.name, self.video_mode)
+        Canvas.GLFW.set_gamma_ramp(
+            self._monitor,
+            glfw.GammaRamp(
+                value[:, 0].ctypes.data_as(POINTER(c_ushort)),
+                value[:, 1].ctypes.data_as(POINTER(c_ushort)),
+                value[:, 2].ctypes.data_as(POINTER(c_ushort)),
+                value.shape[0]))
+
+    def set_gamma(self, gamma: float):
+        Canvas.GLFW.set_gamma(self._monitor, gamma)
+
+
+class Cursor:
+    def __init__(self, cursor: glfw.Cursor):
+        self._cursor = cursor
+
+    @property
+    def cursor(self):
+        return self._cursor
+
+
+class ImageCursor(Cursor):
+    def __init__(self, image: np.ndarray, hotspot: np.ndarray):
+        super().__init__(Canvas.GLFW.create_cursor(
+            glfw.Image(image.shape[0], image.shape[1], image.ctypes.data_as(POINTER(c_ubyte))),
+            hotspot[0],
+            hotspot[1]))
+
+
+class StandardCursor(Cursor):
+    def __init__(self, shape: CursorShape):
+        super().__init__(Canvas.GLFW.create_standard_cursor(shape))
+
+    @property
+    def cursor(self) -> glfw.Cursor:
+        return self._cursor
+
+
+class ArrowCursor(StandardCursor):
+    def __init__(self):
+        super().__init__(CursorShape.ARROW)
+
+
+class IBeamCursor(StandardCursor):
+    def __init__(self):
+        super().__init__(CursorShape.IBEAM)
+
+
+class CrosshairCursor(StandardCursor):
+    def __init__(self):
+        super().__init__(CursorShape.CROSSHAIR)
+
+
+class HandCursor(StandardCursor):
+    def __init__(self):
+        super().__init__(CursorShape.HAND)
+
+
+class HResizeCursor(StandardCursor):
+    def __init__(self):
+        super().__init__(CursorShape.HRESIZE)
+
+
+class VResizeCursor(StandardCursor):
+    def __init__(self):
+        super().__init__(CursorShape.VRESIZE)
+
+
+class CanvasEventFunction(Enum):
+    POLL = 0
+    WAIT = 1
+
+
+class CanvasConfig:
+    def __init__(self, width: int=1024, height: int=768, title: str="pyplex", context_type=gl.GL43,
+                 resizable: bool=True, visible: bool=True, decorated: bool=True, focused: bool=True,
+                 floating: bool=False, maximised: bool=False, auto_iconify: bool=True, vsync: int=1,
+                 red: int=8, green: int=8, blue: int=8, alpha: int=8, depth: int=24, stencil: int=8,
+                 double_buffer: bool=True, samples: int=0, stereo: bool=False, srgb: bool=False,
+                 event_function: CanvasEventFunction = CanvasEventFunction.POLL):
+
+        super().__init__()
+
+        self._width = width
+        self._height = height
+        self._title = title
+        self._context_type = context_type
+        self._resizable = resizable
+        self._visible = visible
+        self._decorated = decorated
+        self._focused = focused
+        self._floating = floating
+        self._maximized = maximised
+        self._auto_iconify = auto_iconify
+        self._vsync = vsync
+        self._red = red
+        self._green = green
+        self._blue = blue
+        self._alpha = alpha
+        self._depth = depth
+        self._stencil = stencil
+        self._double_buffer = double_buffer
+        self._samples = samples
+        self._stereo = stereo
+        self._srgb = srgb
+        self._event_function = event_function
+
+    @property
+    def width(self) -> int:
+        return self._width
+
+    @property
+    def height(self) -> int:
+        return self._height
+
+    @property
+    def title(self) -> str:
+        return self._title
+
+    @property
+    def context_type(self):
+        return self._context_type
+
+    @property
+    def resizable(self) -> bool:
+        return self._resizable
+
+    @property
+    def visible(self) -> bool:
+        return self._visible
+
+    @property
+    def decorated(self) -> bool:
+        return self._decorated
+
+    @property
+    def focused(self) -> bool:
+        return self._focused
+
+    @property
+    def floating(self) -> bool:
+        return self._floating
+
+    @property
+    def maximised(self) -> bool:
+        return self._maximized
+
+    @property
+    def auto_iconify(self) -> bool:
+        return self._auto_iconify
+
+    @property
+    def vsync(self) -> int:
+        return self._vsync
+
+    @property
+    def red(self) -> int:
+        return self._red
+
+    @property
+    def green(self) -> int:
+        return  self._green
+
+    @property
+    def blue(self) -> int:
+        return self._blue
+
+    @property
+    def alpha(self) -> int:
+        return self._alpha
+
+    @property
+    def depth(self) -> int:
+        return self._depth
+
+    @property
+    def stencil(self) -> int:
+        return self._stencil
+
+    @property
+    def double_buffer(self) -> bool:
+        return self._double_buffer
+
+    @property
+    def samples(self) -> int:
+        return self._samples
+
+    @property
+    def stereo(self) -> bool:
+        return self._stereo
+
+    @property
+    def srgb(self) -> bool:
+        return self._srgb
+
+    @property
+    def event_function(self) -> CanvasEventFunction:
+        return self._event_function
 
 
 class Canvas:
 
     COUNT = 0
+    GLFW = None
 
-    def __init__(self, width: int = 1024, height: int = 768, title: str = "pyplex", version: (int, int) = VERSION_GL,
-                 resizable: bool = True, visible: bool = True, decorated: bool = True, focused: bool = True,
-                 floating: bool = False, maximised: bool = False, auto_iconify: bool = True, vsync: int = 1,
-                 red: int = 8, green: int = 8, blue: int = 8, alpha: int = 8, depth: int = 24, stencil: int = 8,
-                 double_buffer: bool = True, samples: int = 0, stereo: bool = False, sRGB: bool = False,
-                 wait_for_events: bool = False):
-        """
-        Create Canvas: (Window + OpenGL Context)
+    def __init__(self, config: CanvasConfig=CanvasConfig()):
+        self._config = config
 
-        Parameters
-        ----------
-        width: int
-            Width of Canvas in pixels
-        height: int
-            Height of Canvas in pixels
-        title: str
-            Title of Canvas
-        version: (int, int)
-            OpenGL version of Context
-        resizable: bool
-            Whether Window will be resizable by the user
-        visible: bool
-            Whether Window will be initially visible
-        decorated: bool
-            Whether Window is decorated (i.e. border + close/minimize/maximize buttons)
-        focused: bool
-            Whether Window will be given input focus
-        floating: bool
-            Whether Window will be 'always-on-top'
-        maximised: bool
-            Whether window will be maximised at creation
-        auto_iconify: bool
-            Whether video mode will be restored on full screen Window input focus loss
-        vsync: int
-            Number of screen updates to wait before drawing
-        red: int
-            Number of red bits
-        green: int
-            Number of green bits
-        blue: int
-            Number of blue bits
-        alpha: int
-            Number of alpha bits
-        depth: int
-            Number of depth bits
-        stencil: int
-            Number of stencil bits
-        double_buffer: bool
-            Whether to use double buffering
-        samples: int
-            Number of samples for multisampling (0 disables multisampling)
-        stereo: bool
-            Whether to use stereoscopic rendering
-        sRGB: bool
-            Whether framebuffer should support sRGB
-        wait_for_events: bool
-            Whether to wait for events to update or update continuously
-        wait_events_timeout: optional float
-            If wait_events, update at timeout
-        """
+        self._title = self._config.title
 
-        # if this Canvas is the first: initialize GLFW
-        if Canvas.COUNT == 0: glfw.init()
+        if not Canvas.GLFW:
+            Canvas.GLFW = glfw.GLFW()
+            Canvas.GLFW.init()
         Canvas.COUNT += 1
 
-        # OpenGL Context hints
-        glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, version[0])
-        glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, version[1])
-        glfw.window_hint(glfw.CLIENT_API, glfw.OPENGL_API)
-        glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
-        glfw.window_hint(glfw.OPENGL_DEBUG_CONTEXT, False)
+        self._event_function = Canvas.GLFW.poll_events \
+            if self._config.event_function == CanvasEventFunction.POLL \
+            else Canvas.GLFW.wait_events
 
-        # Window hints
-        glfw.window_hint(glfw.RESIZABLE, resizable)
-        glfw.window_hint(glfw.VISIBLE, visible)
-        glfw.window_hint(glfw.DECORATED, decorated)
-        glfw.window_hint(glfw.FOCUSED, focused)
-        glfw.window_hint(glfw.FLOATING, floating)
-        glfw.window_hint(glfw.MAXIMIZED, maximised)
-        glfw.window_hint(glfw.AUTO_ICONIFY, auto_iconify)
-
-        # Framebuffer hints
-        glfw.window_hint(glfw.RED_BITS, red)
-        glfw.window_hint(glfw.GREEN_BITS, green)
-        glfw.window_hint(glfw.BLUE_BITS, blue)
-        glfw.window_hint(glfw.ALPHA_BITS, alpha)
-        glfw.window_hint(glfw.DEPTH_BITS, depth)
-        glfw.window_hint(glfw.STENCIL_BITS, stencil)
-        glfw.window_hint(glfw.SAMPLES, samples)
-        glfw.window_hint(glfw.STEREO, stereo)
-        glfw.window_hint(glfw.SRGB_CAPABLE, sRGB)
-        glfw.window_hint(glfw.DOUBLEBUFFER, double_buffer)
-
-        self._title = title
-        self._vsync = vsync
-
-        # Create GLFW Window object and create Context for this thread
-        self._window = glfw.create_window(width, height, title, None, None)
-        glfw.make_context_current(self._window)
-        glfw.swap_interval(vsync)
-        glfw.default_window_hints()
-
-        # Event Processing Function
-        self._event_processing_func = glfw.wait_events if wait_for_events else glfw.poll_events
-
-        # Initialize Context (i.e. load function pointers)
-        self._ctx = gl.Context()
-
-        # Statistics
-        self._time_last_frame = time()
-        self._time_update = 0
-        self._time_draw = 0
-        self._time_frame = 0
-
-        # Window Callbacks
-        glfw.set_window_pos_callback(self._window, self._on_move)
-        glfw.set_window_size_callback(self._window, self._on_resize)
-        glfw.set_window_close_callback(self._window, self._on_close)
-        glfw.set_window_refresh_callback(self._window, self._on_refresh)
-        glfw.set_window_focus_callback(self._window, self._on_focus)
-        glfw.set_framebuffer_size_callback(self._window, self._on_framebuffer_resize)
-
-        # Input Callbacks
-        glfw.set_key_callback(self._window, self._on_key)
-        glfw.set_char_callback(self._window, self._on_char)
-        glfw.set_cursor_pos_callback(self._window, self._on_mouse_move)
-        glfw.set_mouse_button_callback(self._window, self._on_mouse_button)
-        glfw.set_scroll_callback(self._window, self._on_scroll)
+        self._initialized = False
 
     @property
-    def ctx(self) -> gl.Context:
-        """
-        Get Context
-
-        Returns
-        -------
-        context: pyplex.gl.Context
-        """
-        return self._ctx
+    def monitor(self) -> Monitor:
+        return Monitor(Canvas.GLFW.get_primary_monitor())
 
     @property
-    def size(self) -> np.ndarray:
-        # TODO: Check if size is really in pixels! (Maybe it is in GLFW screen coordinates)
-        """
-        Get Window size (w,h) in pixels
-
-        Returns
-        -------
-        size: np.ndarray
-        """
-        return np.array(glfw.get_window_size(self._window), np.uint32)
-
-    @size.setter
-    def size(self, value: np.ndarray):
-        """
-        Set window size (w,h) in pixels
-
-        Parameters
-        ----------
-        value: np.ndarray
-        """
-        glfw.set_window_size(self._window, value[0], value[1])
+    def monitors(self) -> List[Monitor]:
+        count = c_int(0)
+        monitors = Canvas.GLFW.get_monitors(pointer(count))
+        return [Monitor(monitors[i]) for i in range(count.value)]
 
     @property
-    def width(self) -> int:
-        """
-        Get Window width in pixels
+    def should_close(self) -> bool:
+        return Canvas.GLFW.window_should_close(self._window)
 
-        Returns
-        -------
-        width: int
-        """
-        return self.size[0]
-
-    @width.setter
-    def width(self, value: int):
-        """
-        Set Window width in pixels
-
-        Parameters
-        ----------
-        value: int
-        """
-        glfw.set_window_size(self._window, value, self.height)
-
-    @property
-    def height(self) -> int:
-        """
-        Get Window height in pixels
-
-        Returns
-        -------
-        height: int
-        """
-        return self.size[1]
-
-    @height.setter
-    def height(self, value: int):
-        """
-        Set Window height in pixels
-
-        Parameters
-        ----------
-        value: int
-        """
-        glfw.set_window_size(self._window, self.width, value)
-
-    @property
-    def framebuffer_size(self) -> np.ndarray:
-        """
-        Get framebuffer size (w,h) in pixels
-
-        Returns
-        -------
-        framebuffer_size: np.ndarray
-        """
-        return np.array(glfw.get_framebuffer_size(self._window), np.uint32)
-
-    @property
-    def framebuffer_width(self) -> int:
-        """
-        Get framebuffer width in pixels
-
-        Returns
-        -------
-        framebuffer_width: int
-        """
-        return self.framebuffer_size[0]
-
-    @property
-    def framebuffer_height(self) -> int:
-        """
-        Get framebuffer height in pixels
-
-        Returns
-        -------
-        framebuffer_height: int
-        """
-        return self.framebuffer_size[1]
-
-    @property
-    def position(self) -> np.ndarray:
-        """
-        Get Window position (x,y) in screen coordinates
-
-        Returns
-        -------
-        position: np.ndarray
-        """
-        return np.array(glfw.get_window_pos(self._window), np.int32)
-
-    @position.setter
-    def position(self, value: np.ndarray):
-        """
-        Set Window position (x,y) in screen coordinates
-        Parameters
-        ----------
-        value: np.ndarray
-        """
-        glfw.set_window_pos(self._window, value[0], value[1])
+    @should_close.setter
+    def should_close(self, value: bool):
+        Canvas.GLFW.set_window_should_close(self._window, value)
 
     @property
     def title(self) -> str:
-        """
-        Get Window title
-
-        Returns
-        -------
-        title: str
-        """
         return self._title
 
     @title.setter
     def title(self, value: str):
-        """
-        Set Window title
-
-        Parameters
-        ----------
-        value: str
-        """
+        Canvas.GLFW.set_window_title(self._window, value.encode())
         self._title = value
-        glfw.set_window_title(self._window, value)
 
     @property
-    def vsync(self) -> int:
-        """
-        Get Vsync
+    def position(self) -> np.ndarray:
+        pos = np.empty(2, np.int)
+        Canvas.GLFW.get_window_pos(self._window,
+                                   cast(pos.ctypes.data, POINTER(c_int)),
+                                   cast(pos.ctypes.data + sizeof(c_int), POINTER(c_int)))
+        return pos
 
-        Returns
-        -------
-        vsync: int
-        """
-        return self._vsync
-
-    @vsync.setter
-    def vsync(self, value: int):
-        """
-        Set Vsync
-
-        Parameters
-        ----------
-        value: int
-        """
-        glfw.swap_interval(value)
-        self._vsync = value
+    @position.setter
+    def position(self, value: np.ndarray):
+        Canvas.GLFW.set_window_pos(self._window, value[0], value[1])
 
     @property
-    def time_update(self) -> float:
-        """
-        Time on_update took in seconds
+    def size(self) -> np.ndarray:
+        size = np.empty(2, np.int)
+        Canvas.GLFW.get_window_size(self._window,
+                                    cast(size.ctypes.data, POINTER(c_int)),
+                                    cast(size.ctypes.data + sizeof(c_int), POINTER(c_int)))
+        return size
 
-        Returns
-        -------
-        time_update: float
-        """
-        return self._time_update
-
-    @property
-    def time_draw(self) -> float:
-        """
-        Time on_draw took in seconds
-
-        Returns
-        -------
-        time_draw: float
-        """
-        return self._time_draw
+    @size.setter
+    def size(self, value: np.ndarray):
+        Canvas.GLFW.set_window_size(self._window, value[0], value[1])
 
     @property
-    def time_frame(self) -> float:
-        """
-        Time frame (= on_update + on_draw + vsync) took in seconds
+    def framebuffer_size(self) -> np.ndarray:
+        size = np.empty(2, np.int)
+        Canvas.GLFW.get_framebuffer_size(self._window,
+                                         cast(size.ctypes.data, POINTER(c_int)),
+                                         cast(size.ctypes.data + sizeof(c_int), POINTER(c_int)))
+        return size
 
-        Returns
-        -------
-        time_frame: float
-        """
-        return self._time_frame
+    @property
+    def frame_size(self) -> np.ndarray:
+        size = np.empty((4), np.int)
+        Canvas.GLFW.get_window_frame_size(self._window,
+                                          cast(size.ctypes.data                     , POINTER(c_int)),
+                                          cast(size.ctypes.data +     sizeof(c_int) , POINTER(c_int)),
+                                          cast(size.ctypes.data + 2 * sizeof(c_int) , POINTER(c_int)),
+                                          cast(size.ctypes.data + 3 * sizeof(c_int) , POINTER(c_int)))
+        return size
 
-    def close(self):
-        """
-        Close Window
+    @property
+    def mouse_position(self) -> np.ndarray:
+        pos = np.empty(2, np.double)
+        Canvas.GLFW.get_cursor_pos(self._window,
+                                   cast(pos.ctypes.data, POINTER(c_int)),
+                                   cast(pos.ctypes.data + sizeof(c_double), POINTER(c_int)))
+        return pos
 
-        When using the context manager (i.e. the 'with' statement):
-        this function will be called on the context managers __exit__().
-        """
-        glfw.set_window_should_close(self._window, True)
+    @mouse_position.setter
+    def mouse_position(self, value: np.ndarray):
+        Canvas.GLFW.set_cursor_pos(self._window, value[0], value[1])
 
-        Canvas.COUNT -= 1
+    @property
+    def cursor_mode(self) -> CursorMode:
+        return CursorMode(Canvas.GLFW.get_input_mode(self._window, glfw.CURSOR))
 
-        if Canvas.COUNT == 0:
-            glfw.terminate()
-        
+    @cursor_mode.setter
+    def cursor_mode(self, value: CursorMode):
+        Canvas.GLFW.set_input_mode(self._window, glfw.CURSOR, value)
+
+    @property
+    def sticky_keys(self) -> bool:
+        return bool(Canvas.GLFW.get_input_mode(self._window, glfw.STICKY_KEYS))
+
+    @sticky_keys.setter
+    def sticky_keys(self, value: bool):
+        Canvas.GLFW.set_input_mode(self._window, glfw.STICKY_KEYS, value)
+
+    @property
+    def sticky_mouse_buttons(self) -> bool:
+        return bool(Canvas.GLFW.get_input_mode(self._window, glfw.STICKY_MOUSE_BUTTONS))
+
+    @sticky_mouse_buttons.setter
+    def sticky_mouse_buttons(self, value: bool):
+        Canvas.GLFW.set_input_mode(self._window, glfw.STICKY_MOUSE_BUTTONS, value)
+
+    @property
+    def clipboard(self) -> str:
+        return Canvas.GLFW.get_clipboard_string(self._window).decode()
+
+    @clipboard.setter
+    def clipboard(self, value: str):
+        Canvas.GLFW.set_clipboard_string(self._window, value.encode())
+
+    def get_key(self, key: Key) -> Action:
+        return Action(Canvas.GLFW.get_key(self._window, key))
+
+    def get_mouse_button(self, button: Button) -> Action:
+        return Action(Canvas.GLFW.get_mouse_button(self._window, button))
+
+    def set_size_limits(self, width_min: int, height_min: int, width_max: int, height_max: int):
+        Canvas.GLFW.set_window_size_limits(self._window, width_min, height_min, width_max, height_max)
+
+    def set_aspect_ratio(self, numerator: int, denominator: int):
+        Canvas.GLFW.set_window_aspect_ratio(self._window, numerator, denominator)
+
+    def set_icon(self, *value: np.ndarray):
+        glfw_images = (glfw.Image * len(value))()
+
+        for i, image in enumerate(value):
+            glfw_images[i].width = image.shape[0]
+            glfw_images[i].height = image.shape[1]
+            glfw_images[i].pixels = image.ctypes.data_as(POINTER(c_ubyte))
+
+        self.GLFW.set_window_icon(self._window, len(value), glfw_images)
+        self._icons = value
+
+    def set_cursor(self, cursor: Optional[Cursor]):
+        Canvas.GLFW.set_cursor(self._window, cursor.cursor if cursor else None)
+
+    def set_event_function(self, event_function: CanvasEventFunction):
+        self._event_function = Canvas.GLFW.poll_events \
+            if event_function == CanvasEventFunction.POLL \
+            else Canvas.GLFW.wait_events
+
     def iconify(self):
-        """Iconify (i.e. Minimize) Window"""
-        glfw.iconify_window(self._window)
+        Canvas.GLFW.iconify_window(self._window)
 
     def restore(self):
-        """Restore Window from iconified state"""
-        glfw.restore_window(self._window)
+        Canvas.GLFW.restore_window(self._window)
 
     def maximize(self):
-        """Maximize Window"""
-        glfw.maximize_window(self._window)
+        Canvas.GLFW.maximize_window(self._window)
 
     def show(self):
-        """Show hidden Window"""
-        glfw.show_window(self._window)
+        Canvas.GLFW.show_window(self._window)
 
     def hide(self):
-        """Hide visible Window"""
-        glfw.hide_window(self._window)
+        Canvas.GLFW.hide_window(self._window)
 
     def focus(self):
-        """Get Input Focus for this Window"""
-        glfw.focus_window(self._window)
+        Canvas.GLFW.focus_window(self._window)
+
+    def start(self):
+        Thread(target=self.run).start()
 
     def run(self):
-        """Run Window"""
-        while not glfw.window_should_close(self._window):
-            self.update()
-        glfw.destroy_window(self._window)
+        # Create Window
+        self._set_window_hints()
+        self._window = Canvas.GLFW.create_window(
+            self._config.width, self._config.height,self._config.title.encode(), None, None)
+        Canvas.GLFW.default_window_hints()
 
-    def update(self):
-        """
-        Update Frame:
-        1. Call on_update
-        2. Call on_draw
-        3. Swap Buffers (and wait for Vertical Synchronisation)
-        4. Poll Events
-        """
-        t0 = self._time_last_frame
-        t1 = time()
-        self._time_last_frame = t1
+        # Create Context
+        Canvas.GLFW.make_context_current(self._window)
+        Canvas.GLFW.swap_interval(self._config.vsync)
+        context = self._config.context_type(Canvas.GLFW)
 
-        self.on_update(t1 - t0)
-        self._time_update = time() - t1
+        self._set_callbacks()
 
-        t1 = time()
-        self.on_draw()
-        self._time_draw = time() - t1
+        self._initialized = True
 
-        glfw.swap_buffers(self._window)
-        self._event_processing_func()
-        self._time_frame = time() - t1
+        self.on_start(context)
 
-    def on_update(self, dt: float):
-        """
-        On Update Event
+        if self._config.visible: self.show()
 
-        Parameters
-        ----------
-        dt: float
-            time since last frame in seconds
-        """
+        while not Canvas.GLFW.window_should_close(self._window):
+
+            self.on_update(context)
+            self.on_draw(context)
+
+            Canvas.GLFW.swap_buffers(self._window)
+            self._event_function()
+
+        Canvas.GLFW.destroy_window(self._window)
+
+        Canvas.COUNT -= 1
+        if Canvas.COUNT == 0:
+            Canvas.GLFW.terminate()
+
+    def on_start(self, ctx: gl.GL_ANY):
         pass
 
-    def on_draw(self):
-        """On Draw Event"""
+    def on_update(self, ctx: gl.GL_ANY):
         pass
 
-    def on_window_move(self, position: np.ndarray):
-        """
-        On Window Move Event
-
-        Parameters
-        ----------
-        position: np.ndarray
-            Current Window position (x,y)
-        """
+    def on_draw(self, ctx: gl.GL_ANY):
         pass
 
-    def on_resize(self, size: np.ndarray):
-        """
-        On Window Resize Event
+    def on_move(self, x: int, y: int):
+        pass
 
-        Parameters
-        ----------
-        size: np.ndarray
-            Current Window size (w,h) in pixels
-        """
+    def on_resize(self, width: int, height: int):
+        pass
+
+    def on_framebuffer_resize(self, width: int, height: int):
         pass
 
     def on_close(self):
-        """On Window Close Event"""
         pass
 
     def on_refresh(self):
-        """On Window Refresh Event"""
         pass
 
     def on_focus(self, value: bool):
-        """
-        On Window Focus (True/False) Event
-
-        Parameters
-        ----------
-        value: bool
-            Whether Window is focused
-        """
         pass
 
     def on_iconify(self, value: bool):
-        """
-        On Window Iconify (True/False) Event
-
-        Parameters
-        ----------
-        value: bool
-            Whether Window is iconified
-        """
         pass
 
-    def on_framebuffer_resize(self, size: np.ndarray):
-        """
-        On Window Framebuffer Resize Event
-
-        Parameters
-        ----------
-        size: np.ndarray
-            Current Framebuffer size in pixels
-        """
+    def on_mouse_button(self, button: Button, action: Action, modifiers: Modifiers):
         pass
 
-    def on_key(self, key: Key, action: Action, modifier: Modifier):
-        """
-        On Keyboard Key Press/Release/Hold Event
+    def on_mouse_move(self, x: float, y: float):
+        pass
 
-        Parameters
-        ----------
-        key: Key
-        action: Action
-        modifier: Modifier
-        """
+    def on_mouse_enter(self, value: bool):
+        pass
+
+    def on_scroll(self, x: float, y: float):
+        pass
+
+    def on_key(self, key: Key, action: Action, modifiers: Modifiers):
         pass
 
     def on_char(self, char: str):
-        """
-        On Character Event (based on users keyboard layout and language setting)
-
-        Parameters
-        ----------
-        char: str
-        """
         pass
 
-    def on_mouse_move(self, position: np.ndarray):
-        """
-        On Mouse Move Event
-
-        Parameters
-        ----------
-        position: np.ndarray
-            Mouse Position in Local Screen Coordinates
-        """
+    def on_char_mods(self, char: str, modifiers: Modifiers):
         pass
 
-    def on_mouse_button(self, button: Button, action: Action, modifier: Modifier):
-        """
-        On Mouse Button Event
-
-        Parameters
-        ----------
-        button: Button
-        action: Action
-        modifier: Modifier
-        """
+    def on_drop(self, paths: List[str]):
         pass
 
-    def on_scroll(self, offset: np.ndarray):
-        """
-        On Scroll Event
+    def on_joystick(self, joy: int, event: ConnectionEvent):
+        pass
 
-        Parameters
-        ----------
-        offset: np.ndarray
-        """
+    def on_monitor(self, monitor: glfw.Monitor, event: ConnectionEvent):
         pass
 
     def _on_move(self, window: glfw.Window, x: int, y: int):
-        """
-        Raw On Move Event
-
-        Parameters
-        ----------
-        window: glfw.Window
-        x: int
-        y: int
-        """
-        self.on_window_move(np.array([x, y], np.int32))
+        self.on_move(x, y)
 
     def _on_resize(self, window: glfw.Window, width: int, height: int):
-        """
-        Raw On Resize Event
+        self.on_resize(width, height)
 
-        Parameters
-        ----------
-        window: glfw.Window
-        width: int
-        height: int
-        """
-        self.on_resize(np.array([width, height], np.int32))
+    def _on_framebuffer_resize(self, window: glfw.Window, width: int, height: int):
+        self.on_framebuffer_resize(width, height)
 
     def _on_close(self, window: glfw.Window):
-        """
-        Raw On Close Event
-
-        Parameters
-        ----------
-        window: glfw.Window
-        """
         self.on_close()
 
     def _on_refresh(self, window: glfw.Window):
-        """
-        Raw On Refresh Event
-
-        Parameters
-        ----------
-        window: glfw.Window
-        """
         self.on_refresh()
 
     def _on_focus(self, window: glfw.Window, value: int):
-        """
-        Raw On Focus Event
-
-        Parameters
-        ----------
-        window: glfw.Window
-        value: int
-        """
         self.on_focus(bool(value))
 
     def _on_iconify(self, window: glfw.Window, value: int):
-        """
-        Raw On Iconify Event
-
-        Parameters
-        ----------
-        window: glfw.Window
-        value: int
-        """
         self.on_iconify(bool(value))
 
-    def _on_framebuffer_resize(self, window: glfw.Window, x: int, y: int):
-        """
-        Raw On Framebuffer Resize Event
-
-        Parameters
-        ----------
-        window: glfw.Window
-        x: int
-        y: int
-        """
-        self.on_framebuffer_resize(np.array([x, y], np.int32))
-
-    def _on_key(self, window: glfw.Window, key: int, scancode: int, action: int, mods: int):
-        """
-        Raw On Keyboard Key Event
-
-        Parameters
-        ----------
-        window: glfw.Window
-        key: int
-        scancode: int
-        action: int
-        mods: int
-        """
-        self.on_key(Key(key), Action(action), Modifier(mods))
-
-    def _on_char(self, window: glfw.Window, char: int):
-        """
-        Raw on Char Event
-
-        Parameters
-        ----------
-        window: glfw.Window
-        char: int
-        """
-        self.on_char(chr(char))
+    def _on_mouse_button(self, window: glfw.Window, button: int, action: int, modifier: int):
+        self.on_mouse_button(Button(button), Action(action), Modifiers(modifier))
 
     def _on_mouse_move(self, window: glfw.Window, x: float, y: float):
-        """
-        Raw On Mouse Move Event
+        self.on_mouse_move(x, y)
 
-        Parameters
-        ----------
-        window: glfw.Window
-        x: float
-        y: float
-        """
-        self.on_mouse_move(np.array([x,y], np.float32))
-
-    def _on_mouse_button(self, window: glfw.Window, button: int, action: int, mods: int):
-        """
-        Raw On Mouse Button Event
-
-        Parameters
-        ----------
-        window: glfw.Window
-        button: int
-        action: int
-        mods: int
-        """
-        self.on_mouse_button(Button(button), Action(action), Modifier(mods))
+    def _on_mouse_enter(self, window: glfw.Window, value: int):
+        self.on_mouse_enter(bool(value))
 
     def _on_scroll(self, window: glfw.Window, x: float, y: float):
-        """
-        Raw On Scroll Event
+        self.on_scroll(x, y)
 
-        Parameters
-        ----------
-        window: glfw.Window
-        x: float
-        y: float
-        """
-        self.on_scroll(np.array([x,y], np.float32))
+    def _on_key(self, window: glfw.Window, key: int, scancode: int, action: int, modifiers: int):
+        return self.on_key(Key(key), Action(action), Modifiers(modifiers))
 
-    def __enter__(self):
-        """
-        Context Manager __enter__
+    def _on_char(self, window: glfw.Window, code: int):
+        self.on_char(chr(code))
 
-        Returns
-        -------
-        self: Canvas
-        """
-        return self
+    def _on_char_mods(self, window: glfw.Window, code: int, modifiers: int):
+        self.on_char_mods(chr(code), Modifiers(modifiers))
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """
-        Context Manager __exit__
-        """
-        self.close()
+    def _on_drop(self, window: glfw.Window, count: int, paths: POINTER(c_char_p)):
+        self.on_drop([paths[i].decode() for i in range(count)])
 
-    def __str__(self) -> str:
-        """
-        Canvas string representation <class name> '<title>'
+    def _on_joystick(self, joy: int, event: int):
+        self.on_joystick(joy, ConnectionEvent(event))
 
-        Returns
-        -------
-        __str__: str
-        """
-        return "{} '{}'".format(self.__class__.__name__, self.title)
+    def _on_monitor(self, monitor: glfw.Monitor, event: int):
+        self.on_monitor(monitor, ConnectionEvent(event))
+
+    def _set_callbacks(self):
+        self._on_move = Canvas.GLFW.WINDOW_POSITION_CALLBACK(self._on_move)
+        self._on_resize = Canvas.GLFW.WINDOW_SIZE_CALLBACK(self._on_resize)
+        self._on_framebuffer_resize = Canvas.GLFW.FRAMEBUFFER_SIZE_CALLBACK(self._on_framebuffer_resize)
+
+        self._on_close = Canvas.GLFW.WINDOW_CLOSE_CALLBACK(self._on_close)
+        self._on_refresh = Canvas.GLFW.WINDOW_REFRESH_CALLBACK(self._on_refresh)
+        self._on_focus = Canvas.GLFW.WINDOW_FOCUS_CALLBACK(self._on_focus)
+        self._on_iconify = Canvas.GLFW.WINDOW_ICONIFY_CALLBACK(self._on_iconify)
+
+        self._on_mouse_button = Canvas.GLFW.MOUSE_BUTTON_CALLBACK(self._on_mouse_button)
+        self._on_mouse_move = Canvas.GLFW.CURSOR_POSITION_CALLBACK(self._on_mouse_move)
+        self._on_mouse_enter = Canvas.GLFW.CURSOR_ENTER_CALLBACK(self._on_mouse_enter)
+        self._on_scroll = Canvas.GLFW.SCROLL_CALLBACK(self._on_scroll)
+
+        self._on_key = Canvas.GLFW.KEY_CALLBACK(self._on_key)
+        self._on_char = Canvas.GLFW.CHAR_CALLBACK(self._on_char)
+        self._on_char_mods = Canvas.GLFW.CHAR_MODS_CALLBACK(self._on_char_mods)
+
+        self._on_drop = Canvas.GLFW.DROP_CALLBACK(self._on_drop)
+
+        self._on_joystick = Canvas.GLFW.JOYSTICK_CALLBACK(self._on_joystick)
+        self._on_monitor = Canvas.GLFW.MONITOR_CALLBACK(self._on_monitor)
+
+        Canvas.GLFW.set_window_pos_callback(self._window, self._on_move)
+        Canvas.GLFW.set_window_size_callback(self._window, self._on_resize)
+        Canvas.GLFW.set_framebuffer_size_callback(self._window, self._on_framebuffer_resize)
+
+        Canvas.GLFW.set_window_close_callback(self._window, self._on_close)
+        Canvas.GLFW.set_window_refresh_callback(self._window, self._on_refresh)
+        Canvas.GLFW.set_window_focus_callback(self._window, self._on_focus)
+        Canvas.GLFW.set_window_iconify_callback(self._window, self._on_iconify)
+
+        Canvas.GLFW.set_mouse_button_callback(self._window, self._on_mouse_button)
+        Canvas.GLFW.set_cursor_pos_callback(self._window, self._on_mouse_move)
+        Canvas.GLFW.set_cursor_enter_callback(self._window, self._on_mouse_enter)
+        Canvas.GLFW.set_scroll_callback(self._window, self._on_scroll)
+
+        Canvas.GLFW.set_key_callback(self._window, self._on_key)
+        Canvas.GLFW.set_char_callback(self._window, self._on_char)
+        Canvas.GLFW.set_char_mods_callback(self._window, self._on_char_mods)
+
+        Canvas.GLFW.set_drop_callback(self._window, self._on_drop)
+
+        Canvas.GLFW.set_joystick_callback(self._on_joystick)
+        Canvas.GLFW.set_monitor_callback(self._on_monitor)
+
+    def _set_window_hints(self):
+        Canvas.GLFW.window_hint(glfw.CONTEXT_VERSION_MAJOR, self._config.context_type.MAJOR)
+        Canvas.GLFW.window_hint(glfw.CONTEXT_VERSION_MINOR, self._config.context_type.MINOR)
+        Canvas.GLFW.window_hint(glfw.CLIENT_API, glfw.OPENGL_API)
+        Canvas.GLFW.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
+        Canvas.GLFW.window_hint(glfw.OPENGL_DEBUG_CONTEXT, False)
+
+        Canvas.GLFW.window_hint(glfw.RESIZABLE, self._config.resizable)
+        Canvas.GLFW.window_hint(glfw.VISIBLE, False)  # Will be set after on_start()
+        Canvas.GLFW.window_hint(glfw.DECORATED, self._config.decorated)
+        Canvas.GLFW.window_hint(glfw.FOCUSED, self._config.focused)
+        Canvas.GLFW.window_hint(glfw.FLOATING, self._config.floating)
+        Canvas.GLFW.window_hint(glfw.MAXIMIZED, self._config.maximised)
+        Canvas.GLFW.window_hint(glfw.AUTO_ICONIFY, self._config.auto_iconify)
+
+        Canvas.GLFW.window_hint(glfw.RED_BITS, self._config.red)
+        Canvas.GLFW.window_hint(glfw.GREEN_BITS, self._config.green)
+        Canvas.GLFW.window_hint(glfw.BLUE_BITS, self._config.blue)
+        Canvas.GLFW.window_hint(glfw.ALPHA_BITS, self._config.alpha)
+        Canvas.GLFW.window_hint(glfw.DEPTH_BITS, self._config.depth)
+        Canvas.GLFW.window_hint(glfw.STENCIL_BITS, self._config.stencil)
+        Canvas.GLFW.window_hint(glfw.SAMPLES, self._config.samples)
+        Canvas.GLFW.window_hint(glfw.STEREO, self._config.stereo)
+        Canvas.GLFW.window_hint(glfw.SRGB_CAPABLE, self._config.srgb)
+        Canvas.GLFW.window_hint(glfw.DOUBLEBUFFER, self._config.double_buffer)
+
+
+class VerboseCanvas(Canvas):
+    def on_start(self, ctx: gl.GL_ANY):
+        print("on_start({})".format(ctx))
+
+    def on_update(self, ctx: gl.GL_ANY):
+        print("on_update({})".format(ctx))
+
+    def on_draw(self, ctx: gl.GL_ANY):
+        print("on_draw({})".format(ctx))
+
+    def on_move(self, x: int, y: int):
+        print("on_move(x: {}, y: {})".format(x, y))
+
+    def on_resize(self, width: int, height: int):
+        print("on_resize(width: {}, height: {})".format(width, height))
+
+    def on_framebuffer_resize(self, width: int, height: int):
+        print("on_framebuffer_resize(width: {}, height: {})".format(width, height))
+
+    def on_close(self):
+        print("on_close()")
+
+    def on_refresh(self):
+        print("on_refresh()")
+
+    def on_focus(self, value: bool):
+        print("on_focus(value: {})".format(value))
+
+    def on_iconify(self, value: bool):
+        print("on_iconify(value: {})".format(value))
+
+    def on_mouse_button(self, button: Button, action: Action, modifiers: Modifiers):
+        print("on_mouse_button(button: {}, action: {}, modifiers: {})".format(button, action, modifiers))
+
+    def on_mouse_move(self, x: float, y: float):
+        print("on_mouse_move(x: {}, y: {})".format(x, y))
+
+    def on_mouse_enter(self, value: bool):
+        print("on_mouse_enter(value: {})".format(value))
+
+    def on_scroll(self, x: float, y: float):
+        print("on_scroll(x: {}, y: {})".format(x, y))
+
+    def on_key(self, key: Key, action: Action, modifiers: Modifiers):
+        print("on_key(key: {}, action: {}, modifiers: {})".format(key, action, modifiers))
+
+    def on_char(self, char: str):
+        print("on_char(char: {})".format(char))
+
+    def on_char_mods(self, char: str, modifiers: Modifiers):
+        print("on_char_mods(char: {}, modifiers: {})".format(char, modifiers))
+
+    def on_drop(self, paths: List[str]):
+        print("on_drop(paths: {})".format(paths))
+
+    def on_joystick(self, joy: int, event: ConnectionEvent):
+        print("on_joystick(joy: {}, event: {})".format(joy, event))
+
+    def on_monitor(self, monitor: glfw.Monitor, event: ConnectionEvent):
+        print("on_monitor(monitor: {}, event: {})".format(monitor, event))
