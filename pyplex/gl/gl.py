@@ -2,6 +2,7 @@ from pyplex.glfw import GLFW
 from ctypes import *
 from typing import Union
 
+
 class GL:
 
     MAJOR = None
@@ -48,9 +49,9 @@ class GL20(GL):
         self._load(self.blend_func_separate, 'glBlendFuncSeparate',
                    None, c_uint, c_uint, c_uint, c_uint)
         self._load(self.buffer_data, 'glBufferData',
-                   None, c_uint, POINTER(c_uint32), c_void_p, c_uint)
+                   None, c_uint, c_uint32, c_void_p, c_uint)
         self._load(self.buffer_sub_data, 'glBufferSubData',
-                   None, c_uint, POINTER(c_int), POINTER(c_uint32), c_void_p)
+                   None, c_uint, c_int, c_uint32, c_void_p)
         self._load(self.clear, 'glClear',
                    None, c_uint32)
         self._load(self.clear_color, 'glClearColor',
@@ -138,7 +139,7 @@ class GL20(GL):
         self._load(self.get_buffer_pointerv, 'glGetBufferPointerv',
                    None, c_uint, c_uint, POINTER(c_void_p))
         self._load(self.get_buffer_sub_data, 'glGetBufferSubData',
-                   None, c_uint, POINTER(c_int), POINTER(c_uint32), c_void_p)
+                   None, c_uint, c_int, c_uint32, c_void_p)
         self._load(self.get_compressed_tex_image, 'glGetCompressedTexImage',
                    None, c_uint, c_int, c_void_p)
         self._load(self.get_error, 'glGetError',
@@ -701,7 +702,7 @@ class GL20(GL):
         """
         pass
 
-    def buffer_data(self, target: int, size: POINTER(c_uint32), data: c_void_p, usage: int):
+    def buffer_data(self, target: int, size: int, data: c_void_p, usage: int):
         """
         Creates and initializes a buffer object's data store
 
@@ -719,7 +720,7 @@ class GL20(GL):
             GL_QUERY_BUFFER Query result buffer GL_SHADER_STORAGE_BUFFER Read-write storage for shaders
             GL_TEXTURE_BUFFER Texture data buffer GL_TRANSFORM_FEEDBACK_BUFFER Transform feedback buffer
             GL_UNIFORM_BUFFER Uniform block storage
-        size: POINTER(c_uint32)
+        size: int
             Specifies the size in bytes of the buffer object's new data store.
         data: c_void_p
             Specifies a pointer to data that will be copied into the data store for initialization, or NULL if
@@ -750,7 +751,7 @@ class GL20(GL):
         """
         pass
 
-    def buffer_sub_data(self, target: int, offset: POINTER(c_int), size: POINTER(c_uint32), data: c_void_p):
+    def buffer_sub_data(self, target: int, offset: int, size: int, data: c_void_p):
         """
         Updates a subset of a buffer object's data store
 
@@ -768,10 +769,10 @@ class GL20(GL):
             GL_QUERY_BUFFER Query result buffer GL_SHADER_STORAGE_BUFFER Read-write storage for shaders
             GL_TEXTURE_BUFFER Texture data buffer GL_TRANSFORM_FEEDBACK_BUFFER Transform feedback buffer
             GL_UNIFORM_BUFFER Uniform block storage
-        offset: POINTER(c_int)
+        offset: int
             Specifies the offset into the buffer object's data store where data replacement will begin,
             measured in bytes.
-        size: POINTER(c_uint32)
+        size: int
             Specifies the size in bytes of the data store region being replaced.
         data: c_void_p
             Specifies a pointer to the new data that will be copied into the data store.
@@ -1863,7 +1864,7 @@ class GL20(GL):
         """
         pass
 
-    def get_buffer_sub_data(self, target: int, offset: POINTER(c_int), size: POINTER(c_uint32), data: c_void_p):
+    def get_buffer_sub_data(self, target: int, offset: int, size: int, data: c_void_p):
         """
         Returns a subset of a buffer object's data store
 
@@ -1881,10 +1882,10 @@ class GL20(GL):
             GL_QUERY_BUFFER Query result buffer GL_SHADER_STORAGE_BUFFER Read-write storage for shaders
             GL_TEXTURE_BUFFER Texture data buffer GL_TRANSFORM_FEEDBACK_BUFFER Transform feedback buffer
             GL_UNIFORM_BUFFER Uniform block storage
-        offset: POINTER(c_int)
+        offset: int
             Specifies the offset into the buffer object's data store from which data will be returned, measured
             in bytes.
-        size: POINTER(c_uint32)
+        size: int
             Specifies the size in bytes of the data store region being returned.
         data: c_void_p
             Specifies a pointer to the location where buffer object data is returned.
@@ -6075,7 +6076,7 @@ class GL30(GL21):
         self._load(self.bind_buffer_base, 'glBindBufferBase',
                    None, c_uint, c_uint, c_uint)
         self._load(self.bind_buffer_range, 'glBindBufferRange',
-                   None, c_uint, c_uint, c_uint, POINTER(c_int), POINTER(c_uint32))
+                   None, c_uint, c_uint, c_uint, c_int, c_uint32)
         self._load(self.bind_frag_data_location, 'glBindFragDataLocation',
                    None, c_uint, c_uint, c_char_p)
         self._load(self.bind_framebuffer, 'glBindFramebuffer',
@@ -6111,7 +6112,7 @@ class GL30(GL21):
         self._load(self.disablei, 'glDisablei',
                    None, c_uint, c_uint)
         self._load(self.flush_mapped_buffer_range, 'glFlushMappedBufferRange',
-                   None, c_uint, POINTER(c_int), POINTER(c_uint32))
+                   None, c_uint, c_int, c_uint32)
         self._load(self.framebuffer_renderbuffer, 'glFramebufferRenderbuffer',
                    None, c_uint, c_uint, c_uint, c_uint)
         self._load(self.framebuffer_texture1_d, 'glFramebufferTexture1D',
@@ -6163,7 +6164,7 @@ class GL30(GL21):
         self._load(self.is_vertex_array, 'glIsVertexArray',
                    c_bool, c_uint)
         self._load(self.map_buffer_range, 'glMapBufferRange',
-                   c_void_p, c_uint, POINTER(c_int), POINTER(c_uint32), c_uint32)
+                   c_void_p, c_uint, c_int, c_uint32, c_uint32)
         self._load(self.renderbuffer_storage, 'glRenderbufferStorage',
                    None, c_uint, c_uint, c_uint32, c_uint32)
         self._load(self.renderbuffer_storage_multisample, 'glRenderbufferStorageMultisample',
@@ -6377,7 +6378,7 @@ class GL30(GL21):
         """
         pass
 
-    def bind_buffer_range(self, target: int, index: int, buffer: int, offset: POINTER(c_int), size: POINTER(c_uint32)):
+    def bind_buffer_range(self, target: int, index: int, buffer: int, offset: int, size: int):
         """
         Bind a range within a buffer object to an indexed buffer target
 
@@ -6392,9 +6393,9 @@ class GL30(GL21):
             Specify the index of the binding point within the array specified by target.
         buffer: int
             The name of a buffer object to bind to the specified binding point.
-        offset: POINTER(c_int)
+        offset: int
             The starting offset in basic machine units into the buffer object buffer.
-        size: POINTER(c_uint32)
+        size: int
             The amount of data in machine units that can be read from the buffer object while used as an
             indexed target.
 
@@ -6890,7 +6891,7 @@ class GL30(GL21):
         """
         pass
 
-    def flush_mapped_buffer_range(self, target: int, offset: POINTER(c_int), length: POINTER(c_uint32)):
+    def flush_mapped_buffer_range(self, target: int, offset: int, length: int):
         """
         Indicate modifications to a range of a mapped buffer
 
@@ -6908,9 +6909,9 @@ class GL30(GL21):
             target GL_PIXEL_UNPACK_BUFFER Texture data source GL_QUERY_BUFFER Query result buffer
             GL_SHADER_STORAGE_BUFFER Read-write storage for shaders GL_TEXTURE_BUFFER Texture data buffer
             GL_TRANSFORM_FEEDBACK_BUFFER Transform feedback buffer GL_UNIFORM_BUFFER Uniform block storage
-        offset: POINTER(c_int)
+        offset: int
             Specifies the start of the buffer subrange, in basic machine units.
-        length: POINTER(c_uint32)
+        length: int
             Specifies the length of the buffer subrange, in basic machine units.
 
         Raises
@@ -7709,7 +7710,7 @@ class GL30(GL21):
         """
         pass
 
-    def map_buffer_range(self, target: int, offset: POINTER(c_int), length: POINTER(c_uint32), access: int) -> c_void_p:
+    def map_buffer_range(self, target: int, offset: int, length: int, access: int) -> c_void_p:
         """
         Map all or part of a buffer object's data store into the client's address space
 
@@ -7727,9 +7728,9 @@ class GL30(GL21):
             GL_QUERY_BUFFER Query result buffer GL_SHADER_STORAGE_BUFFER Read-write storage for shaders
             GL_TEXTURE_BUFFER Texture data buffer GL_TRANSFORM_FEEDBACK_BUFFER Transform feedback buffer
             GL_UNIFORM_BUFFER Uniform block storage
-        offset: POINTER(c_int)
+        offset: int
             Specifies the starting offset within the buffer of the range to be mapped.
-        length: POINTER(c_uint32)
+        length: int
             Specifies the length of the range to be mapped.
         access: int
             Specifies a combination of access flags indicating the desired access to the mapped range.
@@ -8915,7 +8916,7 @@ class GL31(GL30):
         super().__init__(glfw)
 
         self._load(self.copy_buffer_sub_data, 'glCopyBufferSubData',
-                   None, c_uint, c_uint, POINTER(c_int), POINTER(c_int), POINTER(c_uint32))
+                   None, c_uint, c_uint, c_int, c_int, c_uint32)
         self._load(self.draw_arrays_instanced, 'glDrawArraysInstanced',
                    None, c_uint, c_int, c_uint32, c_uint32)
         self._load(self.draw_elements_instanced, 'glDrawElementsInstanced',
@@ -8939,7 +8940,7 @@ class GL31(GL30):
         self._load(self.uniform_block_binding, 'glUniformBlockBinding',
                    None, c_uint, c_uint, c_uint)
 
-    def copy_buffer_sub_data(self, read_target: int, write_target: int, read_offset: POINTER(c_int), write_offset: POINTER(c_int), size: POINTER(c_uint32)):
+    def copy_buffer_sub_data(self, read_target: int, write_target: int, read_offset: int, write_offset: int, size: int):
         """
         Copy all or part of the data store of a buffer object to the data store of another buffer object
 
@@ -8947,7 +8948,7 @@ class GL31(GL30):
 
         Parameters
         ----------
-        size: POINTER(c_uint32)
+        size: int
             Specifies the size, in basic machine units, of the data to be copied from the source buffer object
             to the destination buffer object.
 
@@ -14557,11 +14558,11 @@ class GL43(GL42):
         super().__init__(glfw)
 
         self._load(self.bind_vertex_buffer, 'glBindVertexBuffer',
-                   None, c_uint, c_uint, POINTER(c_int), POINTER(c_int))
+                   None, c_uint, c_uint, c_int, c_int)
         self._load(self.clear_buffer_data, 'glClearBufferData',
                    None, c_uint, c_uint, c_uint, c_uint, c_void_p)
         self._load(self.clear_buffer_sub_data, 'glClearBufferSubData',
-                   None, c_uint, c_uint, POINTER(c_int), POINTER(c_uint32), c_uint, c_uint, c_void_p)
+                   None, c_uint, c_uint, c_int, c_uint32, c_uint, c_uint, c_void_p)
         self._load(self.copy_image_sub_data, 'glCopyImageSubData',
                    None, c_uint, c_uint, c_int, c_int, c_int, c_int, c_uint, c_uint, c_int, c_int, c_int, c_int, c_uint32, c_uint32, c_uint32)
         self._load(self.debug_message_callback, 'glDebugMessageCallback',
@@ -14573,7 +14574,7 @@ class GL43(GL42):
         self._load(self.dispatch_compute, 'glDispatchCompute',
                    None, c_uint, c_uint, c_uint)
         self._load(self.dispatch_compute_indirect, 'glDispatchComputeIndirect',
-                   None, POINTER(c_int))
+                   None, c_int)
         self._load(self.framebuffer_parameteri, 'glFramebufferParameteri',
                    None, c_uint, c_uint, c_int)
         self._load(self.get_debug_message_log, 'glGetDebugMessageLog',
@@ -14603,7 +14604,7 @@ class GL43(GL42):
         self._load(self.invalidate_buffer_data, 'glInvalidateBufferData',
                    None, c_uint)
         self._load(self.invalidate_buffer_sub_data, 'glInvalidateBufferSubData',
-                   None, c_uint, POINTER(c_int), POINTER(c_uint32))
+                   None, c_uint, c_int, c_uint32)
         self._load(self.invalidate_framebuffer, 'glInvalidateFramebuffer',
                    None, c_uint, c_uint32, POINTER(c_uint32))
         self._load(self.invalidate_sub_framebuffer, 'glInvalidateSubFramebuffer',
@@ -14627,7 +14628,7 @@ class GL43(GL42):
         self._load(self.shader_storage_block_binding, 'glShaderStorageBlockBinding',
                    None, c_uint, c_uint, c_uint)
         self._load(self.tex_buffer_range, 'glTexBufferRange',
-                   None, c_uint, c_uint, c_uint, POINTER(c_int), POINTER(c_uint32))
+                   None, c_uint, c_uint, c_uint, c_int, c_uint32)
         self._load(self.texture_view, 'glTextureView',
                    None, c_uint, c_uint, c_uint, c_uint, c_uint, c_uint, c_uint, c_uint)
         self._load(self.vertex_attrib_binding, 'glVertexAttribBinding',
@@ -14641,7 +14642,7 @@ class GL43(GL42):
         self._load(self.vertex_binding_divisor, 'glVertexBindingDivisor',
                    None, c_uint, c_uint)
 
-    def bind_vertex_buffer(self, bindingindex: int, buffer: int, offset: POINTER(c_int), stride: POINTER(c_int)):
+    def bind_vertex_buffer(self, bindingindex: int, buffer: int, offset: int, stride: int):
         """
         Bind a buffer to a vertex buffer bind point
 
@@ -14653,9 +14654,9 @@ class GL43(GL42):
             The index of the vertex buffer binding point to which to bind the buffer.
         buffer: int
             The name of a buffer to bind to the vertex buffer binding point.
-        offset: POINTER(c_int)
+        offset: int
             The offset of the first element of the buffer.
-        stride: POINTER(c_int)
+        stride: int
             The distance between elements within the buffer.
 
         Raises
@@ -14723,7 +14724,7 @@ class GL43(GL42):
         """
         pass
 
-    def clear_buffer_sub_data(self, target: int, internalformat: int, offset: POINTER(c_int), size: POINTER(c_uint32), format: int, type: int, data: c_void_p):
+    def clear_buffer_sub_data(self, target: int, internalformat: int, offset: int, size: int, format: int, type: int, data: c_void_p):
         """
         Fill all or part of buffer object's data store with a fixed value
 
@@ -14743,9 +14744,9 @@ class GL43(GL42):
             GL_TRANSFORM_FEEDBACK_BUFFER Transform feedback buffer GL_UNIFORM_BUFFER Uniform block storage
         internalformat: int
             The internal format with which the data will be stored in the buffer object.
-        offset: POINTER(c_int)
+        offset: int
             The offset in basic machine units into the buffer object's data store at which to start filling.
-        size: POINTER(c_uint32)
+        size: int
             The size in basic machine units of the range of the data store to fill.
         format: int
             The format of the data in memory addressed by data.
@@ -14927,7 +14928,7 @@ class GL43(GL42):
         """
         pass
 
-    def dispatch_compute_indirect(self, indirect: POINTER(c_int)):
+    def dispatch_compute_indirect(self, indirect: int):
         """
         Launch one or more compute work groups using parameters stored in a buffer
 
@@ -14935,7 +14936,7 @@ class GL43(GL42):
 
         Parameters
         ----------
-        indirect: POINTER(c_int)
+        indirect: int
             The offset into the buffer object currently bound to the GL_DISPATCH_INDIRECT_BUFFER buffer target
             at which the dispatch parameters are stored.
 
@@ -15365,7 +15366,7 @@ class GL43(GL42):
         """
         pass
 
-    def invalidate_buffer_sub_data(self, buffer: int, offset: POINTER(c_int), length: POINTER(c_uint32)):
+    def invalidate_buffer_sub_data(self, buffer: int, offset: int, length: int):
         """
         Invalidate a region of a buffer object's data store
 
@@ -15375,9 +15376,9 @@ class GL43(GL42):
         ----------
         buffer: int
             The name of a buffer object, a subrange of whose data store to invalidate.
-        offset: POINTER(c_int)
+        offset: int
             The offset within the buffer's data store of the start of the range to be invalidated.
-        length: POINTER(c_uint32)
+        length: int
             The length of the range within the buffer's data store to be invalidated.
 
         Raises
@@ -15743,7 +15744,7 @@ class GL43(GL42):
         """
         pass
 
-    def tex_buffer_range(self, target: int, internal_format: int, buffer: int, offset: POINTER(c_int), size: POINTER(c_uint32)):
+    def tex_buffer_range(self, target: int, internal_format: int, buffer: int, offset: int, size: int):
         """
         Attach a range of a buffer object's data store to a buffer texture object
 
@@ -15756,9 +15757,9 @@ class GL43(GL42):
             GL_TEXTURE_BUFFER.
         buffer: int
             Specifies the name of the buffer object whose storage to attach to the active buffer texture.
-        offset: POINTER(c_int)
+        offset: int
             Specifies the offset of the start of the range of the buffer's data store to attach.
-        size: POINTER(c_uint32)
+        size: int
             Specifies the size of the range of the buffer's data store to attach.
 
         Raises
@@ -16038,7 +16039,7 @@ class GL44(GL43):
         self._load(self.bind_buffers_base, 'glBindBuffersBase',
                    None, c_uint, c_uint, c_uint32, POINTER(c_uint))
         self._load(self.bind_buffers_range, 'glBindBuffersRange',
-                   None, c_uint, c_uint, c_uint32, POINTER(c_uint), POINTER(POINTER(c_int)), POINTER(POINTER(c_int)))
+                   None, c_uint, c_uint, c_uint32, POINTER(c_uint), POINTER(c_int), POINTER(c_int))
         self._load(self.bind_image_textures, 'glBindImageTextures',
                    None, c_uint, c_uint32, POINTER(c_uint))
         self._load(self.bind_samplers, 'glBindSamplers',
@@ -16046,9 +16047,9 @@ class GL44(GL43):
         self._load(self.bind_textures, 'glBindTextures',
                    None, c_uint, c_uint32, POINTER(c_uint))
         self._load(self.bind_vertex_buffers, 'glBindVertexBuffers',
-                   None, c_uint, c_uint32, POINTER(c_uint), POINTER(POINTER(c_int)), POINTER(c_uint32))
+                   None, c_uint, c_uint32, POINTER(c_uint), POINTER(c_int), POINTER(c_uint32))
         self._load(self.buffer_storage, 'glBufferStorage',
-                   None, c_uint, POINTER(c_uint32), c_void_p, c_uint32)
+                   None, c_uint, c_uint32, c_void_p, c_uint32)
         self._load(self.clear_tex_image, 'glClearTexImage',
                    None, c_uint, c_int, c_uint, c_uint, c_void_p)
         self._load(self.clear_tex_sub_image, 'glClearTexSubImage',
@@ -16086,7 +16087,7 @@ class GL44(GL43):
         """
         pass
 
-    def bind_buffers_range(self, target: int, first: int, count: int, buffers: POINTER(c_uint), offsets: POINTER(POINTER(c_int)), sizes: POINTER(POINTER(c_int))):
+    def bind_buffers_range(self, target: int, first: int, count: int, buffers: POINTER(c_uint), offsets: POINTER(c_int), sizes: POINTER(c_int)):
         """
         Bind ranges of one or more buffer objects to a sequence of indexed buffer targets
 
@@ -16102,10 +16103,10 @@ class GL44(GL43):
         buffers: POINTER(c_uint)
             A pointer to an array of names of buffer objects to bind to the targets on the specified binding
             point, or NULL.
-        offsets: POINTER(POINTER(c_int))
+        offsets: POINTER(c_int)
             A pointer to an array of offsets into the corresponding buffer in buffers to bind, or NULL if
             buffers is NULL.
-        sizes: POINTER(POINTER(c_int))
+        sizes: POINTER(c_int)
             A pointer to an array of sizes of the corresponding buffer in buffers to bind, or NULL if buffers
             is NULL.
 
@@ -16216,7 +16217,7 @@ class GL44(GL43):
         """
         pass
 
-    def bind_vertex_buffers(self, first: int, count: int, buffers: POINTER(c_uint), offsets: POINTER(POINTER(c_int)), strides: POINTER(c_uint32)):
+    def bind_vertex_buffers(self, first: int, count: int, buffers: POINTER(c_uint), offsets: POINTER(c_int), strides: POINTER(c_uint32)):
         """
         Attach multiple buffer objects to a vertex array object
 
@@ -16230,7 +16231,7 @@ class GL44(GL43):
             Specifies the number of buffers to bind.
         buffers: POINTER(c_uint)
             Specifies the address of an array of strides to associate with the binding points.
-        offsets: POINTER(POINTER(c_int))
+        offsets: POINTER(c_int)
             Specifies the address of an array of offsets to associate with the binding points.
 
         Raises
@@ -16251,7 +16252,7 @@ class GL44(GL43):
         """
         pass
 
-    def buffer_storage(self, target: int, size: POINTER(c_uint32), data: c_void_p, flags: int):
+    def buffer_storage(self, target: int, size: int, data: c_void_p, flags: int):
         """
         Creates and initializes a buffer object's immutable data store
 
@@ -16269,7 +16270,7 @@ class GL44(GL43):
             GL_QUERY_BUFFER Query result buffer GL_SHADER_STORAGE_BUFFER Read-write storage for shaders
             GL_TEXTURE_BUFFER Texture data buffer GL_TRANSFORM_FEEDBACK_BUFFER Transform feedback buffer
             GL_UNIFORM_BUFFER Uniform block storage
-        size: POINTER(c_uint32)
+        size: int
             Specifies the size in bytes of the buffer object's new data store.
         data: c_void_p
             Specifies a pointer to data that will be copied into the data store for initialization, or NULL if
@@ -16418,9 +16419,9 @@ class GL45(GL44):
         self._load(self.bind_texture_unit, 'glBindTextureUnit',
                    None, c_uint, c_uint)
         self._load(self.vertex_array_vertex_buffer, 'glVertexArrayVertexBuffer',
-                   None, c_uint, c_uint, c_uint, POINTER(c_int), c_uint32)
+                   None, c_uint, c_uint, c_uint, c_int, c_uint32)
         self._load(self.vertex_array_vertex_buffers, 'glVertexArrayVertexBuffers',
-                   None, c_uint, c_uint, c_uint32, POINTER(c_uint), POINTER(POINTER(c_int)), POINTER(c_uint32))
+                   None, c_uint, c_uint, c_uint32, POINTER(c_uint), POINTER(c_int), POINTER(c_uint32))
         self._load(self.blit_named_framebuffer, 'glBlitNamedFramebuffer',
                    None, c_uint, c_uint, c_int, c_int, c_int, c_int, c_int, c_int, c_int, c_int, c_uint32, c_uint)
         self._load(self.named_buffer_data, 'glNamedBufferData',
@@ -16428,7 +16429,7 @@ class GL45(GL44):
         self._load(self.named_buffer_storage, 'glNamedBufferStorage',
                    None, c_uint, c_uint32, c_void_p, c_uint32)
         self._load(self.named_buffer_sub_data, 'glNamedBufferSubData',
-                   None, c_uint, POINTER(c_int), c_uint32, c_void_p)
+                   None, c_uint, c_int, c_uint32, c_void_p)
         self._load(self.check_named_framebuffer_status, 'glCheckNamedFramebufferStatus',
                    c_uint, c_uint, c_uint)
         self._load(self.clear_named_framebufferiv, 'glClearNamedFramebufferiv',
@@ -16442,11 +16443,11 @@ class GL45(GL44):
         self._load(self.clear_named_buffer_data, 'glClearNamedBufferData',
                    None, c_uint, c_uint, c_uint, c_uint, c_void_p)
         self._load(self.clear_named_buffer_sub_data, 'glClearNamedBufferSubData',
-                   None, c_uint, c_uint, POINTER(c_int), c_uint32, c_uint, c_uint, c_void_p)
+                   None, c_uint, c_uint, c_int, c_uint32, c_uint, c_uint, c_void_p)
         self._load(self.clip_control, 'glClipControl',
                    None, c_uint, c_uint)
         self._load(self.copy_named_buffer_sub_data, 'glCopyNamedBufferSubData',
-                   None, c_uint, c_uint, POINTER(c_int), POINTER(c_int), c_uint32)
+                   None, c_uint, c_uint, c_int, c_int, c_uint32)
         self._load(self.create_buffers, 'glCreateBuffers',
                    None, c_uint32, POINTER(c_uint))
         self._load(self.create_framebuffers, 'glCreateFramebuffers',
@@ -16474,7 +16475,7 @@ class GL45(GL44):
         self._load(self.disable_vertex_array_attrib, 'glDisableVertexArrayAttrib',
                    None, c_uint, c_uint)
         self._load(self.flush_mapped_named_buffer_range, 'glFlushMappedNamedBufferRange',
-                   None, c_uint, POINTER(c_int), c_uint32)
+                   None, c_uint, c_int, c_uint32)
         self._load(self.named_framebuffer_parameteri, 'glNamedFramebufferParameteri',
                    None, c_uint, c_uint, c_int)
         self._load(self.named_framebuffer_renderbuffer, 'glNamedFramebufferRenderbuffer',
@@ -16492,7 +16493,7 @@ class GL45(GL44):
         self._load(self.get_named_buffer_pointerv, 'glGetNamedBufferPointerv',
                    None, c_uint, c_uint, POINTER(c_void_p))
         self._load(self.get_named_buffer_sub_data, 'glGetNamedBufferSubData',
-                   None, c_uint, POINTER(c_int), c_uint32, c_void_p)
+                   None, c_uint, c_int, c_uint32, c_void_p)
         self._load(self.getn_compressed_tex_image, 'glGetnCompressedTexImage',
                    None, c_uint, c_int, c_uint32, c_void_p)
         self._load(self.get_compressed_texture_image, 'glGetCompressedTextureImage',
@@ -16552,7 +16553,7 @@ class GL45(GL44):
         self._load(self.map_named_buffer, 'glMapNamedBuffer',
                    c_void_p, c_uint, c_uint)
         self._load(self.map_named_buffer_range, 'glMapNamedBufferRange',
-                   c_void_p, c_uint, POINTER(c_int), c_uint32, c_uint32)
+                   c_void_p, c_uint, c_int, c_uint32, c_uint32)
         self._load(self.memory_barrier_by_region, 'glMemoryBarrierByRegion',
                    None, c_uint32)
         self._load(self.named_framebuffer_read_buffer, 'glNamedFramebufferReadBuffer',
@@ -16566,7 +16567,7 @@ class GL45(GL44):
         self._load(self.texture_buffer, 'glTextureBuffer',
                    None, c_uint, c_uint, c_uint)
         self._load(self.texture_buffer_range, 'glTextureBufferRange',
-                   None, c_uint, c_uint, c_uint, POINTER(c_int), c_uint32)
+                   None, c_uint, c_uint, c_uint, c_int, c_uint32)
         self._load(self.texture_parameterf, 'glTextureParameterf',
                    None, c_uint, c_uint, c_float)
         self._load(self.texture_parameteri, 'glTextureParameteri',
@@ -16584,7 +16585,7 @@ class GL45(GL44):
         self._load(self.transform_feedback_buffer_base, 'glTransformFeedbackBufferBase',
                    None, c_uint, c_uint, c_uint)
         self._load(self.transform_feedback_buffer_range, 'glTransformFeedbackBufferRange',
-                   None, c_uint, c_uint, c_uint, POINTER(c_int), c_uint32)
+                   None, c_uint, c_uint, c_uint, c_int, c_uint32)
         self._load(self.unmap_named_buffer, 'glUnmapNamedBuffer',
                    c_bool, c_uint)
         self._load(self.vertex_array_element_buffer, 'glVertexArrayElementBuffer',
@@ -16624,7 +16625,7 @@ class GL45(GL44):
         """
         pass
 
-    def vertex_array_vertex_buffer(self, vaobj: int, bindingindex: int, buffer: int, offset: POINTER(c_int), stride: int):
+    def vertex_array_vertex_buffer(self, vaobj: int, bindingindex: int, buffer: int, offset: int, stride: int):
         """
         Bind a buffer to a vertex buffer bind point
 
@@ -16638,7 +16639,7 @@ class GL45(GL44):
             The index of the vertex buffer binding point to which to bind the buffer.
         buffer: int
             The name of a buffer to bind to the vertex buffer binding point.
-        offset: POINTER(c_int)
+        offset: int
             The offset of the first element of the buffer.
         stride: int
             The distance between elements within the buffer.
@@ -16661,7 +16662,7 @@ class GL45(GL44):
         """
         pass
 
-    def vertex_array_vertex_buffers(self, vaobj: int, first: int, count: int, buffers: POINTER(c_uint), offsets: POINTER(POINTER(c_int)), strides: POINTER(c_uint32)):
+    def vertex_array_vertex_buffers(self, vaobj: int, first: int, count: int, buffers: POINTER(c_uint), offsets: POINTER(c_int), strides: POINTER(c_uint32)):
         """
         Attach multiple buffer objects to a vertex array object
 
@@ -16677,7 +16678,7 @@ class GL45(GL44):
             Specifies the number of buffers to bind.
         buffers: POINTER(c_uint)
             Specifies the address of an array of strides to associate with the binding points.
-        offsets: POINTER(POINTER(c_int))
+        offsets: POINTER(c_int)
             Specifies the address of an array of offsets to associate with the binding points.
 
         Raises
@@ -16820,7 +16821,7 @@ class GL45(GL44):
         """
         pass
 
-    def named_buffer_sub_data(self, buffer: int, offset: POINTER(c_int), size: int, data: c_void_p):
+    def named_buffer_sub_data(self, buffer: int, offset: int, size: int, data: c_void_p):
         """
         Updates a subset of a buffer object's data store
 
@@ -16830,7 +16831,7 @@ class GL45(GL44):
         ----------
         buffer: int
             Specifies the name of the buffer object for glNamedBufferSubData.
-        offset: POINTER(c_int)
+        offset: int
             Specifies the offset into the buffer object's data store where data replacement will begin,
             measured in bytes.
         size: int
@@ -17088,7 +17089,7 @@ class GL45(GL44):
         """
         pass
 
-    def clear_named_buffer_sub_data(self, buffer: int, internalformat: int, offset: POINTER(c_int), size: int, format: int, type: int, data: c_void_p):
+    def clear_named_buffer_sub_data(self, buffer: int, internalformat: int, offset: int, size: int, format: int, type: int, data: c_void_p):
         """
         Fill all or part of buffer object's data store with a fixed value
 
@@ -17100,7 +17101,7 @@ class GL45(GL44):
             Specifies the name of the buffer object for glClearNamedBufferSubData.
         internalformat: int
             The internal format with which the data will be stored in the buffer object.
-        offset: POINTER(c_int)
+        offset: int
             The offset in basic machine units into the buffer object's data store at which to start filling.
         size: int
             The size in basic machine units of the range of the data store to fill.
@@ -17161,7 +17162,7 @@ class GL45(GL44):
         """
         pass
 
-    def copy_named_buffer_sub_data(self, read_buffer: int, write_buffer: int, read_offset: POINTER(c_int), write_offset: POINTER(c_int), size: int):
+    def copy_named_buffer_sub_data(self, read_buffer: int, write_buffer: int, read_offset: int, write_offset: int, size: int):
         """
         Copy all or part of the data store of a buffer object to the data store of another buffer object
 
@@ -17540,7 +17541,7 @@ class GL45(GL44):
         """
         pass
 
-    def flush_mapped_named_buffer_range(self, buffer: int, offset: POINTER(c_int), length: int):
+    def flush_mapped_named_buffer_range(self, buffer: int, offset: int, length: int):
         """
         Indicate modifications to a range of a mapped buffer
 
@@ -17550,7 +17551,7 @@ class GL45(GL44):
         ----------
         buffer: int
             Specifies the name of the buffer object for glFlushMappedNamedBufferRange.
-        offset: POINTER(c_int)
+        offset: int
             Specifies the start of the buffer subrange, in basic machine units.
         length: int
             Specifies the length of the buffer subrange, in basic machine units.
@@ -17842,7 +17843,7 @@ class GL45(GL44):
         """
         pass
 
-    def get_named_buffer_sub_data(self, buffer: int, offset: POINTER(c_int), size: int, data: c_void_p):
+    def get_named_buffer_sub_data(self, buffer: int, offset: int, size: int, data: c_void_p):
         """
         Returns a subset of a buffer object's data store
 
@@ -17852,7 +17853,7 @@ class GL45(GL44):
         ----------
         buffer: int
             Specifies the name of the buffer object for glGetNamedBufferSubData.
-        offset: POINTER(c_int)
+        offset: int
             Specifies the offset into the buffer object's data store from which data will be returned, measured
             in bytes.
         size: int
@@ -18978,7 +18979,7 @@ class GL45(GL44):
         """
         pass
 
-    def map_named_buffer_range(self, buffer: int, offset: POINTER(c_int), length: int, access: int) -> c_void_p:
+    def map_named_buffer_range(self, buffer: int, offset: int, length: int, access: int) -> c_void_p:
         """
         Map all or part of a buffer object's data store into the client's address space
 
@@ -18988,7 +18989,7 @@ class GL45(GL44):
         ----------
         buffer: int
             Specifies the name of the buffer object for glMapNamedBufferRange.
-        offset: POINTER(c_int)
+        offset: int
             Specifies the starting offset within the buffer of the range to be mapped.
         length: int
             Specifies the length of the range to be mapped.
@@ -19252,7 +19253,7 @@ class GL45(GL44):
         """
         pass
 
-    def texture_buffer_range(self, texture: int, internalformat: int, buffer: int, offset: POINTER(c_int), size: int):
+    def texture_buffer_range(self, texture: int, internalformat: int, buffer: int, offset: int, size: int):
         """
         Attach a range of a buffer object's data store to a buffer texture object
 
@@ -19264,7 +19265,7 @@ class GL45(GL44):
             Specifies the texture object name for glTextureBufferRange.
         buffer: int
             Specifies the name of the buffer object whose storage to attach to the active buffer texture.
-        offset: POINTER(c_int)
+        offset: int
             Specifies the offset of the start of the range of the buffer's data store to attach.
         size: int
             Specifies the size of the range of the buffer's data store to attach.
@@ -19647,7 +19648,7 @@ class GL45(GL44):
         """
         pass
 
-    def transform_feedback_buffer_range(self, xfb: int, index: int, buffer: int, offset: POINTER(c_int), size: int):
+    def transform_feedback_buffer_range(self, xfb: int, index: int, buffer: int, offset: int, size: int):
         """
         Bind a range within a buffer object to a transform feedback buffer object
 
@@ -19661,7 +19662,7 @@ class GL45(GL44):
             Index of the binding point within xfb.
         buffer: int
             Name of the buffer object to bind to the specified binding point.
-        offset: POINTER(c_int)
+        offset: int
             The starting offset in basic machine units into the buffer object.
         size: int
             The amount of data in basic machine units that can be read from or written to the buffer object

@@ -1,10 +1,15 @@
 from pyplex import *
 from ctypes import *
 import numpy as np
+from sys import stderr
 
 from threading import Thread
 from typing import List, Optional
 from enum import Enum
+
+
+class GLError(Exception):
+    pass
 
 
 class VideoMode:
@@ -484,6 +489,12 @@ class Canvas:
 
         self._set_callbacks()
 
+        gl_error_callback_type = CFUNCTYPE(None, c_uint, c_uint, c_uint, c_uint, c_uint, c_char_p, c_void_p)
+        gl_error_callback = gl_error_callback_type(self._gl_error_callback)
+
+        context.enable(0x92E0)  # Enable GL Debug Output
+        context.debug_message_callback(gl_error_callback, c_void_p(0))
+
         self._initialized = True
 
         self.on_start(context)
@@ -492,8 +503,8 @@ class Canvas:
 
         while not Canvas.GLFW.window_should_close(self._window):
 
-            self.on_update(context)
-            self.on_draw(context)
+            self.on_update()
+            self.on_draw()
 
             Canvas.GLFW.swap_buffers(self._window)
             self._event_function()
@@ -507,10 +518,10 @@ class Canvas:
     def on_start(self, ctx: gl.GL_ANY):
         pass
 
-    def on_update(self, ctx: gl.GL_ANY):
+    def on_update(self):
         pass
 
-    def on_draw(self, ctx: gl.GL_ANY):
+    def on_draw(self):
         pass
 
     def on_move(self, x: int, y: int):
@@ -688,16 +699,37 @@ class Canvas:
         Canvas.GLFW.window_hint(glfw.SRGB_CAPABLE, self._config.srgb)
         Canvas.GLFW.window_hint(glfw.DOUBLEBUFFER, self._config.double_buffer)
 
+    def _gl_error_callback(self, source: int, type: int, id: int, severity: int,
+                           length: int, message: bytes, user_param: c_void_p):
+
+        if severity == gl.DebugSeverity.HIGH:
+            raise GLError("{} {} ({})\n\t{}".format(
+                gl.DebugSource(source).name,
+                gl.DebugType(type).name,
+                id, message.decode()))
+        elif severity == gl.DebugSeverity.MEDIUM or severity == gl.DebugSeverity.LOW:
+            print("{} {} Warning ({})\n\t{}".format(
+                gl.DebugSource(source).name,
+                gl.DebugType(type).name,
+                id,
+                message.decode()), file=stderr)
+        else:
+            print("{} {} Notification ({})\n\t{}".format(
+                gl.DebugSource(source).name,
+                gl.DebugType(type).name,
+                id,
+                message.decode()))
+
 
 class VerboseCanvas(Canvas):
     def on_start(self, ctx: gl.GL_ANY):
         print("on_start({})".format(ctx))
 
-    def on_update(self, ctx: gl.GL_ANY):
-        print("on_update({})".format(ctx))
+    def on_update(self):
+        print("on_update()")
 
-    def on_draw(self, ctx: gl.GL_ANY):
-        print("on_draw({})".format(ctx))
+    def on_draw(self):
+        print("on_draw()")
 
     def on_move(self, x: int, y: int):
         print("on_move(x: {}, y: {})".format(x, y))
