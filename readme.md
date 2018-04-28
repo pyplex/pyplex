@@ -1,2 +1,2 @@
 # pyplex
-Minimalist 3D-Engine in Python | OpenGL | NumPy | GLFW
+WIP Minimalist 3D-Engine in Python | OpenGL | NumPy | GLFW
