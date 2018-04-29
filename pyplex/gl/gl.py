@@ -64,6 +64,28 @@ class GL20(GL):
                    None, c_bool, c_bool, c_bool, c_bool)
         self._load(self.compile_shader, 'glCompileShader',
                    None, c_uint)
+        self._load(self.compressed_tex_image_1d, 'glCompressedTexImage1D',
+                   None, c_uint, c_int, c_uint, c_uint32, c_int, c_uint32, c_void_p)
+        self._load(self.compressed_tex_image_2d, 'glCompressedTexImage2D',
+                   None, c_uint, c_int, c_uint, c_uint32, c_uint32, c_int, c_uint32, c_void_p)
+        self._load(self.compressed_tex_image_3d, 'glCompressedTexImage3D',
+                   None, c_uint, c_int, c_uint, c_uint32, c_uint32, c_uint32, c_int, c_uint32, c_void_p)
+        self._load(self.compressed_tex_sub_image_1d, 'glCompressedTexSubImage1D',
+                   None, c_uint, c_int, c_int, c_uint32, c_uint, c_uint32, c_void_p)
+        self._load(self.compressed_tex_sub_image_2d, 'glCompressedTexSubImage2D',
+                   None, c_uint, c_int, c_int, c_int, c_uint32, c_uint32, c_uint, c_uint32, c_void_p)
+        self._load(self.compressed_tex_sub_image_3d, 'glCompressedTexSubImage3D',
+                   None, c_uint, c_int, c_int, c_int, c_int, c_uint32, c_uint32, c_uint32, c_uint, c_uint32, c_void_p)
+        self._load(self.copy_tex_image_1d, 'glCopyTexImage1D',
+                   None, c_uint, c_int, c_uint, c_int, c_int, c_uint32, c_int)
+        self._load(self.copy_tex_image_2d, 'glCopyTexImage2D',
+                   None, c_uint, c_int, c_uint, c_int, c_int, c_uint32, c_uint32, c_int)
+        self._load(self.copy_tex_sub_image_1d, 'glCopyTexSubImage1D',
+                   None, c_uint, c_int, c_int, c_int, c_int, c_uint32)
+        self._load(self.copy_tex_sub_image_2d, 'glCopyTexSubImage2D',
+                   None, c_uint, c_int, c_int, c_int, c_int, c_int, c_uint32, c_uint32)
+        self._load(self.copy_tex_sub_image_3d, 'glCopyTexSubImage3D',
+                   None, c_uint, c_int, c_int, c_int, c_int, c_int, c_int, c_uint32, c_uint32)
         self._load(self.create_program, 'glCreateProgram',
                    c_uint, )
         self._load(self.create_shader, 'glCreateShader',
@@ -188,17 +210,17 @@ class GL20(GL):
                    None, c_uint, c_uint, POINTER(c_void_p))
         self._load(self.hint, 'glHint',
                    None, c_uint, c_uint)
-        self._load(self.is_buffer, 'glIsBuffer',
+        self._load(self.isbuffer, 'glIsBuffer',
                    c_bool, c_uint)
-        self._load(self.is_enabled, 'glIsEnabled',
+        self._load(self.isenabled, 'glIsEnabled',
                    c_bool, c_uint)
-        self._load(self.is_program, 'glIsProgram',
+        self._load(self.isprogram, 'glIsProgram',
                    c_bool, c_uint)
-        self._load(self.is_query, 'glIsQuery',
+        self._load(self.isquery, 'glIsQuery',
                    c_bool, c_uint)
-        self._load(self.is_shader, 'glIsShader',
+        self._load(self.isshader, 'glIsShader',
                    c_bool, c_uint)
-        self._load(self.is_texture, 'glIsTexture',
+        self._load(self.istexture, 'glIsTexture',
                    c_bool, c_uint)
         self._load(self.line_width, 'glLineWidth',
                    None, c_float)
@@ -250,8 +272,14 @@ class GL20(GL):
                    None, c_uint, c_uint)
         self._load(self.stencil_op, 'glStencilOp',
                    None, c_uint, c_uint, c_uint)
-        self._load(self.stencil_op_separate, 'glStencilOpSeparate',
+        self._load(self.stencil_opseparate, 'glStencilOpSeparate',
                    None, c_uint, c_uint, c_uint, c_uint)
+        self._load(self.tex_image_1d, 'glTexImage1D',
+                   None, c_uint, c_int, c_int, c_uint32, c_int, c_uint, c_uint, c_void_p)
+        self._load(self.tex_image_2d, 'glTexImage2D',
+                   None, c_uint, c_int, c_int, c_uint32, c_uint32, c_int, c_uint, c_uint, c_void_p)
+        self._load(self.tex_image_3d, 'glTexImage3D',
+                   None, c_uint, c_int, c_int, c_uint32, c_uint32, c_uint32, c_int, c_uint, c_uint, c_void_p)
         self._load(self.tex_parameterf, 'glTexParameterf',
                    None, c_uint, c_uint, c_float)
         self._load(self.tex_parameteri, 'glTexParameteri',
@@ -260,43 +288,49 @@ class GL20(GL):
                    None, c_uint, c_uint, POINTER(c_float))
         self._load(self.tex_parameteriv, 'glTexParameteriv',
                    None, c_uint, c_uint, POINTER(c_int))
-        self._load(self.uniform1f, 'glUniform1f',
+        self._load(self.tex_sub_image_1d, 'glTexSubImage1D',
+                   None, c_uint, c_int, c_int, c_uint32, c_uint, c_uint, c_void_p)
+        self._load(self.tex_sub_image_2d, 'glTexSubImage2D',
+                   None, c_uint, c_int, c_int, c_int, c_uint32, c_uint32, c_uint, c_uint, c_void_p)
+        self._load(self.tex_sub_image_3d, 'glTexSubImage3D',
+                   None, c_uint, c_int, c_int, c_int, c_int, c_uint32, c_uint32, c_uint32, c_uint, c_uint, c_void_p)
+        self._load(self.uniform_1f, 'glUniform1f',
                    None, c_int, c_float)
-        self._load(self.uniform2f, 'glUniform2f',
+        self._load(self.uniform_2f, 'glUniform2f',
                    None, c_int, c_float, c_float)
-        self._load(self.uniform3f, 'glUniform3f',
+        self._load(self.uniform_3f, 'glUniform3f',
                    None, c_int, c_float, c_float, c_float)
-        self._load(self.uniform4f, 'glUniform4f',
+        self._load(self.uniform_4f, 'glUniform4f',
                    None, c_int, c_float, c_float, c_float, c_float)
-        self._load(self.uniform1i, 'glUniform1i',
+        self._load(self.uniform_1i, 'glUniform1i',
                    None, c_int, c_int)
-        self._load(self.uniform2i, 'glUniform2i',
+        self._load(self.uniform_2i, 'glUniform2i',
                    None, c_int, c_int, c_int)
-        self._load(self.uniform3i, 'glUniform3i',
+        self._load(self.uniform_3i, 'glUniform3i',
                    None, c_int, c_int, c_int, c_int)
-        self._load(self.uniform4i, 'glUniform4i',
+        self._load(self.uniform_4i, 'glUniform4i',
                    None, c_int, c_int, c_int, c_int, c_int)
-        self._load(self.uniform1fv, 'glUniform1fv',
+        self._load(self.uniform_1fv, 'glUniform1fv',
                    None, c_int, c_uint32, POINTER(c_float))
-        self._load(self.uniform2fv, 'glUniform2fv',
+        self._load(self.uniform_2fv, 'glUniform2fv',
                    None, c_int, c_uint32, POINTER(c_float))
-        self._load(self.uniform3fv, 'glUniform3fv',
+        self._load(self.uniform_3fv, 'glUniform3fv',
                    None, c_int, c_uint32, POINTER(c_float))
-        self._load(self.uniform4fv, 'glUniform4fv',
+        self._load(self.uniform_4fv, 'glUniform4fv',
                    None, c_int, c_uint32, POINTER(c_float))
-        self._load(self.uniform1iv, 'glUniform1iv',
+        self._load(self.uniform_1iv, 'glUniform1iv',
                    None, c_int, c_uint32, POINTER(c_int))
-        self._load(self.uniform2iv, 'glUniform2iv',
+        self._load(self.uniform_2iv, 'glUniform2iv',
                    None, c_int, c_uint32, POINTER(c_int))
-        self._load(self.uniform3iv, 'glUniform3iv',
+        self._load(self.uniform_3iv, 'glUniform3iv',
                    None, c_int, c_uint32, POINTER(c_int))
-        self._load(self.uniform4iv, 'glUniform4iv',
+        self._load(self.uniform_4iv, 'glUniform4iv',
                    None, c_int, c_uint32, POINTER(c_int))
-        self._load(self.uniform_matrix2fv, 'glUniformMatrix2fv',
+        self._load(self.uniform_matrix_2fv, 'glUniformMatrix2fv',
                    None, c_int, c_uint32, c_bool, POINTER(c_float))
-        self._load(self.uniform_matrix3fv, 'glUniformMatrix3fv',
+        self._load(self.uniform_matrix_3fv, 'glUniformMatrix3fv',
                    None, c_int, c_uint32, c_bool, POINTER(c_float))
-        self._load(self.uniform_matrix4fv, 'glUniformMatrix4fv',
+        self._load(self.uniform_matrix_4fv, 'glUniformMatrix4fv',
                    None, c_int, c_uint32, c_bool, POINTER(c_float))
         self._load(self.unmap_buffer, 'glUnmapBuffer',
                    c_bool, c_uint)
@@ -304,77 +338,77 @@ class GL20(GL):
                    None, c_uint)
         self._load(self.validate_program, 'glValidateProgram',
                    None, c_uint)
-        self._load(self.vertex_attrib1f, 'glVertexAttrib1f',
+        self._load(self.vertex_attrib_1f, 'glVertexAttrib1f',
                    None, c_uint, c_float)
-        self._load(self.vertex_attrib1s, 'glVertexAttrib1s',
+        self._load(self.vertex_attrib_1s, 'glVertexAttrib1s',
                    None, c_uint, c_int16)
-        self._load(self.vertex_attrib1d, 'glVertexAttrib1d',
+        self._load(self.vertex_attrib_1d, 'glVertexAttrib1d',
                    None, c_uint, c_double)
-        self._load(self.vertex_attrib2f, 'glVertexAttrib2f',
+        self._load(self.vertex_attrib_2f, 'glVertexAttrib2f',
                    None, c_uint, c_float, c_float)
-        self._load(self.vertex_attrib2s, 'glVertexAttrib2s',
+        self._load(self.vertex_attrib_2s, 'glVertexAttrib2s',
                    None, c_uint, c_int16, c_int16)
-        self._load(self.vertex_attrib2d, 'glVertexAttrib2d',
+        self._load(self.vertex_attrib_2d, 'glVertexAttrib2d',
                    None, c_uint, c_double, c_double)
-        self._load(self.vertex_attrib3f, 'glVertexAttrib3f',
+        self._load(self.vertex_attrib_3f, 'glVertexAttrib3f',
                    None, c_uint, c_float, c_float, c_float)
-        self._load(self.vertex_attrib3s, 'glVertexAttrib3s',
+        self._load(self.vertex_attrib_3s, 'glVertexAttrib3s',
                    None, c_uint, c_int16, c_int16, c_int16)
-        self._load(self.vertex_attrib3d, 'glVertexAttrib3d',
+        self._load(self.vertex_attrib_3d, 'glVertexAttrib3d',
                    None, c_uint, c_double, c_double, c_double)
-        self._load(self.vertex_attrib4f, 'glVertexAttrib4f',
+        self._load(self.vertex_attrib_4f, 'glVertexAttrib4f',
                    None, c_uint, c_float, c_float, c_float, c_float)
-        self._load(self.vertex_attrib4s, 'glVertexAttrib4s',
+        self._load(self.vertex_attrib_4s, 'glVertexAttrib4s',
                    None, c_uint, c_int16, c_int16, c_int16, c_int16)
-        self._load(self.vertex_attrib4d, 'glVertexAttrib4d',
+        self._load(self.vertex_attrib_4d, 'glVertexAttrib4d',
                    None, c_uint, c_double, c_double, c_double, c_double)
-        self._load(self.vertex_attrib4_nub, 'glVertexAttrib4Nub',
+        self._load(self.vertex_attrib_4nub, 'glVertexAttrib4Nub',
                    None, c_uint, c_ubyte, c_ubyte, c_ubyte, c_ubyte)
-        self._load(self.vertex_attrib1fv, 'glVertexAttrib1fv',
+        self._load(self.vertex_attrib_1fv, 'glVertexAttrib1fv',
                    None, c_uint, POINTER(c_float))
-        self._load(self.vertex_attrib1sv, 'glVertexAttrib1sv',
+        self._load(self.vertex_attrib_1sv, 'glVertexAttrib1sv',
                    None, c_uint, POINTER(c_int16))
-        self._load(self.vertex_attrib1dv, 'glVertexAttrib1dv',
+        self._load(self.vertex_attrib_1dv, 'glVertexAttrib1dv',
                    None, c_uint, POINTER(c_double))
-        self._load(self.vertex_attrib2fv, 'glVertexAttrib2fv',
+        self._load(self.vertex_attrib_2fv, 'glVertexAttrib2fv',
                    None, c_uint, POINTER(c_float))
-        self._load(self.vertex_attrib2sv, 'glVertexAttrib2sv',
+        self._load(self.vertex_attrib_2sv, 'glVertexAttrib2sv',
                    None, c_uint, POINTER(c_int16))
-        self._load(self.vertex_attrib2dv, 'glVertexAttrib2dv',
+        self._load(self.vertex_attrib_2dv, 'glVertexAttrib2dv',
                    None, c_uint, POINTER(c_double))
-        self._load(self.vertex_attrib3fv, 'glVertexAttrib3fv',
+        self._load(self.vertex_attrib_3fv, 'glVertexAttrib3fv',
                    None, c_uint, POINTER(c_float))
-        self._load(self.vertex_attrib3sv, 'glVertexAttrib3sv',
+        self._load(self.vertex_attrib_3sv, 'glVertexAttrib3sv',
                    None, c_uint, POINTER(c_int16))
-        self._load(self.vertex_attrib3dv, 'glVertexAttrib3dv',
+        self._load(self.vertex_attrib_3dv, 'glVertexAttrib3dv',
                    None, c_uint, POINTER(c_double))
-        self._load(self.vertex_attrib4fv, 'glVertexAttrib4fv',
+        self._load(self.vertex_attrib_4fv, 'glVertexAttrib4fv',
                    None, c_uint, POINTER(c_float))
-        self._load(self.vertex_attrib4sv, 'glVertexAttrib4sv',
+        self._load(self.vertex_attrib_4sv, 'glVertexAttrib4sv',
                    None, c_uint, POINTER(c_int16))
-        self._load(self.vertex_attrib4dv, 'glVertexAttrib4dv',
+        self._load(self.vertex_attrib_4dv, 'glVertexAttrib4dv',
                    None, c_uint, POINTER(c_double))
-        self._load(self.vertex_attrib4iv, 'glVertexAttrib4iv',
+        self._load(self.vertex_attrib_4iv, 'glVertexAttrib4iv',
                    None, c_uint, POINTER(c_int))
-        self._load(self.vertex_attrib4bv, 'glVertexAttrib4bv',
+        self._load(self.vertex_attrib_4bv, 'glVertexAttrib4bv',
                    None, c_uint, POINTER(c_byte))
-        self._load(self.vertex_attrib4ubv, 'glVertexAttrib4ubv',
+        self._load(self.vertex_attrib_4ubv, 'glVertexAttrib4ubv',
                    None, c_uint, POINTER(c_ubyte))
-        self._load(self.vertex_attrib4usv, 'glVertexAttrib4usv',
+        self._load(self.vertex_attrib_4usv, 'glVertexAttrib4usv',
                    None, c_uint, POINTER(c_ushort))
-        self._load(self.vertex_attrib4uiv, 'glVertexAttrib4uiv',
+        self._load(self.vertex_attrib_4uiv, 'glVertexAttrib4uiv',
                    None, c_uint, POINTER(c_uint))
-        self._load(self.vertex_attrib4_nbv, 'glVertexAttrib4Nbv',
+        self._load(self.vertex_attrib_4nbv, 'glVertexAttrib4Nbv',
                    None, c_uint, POINTER(c_byte))
-        self._load(self.vertex_attrib4_nsv, 'glVertexAttrib4Nsv',
+        self._load(self.vertex_attrib_4nsv, 'glVertexAttrib4Nsv',
                    None, c_uint, POINTER(c_int16))
-        self._load(self.vertex_attrib4_niv, 'glVertexAttrib4Niv',
+        self._load(self.vertex_attrib_4niv, 'glVertexAttrib4Niv',
                    None, c_uint, POINTER(c_int))
-        self._load(self.vertex_attrib4_nubv, 'glVertexAttrib4Nubv',
+        self._load(self.vertex_attrib_4nubv, 'glVertexAttrib4Nubv',
                    None, c_uint, POINTER(c_ubyte))
-        self._load(self.vertex_attrib4_nusv, 'glVertexAttrib4Nusv',
+        self._load(self.vertex_attrib_4nusv, 'glVertexAttrib4Nusv',
                    None, c_uint, POINTER(c_ushort))
-        self._load(self.vertex_attrib4_nuiv, 'glVertexAttrib4Nuiv',
+        self._load(self.vertex_attrib_4nuiv, 'glVertexAttrib4Nuiv',
                    None, c_uint, POINTER(c_uint))
         self._load(self.vertex_attrib_pointer, 'glVertexAttribPointer',
                    None, c_uint, c_int, c_uint, c_bool, c_uint32, c_void_p)
@@ -910,6 +944,593 @@ class GL20(GL):
         Notes
         -----
         https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glCompileShader.xhtml
+        """
+        pass
+
+    def compressed_tex_image_1d(self, target: int, level: int, internalformat: int, width: int, border: int, image_size: int, data: c_void_p):
+        """
+        Specify a one-dimensional texture image in a compressed format
+
+        Wrapper for glCompressedTexImage1D
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target texture. Must be GL_TEXTURE_1D or GL_PROXY_TEXTURE_1D.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        internalformat: int
+            Specifies the format of the compressed image data stored at address data.
+        width: int
+            Specifies the width of the texture image. All implementations support texture images that are at
+            least 64 texels wide. The height of the 1D texture image is 1.
+        border: int
+            This value must be 0.
+        data: c_void_p
+            Specifies a pointer to the compressed image data in memory.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated if internalformat is not a supported specific compressed internal
+            formats, or is one of the generic compressed internal formats: GL_COMPRESSED_RED, GL_COMPRESSED_RG,
+            GL_COMPRESSED_RGB, GL_COMPRESSED_RGBA. GL_COMPRESSED_SRGB, or GL_COMPRESSED_SRGB_ALPHA.
+        GL_INVALID_VALUE is generated if imageSize is not consistent with the format, dimensions, and
+            contents of the specified compressed image data.
+        GL_INVALID_VALUE is generated if border is not 0.
+        GL_INVALID_OPERATION is generated if parameter combinations are not supported by the specific
+            compressed internal format as specified in the specific texture compression extension.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the buffer object's data store is currently mapped.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the data would be unpacked from the buffer object such that the
+            memory reads required would exceed the data store size.
+        Undefined results, including abnormal program termination, are generated if data is not encoded in
+            a manner consistent with the extension specification defining the internal compression format.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glCompressedTexImage1D.xhtml
+        """
+        pass
+
+    def compressed_tex_image_2d(self, target: int, level: int, internalformat: int, width: int, height: int, border: int, image_size: int, data: c_void_p):
+        """
+        Specify a two-dimensional texture image in a compressed format
+
+        Wrapper for glCompressedTexImage2D
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target texture. Must be GL_TEXTURE_2D, GL_PROXY_TEXTURE_2D, GL_TEXTURE_1D_ARRAY,
+            GL_PROXY_TEXTURE_1D_ARRAY, GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+            GL_TEXTURE_CUBE_MAP_POSITIVE_Y, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
+            GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, or GL_PROXY_TEXTURE_CUBE_MAP.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        internalformat: int
+            Specifies the format of the compressed image data stored at address data.
+        width: int
+            Specifies the width of the texture image. All implementations support 2D texture and cube map
+            texture images that are at least 16384 texels wide.
+        height: int
+            Specifies the height of the texture image. All implementations support 2D texture and cube map
+            texture images that are at least 16384 texels high.
+        border: int
+            This value must be 0.
+        data: c_void_p
+            Specifies a pointer to the compressed image data in memory.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated if internalformat is not one of the specific compressed internal
+            formats: GL_COMPRESSED_RED_RGTC1, GL_COMPRESSED_SIGNED_RED_RGTC1, GL_COMPRESSED_RG_RGTC2,
+            GL_COMPRESSED_SIGNED_RG_RGTC2. GL_COMPRESSED_RGBA_BPTC_UNORM, GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM,
+            GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT, GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT,
+            GL_COMPRESSED_RGB8_ETC2, GL_COMPRESSED_SRGB8_ETC2, GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2,
+            GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2, GL_COMPRESSED_RGBA8_ETC2_EAC,
+            GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC, GL_COMPRESSED_R11_EAC, GL_COMPRESSED_SIGNED_R11_EAC,
+            GL_COMPRESSED_RG11_EAC, or GL_COMPRESSED_SIGNED_RG11_EAC.
+        GL_INVALID_VALUE is generated if imageSize is not consistent with the format, dimensions, and
+            contents of the specified compressed image data.
+        GL_INVALID_VALUE is generated if border is not 0.
+        GL_INVALID_OPERATION is generated if parameter combinations are not supported by the specific
+            compressed internal format as specified in the specific texture compression extension.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the buffer object's data store is currently mapped.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the data would be unpacked from the buffer object such that the
+            memory reads required would exceed the data store size.
+        Undefined results, including abnormal program termination, are generated if data is not encoded in
+            a manner consistent with the extension specification defining the internal compression format.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glCompressedTexImage2D.xhtml
+        """
+        pass
+
+    def compressed_tex_image_3d(self, target: int, level: int, internalformat: int, width: int, height: int, depth: int, border: int, image_size: int, data: c_void_p):
+        """
+        Specify a three-dimensional texture image in a compressed format
+
+        Wrapper for glCompressedTexImage3D
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target texture. Must be GL_TEXTURE_3D, GL_PROXY_TEXTURE_3D, GL_TEXTURE_2D_ARRAY or
+            GL_PROXY_TEXTURE_2D_ARRAY.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        internalformat: int
+            Specifies the format of the compressed image data stored at address data.
+        width: int
+            Specifies the width of the texture image. All implementations support 3D texture images that are at
+            least 16 texels wide.
+        height: int
+            Specifies the height of the texture image. All implementations support 3D texture images that are
+            at least 16 texels high.
+        depth: int
+            Specifies the depth of the texture image. All implementations support 3D texture images that are at
+            least 16 texels deep.
+        border: int
+            This value must be 0.
+        data: c_void_p
+            Specifies a pointer to the compressed image data in memory.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated if internalformat is not one of the generic compressed internal
+            formats: GL_COMPRESSED_RED, GL_COMPRESSED_RG, GL_COMPRESSED_RGB, GL_COMPRESSED_RGBA.
+            GL_COMPRESSED_SRGB, or GL_COMPRESSED_SRGB_ALPHA.
+        GL_INVALID_VALUE is generated if imageSize is not consistent with the format, dimensions, and
+            contents of the specified compressed image data.
+        GL_INVALID_VALUE is generated if border is not 0.
+        GL_INVALID_OPERATION is generated if parameter combinations are not supported by the specific
+            compressed internal format as specified in the specific texture compression extension.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the buffer object's data store is currently mapped.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the data would be unpacked from the buffer object such that the
+            memory reads required would exceed the data store size.
+        Undefined results, including abnormal program termination, are generated if data is not encoded in
+            a manner consistent with the extension specification defining the internal compression format.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glCompressedTexImage3D.xhtml
+        """
+        pass
+
+    def compressed_tex_sub_image_1d(self, target: int, level: int, xoffset: int, width: int, format: int, image_size: int, data: c_void_p):
+        """
+        Specify a one-dimensional texture subimage in a compressed format
+
+        Wrapper for glCompressedTexSubImage1D
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target, to which the texture is bound, for glCompressedTexSubImage1D function. Must
+            be GL_TEXTURE_1D.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        xoffset: int
+            Specifies a texel offset in the x direction within the texture array.
+        width: int
+            Specifies the width of the texture subimage.
+        format: int
+            Specifies the format of the compressed image data stored at address data.
+        data: c_void_p
+            Specifies a pointer to the compressed image data in memory.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated if internalformat is not one of the generic compressed internal
+            formats: GL_COMPRESSED_RED, GL_COMPRESSED_RG, GL_COMPRESSED_RGB, GL_COMPRESSED_RGBA.
+            GL_COMPRESSED_SRGB, or GL_COMPRESSED_SRGB_ALPHA.
+        GL_INVALID_VALUE is generated if imageSize is not consistent with the format, dimensions, and
+            contents of the specified compressed image data.
+        GL_INVALID_OPERATION is generated if parameter combinations are not supported by the specific
+            compressed internal format as specified in the specific texture compression extension.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the buffer object's data store is currently mapped.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the data would be unpacked from the buffer object such that the
+            memory reads required would exceed the data store size.
+        GL_INVALID_OPERATION is generated by glCompressedTextureSubImage1D function if texture is not the
+            name of an existing texture object.
+        Undefined results, including abnormal program termination, are generated if data is not encoded in
+            a manner consistent with the extension specification defining the internal compression format.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glCompressedTexSubImage1D.xhtml
+        """
+        pass
+
+    def compressed_tex_sub_image_2d(self, target: int, level: int, xoffset: int, yoffset: int, width: int, height: int, format: int, image_size: int, data: c_void_p):
+        """
+        Specify a two-dimensional texture subimage in a compressed format
+
+        Wrapper for glCompressedTexSubImage2D
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target to which the texture is bound for glCompressedTexSubImage2D function. Must be
+            GL_TEXTURE_1D_ARRAY, GL_TEXTURE_2D, GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+            GL_TEXTURE_CUBE_MAP_POSITIVE_Y, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, GL_TEXTURE_CUBE_MAP_POSITIVE_Z, or
+            GL_TEXTURE_CUBE_MAP_NEGATIVE_Z.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        xoffset: int
+            Specifies a texel offset in the x direction within the texture array.
+        yoffset: int
+            Specifies a texel offset in the y direction within the texture array.
+        width: int
+            Specifies the width of the texture subimage.
+        height: int
+            Specifies the height of the texture subimage.
+        format: int
+            Specifies the format of the compressed image data stored at address data.
+        data: c_void_p
+            Specifies a pointer to the compressed image data in memory.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated if internalformat is of the generic compressed internal formats:
+            GL_COMPRESSED_RED, GL_COMPRESSED_RG, GL_COMPRESSED_RGB, GL_COMPRESSED_RGBA. GL_COMPRESSED_SRGB, or
+            GL_COMPRESSED_SRGB_ALPHA.
+        GL_INVALID_ENUM is generated by glCompressedTexSubImage2D if target is GL_TEXTURE_RECTANGLE or
+            GL_PROXY_TEXTURE_RECTANGLE.
+        GL_INVALID_VALUE is generated if imageSize is not consistent with the format, dimensions, and
+            contents of the specified compressed image data.
+        GL_INVALID_OPERATION is generated if parameter combinations are not supported by the specific
+            compressed internal format as specified in the specific texture compression extension.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the buffer object's data store is currently mapped.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the data would be unpacked from the buffer object such that the
+            memory reads required would exceed the data store size.
+        GL_INVALID_OPERATION is generated by glCompressedTextureSubImage2D if texture is not the name of an
+            existing texture object.
+        GL_INVALID_OPERATION is generated by glCompressedTextureSubImage2D if the effective target is
+            GL_TEXTURE_RECTANGLE.
+        Undefined results, including abnormal program termination, are generated if data is not encoded in
+            a manner consistent with the extension specification defining the internal compression format.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glCompressedTexSubImage2D.xhtml
+        """
+        pass
+
+    def compressed_tex_sub_image_3d(self, target: int, level: int, xoffset: int, yoffset: int, zoffset: int, width: int, height: int, depth: int, format: int, image_size: int, data: c_void_p):
+        """
+        Specify a three-dimensional texture subimage in a compressed format
+
+        Wrapper for glCompressedTexSubImage3D
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target to which the texture is bound for glCompressedTexSubImage3D function. Must be
+            GL_TEXTURE_2D_ARRAY, GL_TEXTURE_3D, or GL_TEXTURE_CUBE_MAP_ARRAY.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        xoffset: int
+            Specifies a texel offset in the x direction within the texture array.
+        yoffset: int
+            Specifies a texel offset in the y direction within the texture array.
+        width: int
+            Specifies the width of the texture subimage.
+        height: int
+            Specifies the height of the texture subimage.
+        depth: int
+            Specifies the depth of the texture subimage.
+        format: int
+            Specifies the format of the compressed image data stored at address data.
+        data: c_void_p
+            Specifies a pointer to the compressed image data in memory.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated if internalformat is one of the generic compressed internal formats:
+            GL_COMPRESSED_RED, GL_COMPRESSED_RG, GL_COMPRESSED_RGB, GL_COMPRESSED_RGBA. GL_COMPRESSED_SRGB, or
+            GL_COMPRESSED_SRGB_ALPHA.
+        GL_INVALID_ENUM is generated by glCompressedTexSubImage3D if target is not GL_TEXTURE_2D_ARRAY,
+            GL_TEXTURE_3D, or GL_TEXTURE_CUBE_MAP_ARRAY.
+        GL_INVALID_OPERATION is generated by glCompressedTextureSubImage3D if texture is not the name of an
+            existing texture object.
+        GL_INVALID_VALUE is generated if imageSize is not consistent with the format, dimensions, and
+            contents of the specified compressed image data.
+        GL_INVALID_OPERATION is generated if parameter combinations are not supported by the specific
+            compressed internal format as specified in the specific texture compression extension.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the buffer object's data store is currently mapped.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the data would be unpacked from the buffer object such that the
+            memory reads required would exceed the data store size.
+        Undefined results, including abnormal program termination, are generated if data is not encoded in
+            a manner consistent with the extension specification defining the internal compression format.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glCompressedTexSubImage3D.xhtml
+        """
+        pass
+
+    def copy_tex_image_1d(self, target: int, level: int, internalformat: int, x: int, y: int, width: int, border: int):
+        """
+        Copy pixels into a 1D texture image
+
+        Wrapper for glCopyTexImage1D
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target texture. Must be GL_TEXTURE_1D.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        internalformat: int
+            Specifies the internal format of the texture. Must be one of the following symbolic constants:
+            GL_COMPRESSED_RED, GL_COMPRESSED_RG, GL_COMPRESSED_RGB, GL_COMPRESSED_RGBA. GL_COMPRESSED_SRGB,
+            GL_COMPRESSED_SRGB_ALPHA. GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT16, GL_DEPTH_COMPONENT24,
+            GL_DEPTH_COMPONENT32, GL_STENCIL_INDEX8, GL_RED, GL_RG, GL_RGB, GL_R3_G3_B2, GL_RGB4, GL_RGB5,
+            GL_RGB8, GL_RGB10, GL_RGB12, GL_RGB16, GL_RGBA, GL_RGBA2, GL_RGBA4, GL_RGB5_A1, GL_RGBA8,
+            GL_RGB10_A2, GL_RGBA12, GL_RGBA16, GL_SRGB, GL_SRGB8, GL_SRGB_ALPHA, or GL_SRGB8_ALPHA8.
+        x, y: int
+            Specify the window coordinates of the left corner of the row of pixels to be copied.
+        width: int
+            Specifies the width of the texture image. The height of the texture image is 1.
+        border: int
+            Must be 0.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated if target is not one of the allowable values.
+        GL_INVALID_VALUE is generated if level is less than 0.
+        GL_INVALID_VALUE may be generated if level is greater than log 2 ⁢ max, where max is the returned
+            value of GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if internalformat is not an allowable value.
+        GL_INVALID_VALUE is generated if width is less than 0 or greater than GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if border is not 0.
+        GL_INVALID_OPERATION is generated if internalformat is GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT16,
+            GL_DEPTH_COMPONENT24, or GL_DEPTH_COMPONENT32 and there is no depth buffer.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glCopyTexImage1D.xhtml
+        """
+        pass
+
+    def copy_tex_image_2d(self, target: int, level: int, internalformat: int, x: int, y: int, width: int, height: int, border: int):
+        """
+        Copy pixels into a 2D texture image
+
+        Wrapper for glCopyTexImage2D
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target texture. Must be GL_TEXTURE_2D, GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+            GL_TEXTURE_CUBE_MAP_NEGATIVE_X, GL_TEXTURE_CUBE_MAP_POSITIVE_Y, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+            GL_TEXTURE_CUBE_MAP_POSITIVE_Z, or GL_TEXTURE_CUBE_MAP_NEGATIVE_Z.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        internalformat: int
+            Specifies the internal format of the texture. Must be one of the following symbolic constants:
+            GL_COMPRESSED_RED, GL_COMPRESSED_RG, GL_COMPRESSED_RGB, GL_COMPRESSED_RGBA. GL_COMPRESSED_SRGB,
+            GL_COMPRESSED_SRGB_ALPHA. GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT16, GL_DEPTH_COMPONENT24,
+            GL_DEPTH_COMPONENT32, GL_STENCIL_INDEX8, GL_RED, GL_RG, GL_RGB, GL_R3_G3_B2, GL_RGB4, GL_RGB5,
+            GL_RGB8, GL_RGB10, GL_RGB12, GL_RGB16, GL_RGBA, GL_RGBA2, GL_RGBA4, GL_RGB5_A1, GL_RGBA8,
+            GL_RGB10_A2, GL_RGBA12, GL_RGBA16, GL_SRGB, GL_SRGB8, GL_SRGB_ALPHA, or GL_SRGB8_ALPHA8.
+        x, y: int
+            Specify the window coordinates of the lower left corner of the rectangular region of pixels to be
+            copied.
+        width: int
+            Specifies the width of the texture image.
+        height: int
+            Specifies the height of the texture image.
+        border: int
+            Must be 0.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated if target is not GL_TEXTURE_2D, GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+            GL_TEXTURE_CUBE_MAP_NEGATIVE_X, GL_TEXTURE_CUBE_MAP_POSITIVE_Y, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+            GL_TEXTURE_CUBE_MAP_POSITIVE_Z, or GL_TEXTURE_CUBE_MAP_NEGATIVE_Z.
+        GL_INVALID_VALUE is generated if level is less than 0.
+        GL_INVALID_VALUE may be generated if level is greater than log 2 ⁢ max, where max is the returned
+            value of GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if width is less than 0 or greater than GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if border is not 0.
+        GL_INVALID_VALUE is generated if internalformat is not an accepted format.
+        GL_INVALID_OPERATION is generated if internalformat is GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT16,
+            GL_DEPTH_COMPONENT24, or GL_DEPTH_COMPONENT32 and there is no depth buffer.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glCopyTexImage2D.xhtml
+        """
+        pass
+
+    def copy_tex_sub_image_1d(self, target: int, level: int, xoffset: int, x: int, y: int, width: int):
+        """
+        Copy a one-dimensional texture subimage
+
+        Wrapper for glCopyTexSubImage1D
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target to which the texture object is bound for glCopyTexSubImage1D function. Must be
+            GL_TEXTURE_1D.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        xoffset: int
+            Specifies the texel offset within the texture array.
+        x, y: int
+            Specify the window coordinates of the left corner of the row of pixels to be copied.
+        width: int
+            Specifies the width of the texture subimage.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated by glCopyTexSubImage1D if target is not GL_TEXTURE_1D.
+        GL_INVALID_FRAMEBUFFER_OPERATION is generated if the object bound to GL_READ_FRAMEBUFFER_BINDING is
+            not framebuffer complete.
+        GL_INVALID_OPERATION is generated by glCopyTextureSubImage1D if texture is not the name of an
+            existing texture object, or if the effective target of texture is not GL_TEXTURE_1D.
+        GL_INVALID_OPERATION is generated if the texture array has not been defined by a previous
+            glTexImage1D, glCopyTexImage1D, or glTexStorage1D operation.
+        GL_INVALID_VALUE is generated if level is less than 0.
+        GL_INVALID_VALUE may be generated if level &gt; log 2 ⁡ max, where max is the returned value of
+            GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if xoffset &lt; 0, or xoffset + width &gt; w, where w is the
+            GL_TEXTURE_WIDTH of the texture image being modified.
+        GL_INVALID_OPERATION is generated if:
+        the read buffer is GL_NONE, or
+        the value of GL_READ_FRAMEBUFFER_BINDING is non-zero, and:
+        the read buffer selects an attachment that has no image attached, or
+        the effective value of GL_SAMPLE_BUFFERS for the read framebuffer is one.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glCopyTexSubImage1D.xhtml
+        """
+        pass
+
+    def copy_tex_sub_image_2d(self, target: int, level: int, xoffset: int, yoffset: int, x: int, y: int, width: int, height: int):
+        """
+        Copy a two-dimensional texture subimage
+
+        Wrapper for glCopyTexSubImage2D
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target to which the texture object is bound for glCopyTexSubImage2D function. Must be
+            GL_TEXTURE_1D_ARRAY, GL_TEXTURE_2D, GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+            GL_TEXTURE_CUBE_MAP_POSITIVE_Y, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
+            GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, or GL_TEXTURE_RECTANGLE.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        xoffset: int
+            Specifies a texel offset in the x direction within the texture array.
+        yoffset: int
+            Specifies a texel offset in the y direction within the texture array.
+        x, y: int
+            Specify the window coordinates of the lower left corner of the rectangular region of pixels to be
+            copied.
+        width: int
+            Specifies the width of the texture subimage.
+        height: int
+            Specifies the height of the texture subimage.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated if target is not GL_TEXTURE_2D, GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+            GL_TEXTURE_CUBE_MAP_NEGATIVE_X, GL_TEXTURE_CUBE_MAP_POSITIVE_Y, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+            GL_TEXTURE_CUBE_MAP_POSITIVE_Z, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, GL_TEXTURE_1D_ARRAY, or
+            GL_RECTANGLE.
+        GL_INVALID_FRAMEBUFFER_OPERATION is generated if the object bound to GL_READ_FRAMEBUFFER_BINDING is
+            not framebuffer complete.
+        GL_INVALID_OPERATION is generated if the texture array has not been defined by a previous
+            glTexImage2D, glTexStorage2D or glCopyTexImage2D operation.
+        GL_INVALID_OPERATION is generated by glCopyTextureSubImage2D if texture is not the name of an
+            existing texture object.
+        GL_INVALID_OPERATION is generated by glCopyTextureSubImage2D if the effective target of texture
+            does not correspond to one of the texture targets supported by the function.
+        GL_INVALID_VALUE is generated if level is less than 0.
+        GL_INVALID_VALUE is generated if the effective target is GL_TEXTURE_RECTANGLE and level is not
+            zero.
+        GL_INVALID_VALUE may be generated if level &gt; log 2 ⁡ max, where max is the returned value of
+            GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if xoffset &lt; 0, xoffset + width &gt; w, yoffset &lt; 0, or yoffset
+            + height &gt; 0,, where w is the GL_TEXTURE_WIDTH, h is the GL_TEXTURE_HEIGHT and of the texture
+            image being modified.
+        GL_INVALID_OPERATION is generated if:
+        the read buffer is GL_NONE, or
+        the value of GL_READ_FRAMEBUFFER_BINDING is non-zero, and:
+        the read buffer selects an attachment that has no image attached, or
+        the effective value of GL_SAMPLE_BUFFERS for the read framebuffer is one.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glCopyTexSubImage2D.xhtml
+        """
+        pass
+
+    def copy_tex_sub_image_3d(self, target: int, level: int, xoffset: int, yoffset: int, zoffset: int, x: int, y: int, width: int, height: int):
+        """
+        Copy a three-dimensional texture subimage
+
+        Wrapper for glCopyTexSubImage3D
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target to which the texture object is bound for glCopyTexSubImage3D function. Must be
+            GL_TEXTURE_3D or GL_TEXTURE_2D_ARRAY.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        xoffset: int
+            Specifies a texel offset in the x direction within the texture array.
+        yoffset: int
+            Specifies a texel offset in the y direction within the texture array.
+        zoffset: int
+            Specifies a texel offset in the z direction within the texture array.
+        x, y: int
+            Specify the window coordinates of the lower left corner of the rectangular region of pixels to be
+            copied.
+        width: int
+            Specifies the width of the texture subimage.
+        height: int
+            Specifies the height of the texture subimage.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated by glCopyTexSubImage3D if target is not GL_TEXTURE_3D,
+            GL_TEXTURE_2D_ARRAY or GL_TEXTURE_CUBE_MAP_ARRAY.
+        GL_INVALID_OPERATION is generated by glCopyTextureSubImage3D if the effective target is not
+            GL_TEXTURE_3D, GL_TEXTURE_2D_ARRAY, GL_TEXTURE_CUBE_MAP_ARRAY or GL_TEXTURE_CUBE_MAP.
+        GL_INVALID_FRAMEBUFFER_OPERATION is generated if the object bound to GL_READ_FRAMEBUFFER_BINDING is
+            not framebuffer complete.
+        GL_INVALID_OPERATION is generated if the texture array has not been defined by a previous
+            glTexImage3D or glTexStorage3D operation.
+        GL_INVALID_OPERATION is generated by glCopyTextureSubImage3D if texture is not the name of an
+            existing texture object.
+        GL_INVALID_VALUE is generated if level is less than 0.
+        GL_INVALID_VALUE may be generated if level &gt; log 2 ⁡ max, where max is the returned value of
+            GL_MAX_3D_TEXTURE_SIZE if target is GL_TEXTURE_3D or the returned value of
+            GL_MAX_ARRAY_TEXTURE_LAYERS if target is GL_TEXTURE_2D_ARRAY.
+        GL_INVALID_VALUE is generated if xoffset &lt; 0, xoffset + width &gt; w, yoffset &lt; 0, yoffset +
+            height &gt; h, zoffset &lt; 0, or zoffset + 1 &gt; d, where w is the GL_TEXTURE_WIDTH, h is the
+            GL_TEXTURE_HEIGHT, d is the GL_TEXTURE_DEPTH and of the texture image being modified. Note that w,
+            h, and d include twice the border width.
+        GL_INVALID_OPERATION is generated if:
+        the read buffer is GL_NONE, or
+        the value of GL_READ_FRAMEBUFFER_BINDING is non-zero, and:
+        the read buffer selects an attachment that has no image attached, or
+        the effective value of GL_SAMPLE_BUFFERS for the read framebuffer is one.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glCopyTexSubImage3D.xhtml
         """
         pass
 
@@ -2695,7 +3316,7 @@ class GL20(GL):
         """
         pass
 
-    def is_buffer(self, buffer: int) -> bool:
+    def isbuffer(self, buffer: int) -> bool:
         """
         Determine if a name corresponds to a buffer object
 
@@ -2712,7 +3333,7 @@ class GL20(GL):
         """
         pass
 
-    def is_enabled(self, cap: int) -> bool:
+    def isenabled(self, cap: int) -> bool:
         """
         Test whether a capability is enabled
 
@@ -2735,7 +3356,7 @@ class GL20(GL):
         """
         pass
 
-    def is_program(self, program: int) -> bool:
+    def isprogram(self, program: int) -> bool:
         """
         Determines if a name corresponds to a program object
 
@@ -2752,7 +3373,7 @@ class GL20(GL):
         """
         pass
 
-    def is_query(self, id: int) -> bool:
+    def isquery(self, id: int) -> bool:
         """
         Determine if a name corresponds to a query object
 
@@ -2769,7 +3390,7 @@ class GL20(GL):
         """
         pass
 
-    def is_shader(self, shader: int) -> bool:
+    def isshader(self, shader: int) -> bool:
         """
         Determines if a name corresponds to a shader object
 
@@ -2786,7 +3407,7 @@ class GL20(GL):
         """
         pass
 
-    def is_texture(self, texture: int) -> bool:
+    def istexture(self, texture: int) -> bool:
         """
         Determine if a name corresponds to a texture
 
@@ -3516,7 +4137,7 @@ class GL20(GL):
         """
         pass
 
-    def stencil_op_separate(self, face: int, sfail: int, dpfail: int, dppass: int):
+    def stencil_opseparate(self, face: int, sfail: int, dpfail: int, dppass: int):
         """
         Set front and/or back stencil test actions
 
@@ -3549,6 +4170,251 @@ class GL20(GL):
         Notes
         -----
         https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glStencilOpSeparate.xhtml
+        """
+        pass
+
+    def tex_image_1d(self, target: int, level: int, internal_format: int, width: int, border: int, format: int, type: int, data: c_void_p):
+        """
+        Specify a one-dimensional texture image
+
+        Wrapper for glTexImage1D
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target texture. Must be GL_TEXTURE_1D or GL_PROXY_TEXTURE_1D.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        width: int
+            Specifies the width of the texture image. All implementations support texture images that are at
+            least 1024 texels wide. The height of the 1D texture image is 1.
+        border: int
+            This value must be 0.
+        format: int
+            Specifies the format of the pixel data. The following symbolic values are accepted: GL_RED, GL_RG,
+            GL_RGB, GL_BGR, GL_RGBA, GL_BGRA, GL_RED_INTEGER, GL_RG_INTEGER, GL_RGB_INTEGER, GL_BGR_INTEGER,
+            GL_RGBA_INTEGER, GL_BGRA_INTEGER, GL_STENCIL_INDEX, GL_DEPTH_COMPONENT, GL_DEPTH_STENCIL.
+        type: int
+            Specifies the data type of the pixel data. The following symbolic values are accepted:
+            GL_UNSIGNED_BYTE, GL_BYTE, GL_UNSIGNED_SHORT, GL_SHORT, GL_UNSIGNED_INT, GL_INT, GL_FLOAT,
+            GL_UNSIGNED_BYTE_3_3_2, GL_UNSIGNED_BYTE_2_3_3_REV, GL_UNSIGNED_SHORT_5_6_5,
+            GL_UNSIGNED_SHORT_5_6_5_REV, GL_UNSIGNED_SHORT_4_4_4_4, GL_UNSIGNED_SHORT_4_4_4_4_REV,
+            GL_UNSIGNED_SHORT_5_5_5_1, GL_UNSIGNED_SHORT_1_5_5_5_REV, GL_UNSIGNED_INT_8_8_8_8,
+            GL_UNSIGNED_INT_8_8_8_8_REV, GL_UNSIGNED_INT_10_10_10_2, and GL_UNSIGNED_INT_2_10_10_10_REV.
+        data: c_void_p
+            Specifies a pointer to the image data in memory.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated if target is not GL_TEXTURE_1D or GL_PROXY_TEXTURE_1D.
+        GL_INVALID_ENUM is generated if format is not an accepted format constant. Format constants other
+            than GL_STENCIL_INDEX are accepted.
+        GL_INVALID_ENUM is generated if type is not a type constant.
+        GL_INVALID_VALUE is generated if level is less than 0.
+        GL_INVALID_VALUE may be generated if level is greater than log 2 ⁡ max, where max is the returned
+            value of GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if internalFormat is not one of the accepted resolution and format
+            symbolic constants.
+        GL_INVALID_VALUE is generated if width is less than 0 or greater than GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if border is not 0.
+        GL_INVALID_OPERATION is generated if type is one of GL_UNSIGNED_BYTE_3_3_2,
+            GL_UNSIGNED_BYTE_2_3_3_REV, GL_UNSIGNED_SHORT_5_6_5, or GL_UNSIGNED_SHORT_5_6_5_REV and format is
+            not GL_RGB.
+        GL_INVALID_OPERATION is generated if type is one of GL_UNSIGNED_SHORT_4_4_4_4,
+            GL_UNSIGNED_SHORT_4_4_4_4_REV, GL_UNSIGNED_SHORT_5_5_5_1, GL_UNSIGNED_SHORT_1_5_5_5_REV,
+            GL_UNSIGNED_INT_8_8_8_8, GL_UNSIGNED_INT_8_8_8_8_REV, GL_UNSIGNED_INT_10_10_10_2, or
+            GL_UNSIGNED_INT_2_10_10_10_REV and format is neither GL_RGBA nor GL_BGRA.
+        GL_INVALID_OPERATION is generated if format is GL_DEPTH_COMPONENT and internalFormat is not
+            GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT16, GL_DEPTH_COMPONENT24, or GL_DEPTH_COMPONENT32.
+        GL_INVALID_OPERATION is generated if internalFormat is GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT16,
+            GL_DEPTH_COMPONENT24, or GL_DEPTH_COMPONENT32, and format is not GL_DEPTH_COMPONENT.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the buffer object's data store is currently mapped.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the data would be unpacked from the buffer object such that the
+            memory reads required would exceed the data store size.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and data is not evenly divisible into the number of bytes needed to
+            store in memory a datum indicated by type.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexImage1D.xhtml
+        """
+        pass
+
+    def tex_image_2d(self, target: int, level: int, internal_format: int, width: int, height: int, border: int, format: int, type: int, data: c_void_p):
+        """
+        Specify a two-dimensional texture image
+
+        Wrapper for glTexImage2D
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target texture. Must be GL_TEXTURE_2D, GL_PROXY_TEXTURE_2D, GL_TEXTURE_1D_ARRAY,
+            GL_PROXY_TEXTURE_1D_ARRAY, GL_TEXTURE_RECTANGLE, GL_PROXY_TEXTURE_RECTANGLE,
+            GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_CUBE_MAP_NEGATIVE_X, GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
+            GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, GL_TEXTURE_CUBE_MAP_POSITIVE_Z, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, or
+            GL_PROXY_TEXTURE_CUBE_MAP.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image. If target is GL_TEXTURE_RECTANGLE or GL_PROXY_TEXTURE_RECTANGLE, level must be 0.
+        width: int
+            Specifies the width of the texture image. All implementations support texture images that are at
+            least 1024 texels wide.
+        height: int
+            Specifies the height of the texture image, or the number of layers in a texture array, in the case
+            of the GL_TEXTURE_1D_ARRAY and GL_PROXY_TEXTURE_1D_ARRAY targets. All implementations support 2D
+            texture images that are at least 1024 texels high, and texture arrays that are at least 256 layers
+            deep.
+        border: int
+            This value must be 0.
+        format: int
+            Specifies the format of the pixel data. The following symbolic values are accepted: GL_RED, GL_RG,
+            GL_RGB, GL_BGR, GL_RGBA, GL_BGRA, GL_RED_INTEGER, GL_RG_INTEGER, GL_RGB_INTEGER, GL_BGR_INTEGER,
+            GL_RGBA_INTEGER, GL_BGRA_INTEGER, GL_STENCIL_INDEX, GL_DEPTH_COMPONENT, GL_DEPTH_STENCIL.
+        type: int
+            Specifies the data type of the pixel data. The following symbolic values are accepted:
+            GL_UNSIGNED_BYTE, GL_BYTE, GL_UNSIGNED_SHORT, GL_SHORT, GL_UNSIGNED_INT, GL_INT, GL_FLOAT,
+            GL_UNSIGNED_BYTE_3_3_2, GL_UNSIGNED_BYTE_2_3_3_REV, GL_UNSIGNED_SHORT_5_6_5,
+            GL_UNSIGNED_SHORT_5_6_5_REV, GL_UNSIGNED_SHORT_4_4_4_4, GL_UNSIGNED_SHORT_4_4_4_4_REV,
+            GL_UNSIGNED_SHORT_5_5_5_1, GL_UNSIGNED_SHORT_1_5_5_5_REV, GL_UNSIGNED_INT_8_8_8_8,
+            GL_UNSIGNED_INT_8_8_8_8_REV, GL_UNSIGNED_INT_10_10_10_2, and GL_UNSIGNED_INT_2_10_10_10_REV.
+        data: c_void_p
+            Specifies a pointer to the image data in memory.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated if target is not GL_TEXTURE_2D, GL_TEXTURE_1D_ARRAY,
+            GL_TEXTURE_RECTANGLE, GL_PROXY_TEXTURE_2D, GL_PROXY_TEXTURE_1D_ARRAY, GL_PROXY_TEXTURE_RECTANGLE,
+            GL_PROXY_TEXTURE_CUBE_MAP, GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+            GL_TEXTURE_CUBE_MAP_POSITIVE_Y, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, GL_TEXTURE_CUBE_MAP_POSITIVE_Z, or
+            GL_TEXTURE_CUBE_MAP_NEGATIVE_Z.
+        GL_INVALID_ENUM is generated if target is one of the six cube map 2D image targets and the width
+            and height parameters are not equal.
+        GL_INVALID_ENUM is generated if type is not a type constant.
+        GL_INVALID_VALUE is generated if width is less than 0 or greater than GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if target is not GL_TEXTURE_1D_ARRAY or GL_PROXY_TEXTURE_1D_ARRAY and
+            height is less than 0 or greater than GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if target is GL_TEXTURE_1D_ARRAY or GL_PROXY_TEXTURE_1D_ARRAY and
+            height is less than 0 or greater than GL_MAX_ARRAY_TEXTURE_LAYERS.
+        GL_INVALID_VALUE is generated if level is less than 0.
+        GL_INVALID_VALUE may be generated if level is greater than log 2 ⁡ max, where max is the returned
+            value of GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if internalFormat is not one of the accepted resolution and format
+            symbolic constants.
+        GL_INVALID_VALUE is generated if width or height is less than 0 or greater than
+            GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if border is not 0.
+        GL_INVALID_OPERATION is generated if type is one of GL_UNSIGNED_BYTE_3_3_2,
+            GL_UNSIGNED_BYTE_2_3_3_REV, GL_UNSIGNED_SHORT_5_6_5, GL_UNSIGNED_SHORT_5_6_5_REV, or
+            GL_UNSIGNED_INT_10F_11F_11F_REV, and format is not GL_RGB.
+        GL_INVALID_OPERATION is generated if type is one of GL_UNSIGNED_SHORT_4_4_4_4,
+            GL_UNSIGNED_SHORT_4_4_4_4_REV, GL_UNSIGNED_SHORT_5_5_5_1, GL_UNSIGNED_SHORT_1_5_5_5_REV,
+            GL_UNSIGNED_INT_8_8_8_8, GL_UNSIGNED_INT_8_8_8_8_REV, GL_UNSIGNED_INT_10_10_10_2,
+            GL_UNSIGNED_INT_2_10_10_10_REV, or GL_UNSIGNED_INT_5_9_9_9_REV, and format is neither GL_RGBA nor
+            GL_BGRA.
+        GL_INVALID_OPERATION is generated if target is not GL_TEXTURE_2D, GL_PROXY_TEXTURE_2D,
+            GL_TEXTURE_RECTANGLE, or GL_PROXY_TEXTURE_RECTANGLE, and internalFormat is GL_DEPTH_COMPONENT,
+            GL_DEPTH_COMPONENT16, GL_DEPTH_COMPONENT24, or GL_DEPTH_COMPONENT32F.
+        GL_INVALID_OPERATION is generated if format is GL_DEPTH_COMPONENT and internalFormat is not
+            GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT16, GL_DEPTH_COMPONENT24, or GL_DEPTH_COMPONENT32F.
+        GL_INVALID_OPERATION is generated if internalFormat is GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT16,
+            GL_DEPTH_COMPONENT24, or GL_DEPTH_COMPONENT32F, and format is not GL_DEPTH_COMPONENT.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the buffer object's data store is currently mapped.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the data would be unpacked from the buffer object such that the
+            memory reads required would exceed the data store size.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and data is not evenly divisible into the number of bytes needed to
+            store in memory a datum indicated by type.
+        GL_INVALID_VALUE is generated if target is GL_TEXTURE_RECTANGLE or GL_PROXY_TEXTURE_RECTANGLE and
+            level is not 0.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexImage2D.xhtml
+        """
+        pass
+
+    def tex_image_3d(self, target: int, level: int, internal_format: int, width: int, height: int, depth: int, border: int, format: int, type: int, data: c_void_p):
+        """
+        Specify a three-dimensional texture image
+
+        Wrapper for glTexImage3D
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target texture. Must be one of GL_TEXTURE_3D, GL_PROXY_TEXTURE_3D,
+            GL_TEXTURE_2D_ARRAY or GL_PROXY_TEXTURE_2D_ARRAY.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        width: int
+            Specifies the width of the texture image. All implementations support 3D texture images that are at
+            least 16 texels wide.
+        height: int
+            Specifies the height of the texture image. All implementations support 3D texture images that are
+            at least 256 texels high.
+        depth: int
+            Specifies the depth of the texture image, or the number of layers in a texture array. All
+            implementations support 3D texture images that are at least 256 texels deep, and texture arrays
+            that are at least 256 layers deep.
+        border: int
+            This value must be 0.
+        format: int
+            Specifies the format of the pixel data. The following symbolic values are accepted: GL_RED, GL_RG,
+            GL_RGB, GL_BGR, GL_RGBA, GL_BGRA, GL_RED_INTEGER, GL_RG_INTEGER, GL_RGB_INTEGER, GL_BGR_INTEGER,
+            GL_RGBA_INTEGER, GL_BGRA_INTEGER, GL_STENCIL_INDEX, GL_DEPTH_COMPONENT, GL_DEPTH_STENCIL.
+        type: int
+            Specifies the data type of the pixel data. The following symbolic values are accepted:
+            GL_UNSIGNED_BYTE, GL_BYTE, GL_UNSIGNED_SHORT, GL_SHORT, GL_UNSIGNED_INT, GL_INT, GL_FLOAT,
+            GL_UNSIGNED_BYTE_3_3_2, GL_UNSIGNED_BYTE_2_3_3_REV, GL_UNSIGNED_SHORT_5_6_5,
+            GL_UNSIGNED_SHORT_5_6_5_REV, GL_UNSIGNED_SHORT_4_4_4_4, GL_UNSIGNED_SHORT_4_4_4_4_REV,
+            GL_UNSIGNED_SHORT_5_5_5_1, GL_UNSIGNED_SHORT_1_5_5_5_REV, GL_UNSIGNED_INT_8_8_8_8,
+            GL_UNSIGNED_INT_8_8_8_8_REV, GL_UNSIGNED_INT_10_10_10_2, and GL_UNSIGNED_INT_2_10_10_10_REV.
+        data: c_void_p
+            Specifies a pointer to the image data in memory.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated if target is not GL_TEXTURE_3D or GL_PROXY_TEXTURE_3D.
+        GL_INVALID_ENUM is generated if format is not an accepted format constant. Format constants other
+            than GL_STENCIL_INDEX and GL_DEPTH_COMPONENT are accepted.
+        GL_INVALID_ENUM is generated if type is not a type constant.
+        GL_INVALID_VALUE is generated if level is less than 0.
+        GL_INVALID_VALUE may be generated if level is greater than log 2 ⁡ max, where max is the returned
+            value of GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if internalFormat is not one of the accepted resolution and format
+            symbolic constants.
+        GL_INVALID_VALUE is generated if width, height, or depth is less than 0 or greater than
+            GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if border is not 0.
+        GL_INVALID_OPERATION is generated if type is one of GL_UNSIGNED_BYTE_3_3_2,
+            GL_UNSIGNED_BYTE_2_3_3_REV, GL_UNSIGNED_SHORT_5_6_5, or GL_UNSIGNED_SHORT_5_6_5_REV and format is
+            not GL_RGB.
+        GL_INVALID_OPERATION is generated if type is one of GL_UNSIGNED_SHORT_4_4_4_4,
+            GL_UNSIGNED_SHORT_4_4_4_4_REV, GL_UNSIGNED_SHORT_5_5_5_1, GL_UNSIGNED_SHORT_1_5_5_5_REV,
+            GL_UNSIGNED_INT_8_8_8_8, GL_UNSIGNED_INT_8_8_8_8_REV, GL_UNSIGNED_INT_10_10_10_2, or
+            GL_UNSIGNED_INT_2_10_10_10_REV and format is neither GL_RGBA nor GL_BGRA.
+        GL_INVALID_OPERATION is generated if format or internalFormat is GL_DEPTH_COMPONENT,
+            GL_DEPTH_COMPONENT16, GL_DEPTH_COMPONENT24, or GL_DEPTH_COMPONENT32.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the buffer object's data store is currently mapped.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the data would be unpacked from the buffer object such that the
+            memory reads required would exceed the data store size.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and data is not evenly divisible into the number of bytes needed to
+            store in memory a datum indicated by type.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexImage3D.xhtml
         """
         pass
 
@@ -3774,7 +4640,240 @@ class GL20(GL):
         """
         pass
 
-    def uniform1f(self, location: int, v0: float):
+    def tex_sub_image_1d(self, target: int, level: int, xoffset: int, width: int, format: int, type: int, pixels: c_void_p):
+        """
+        Specify a one-dimensional texture subimage
+
+        Wrapper for glTexSubImage1D
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target to which the texture is bound for glTexSubImage1D. Must be GL_TEXTURE_1D.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        xoffset: int
+            Specifies a texel offset in the x direction within the texture array.
+        width: int
+            Specifies the width of the texture subimage.
+        format: int
+            Specifies the format of the pixel data. The following symbolic values are accepted: GL_RED, GL_RG,
+            GL_RGB, GL_BGR, GL_RGBA, GL_DEPTH_COMPONENT, and GL_STENCIL_INDEX.
+        type: int
+            Specifies the data type of the pixel data. The following symbolic values are accepted:
+            GL_UNSIGNED_BYTE, GL_BYTE, GL_UNSIGNED_SHORT, GL_SHORT, GL_UNSIGNED_INT, GL_INT, GL_FLOAT,
+            GL_UNSIGNED_BYTE_3_3_2, GL_UNSIGNED_BYTE_2_3_3_REV, GL_UNSIGNED_SHORT_5_6_5,
+            GL_UNSIGNED_SHORT_5_6_5_REV, GL_UNSIGNED_SHORT_4_4_4_4, GL_UNSIGNED_SHORT_4_4_4_4_REV,
+            GL_UNSIGNED_SHORT_5_5_5_1, GL_UNSIGNED_SHORT_1_5_5_5_REV, GL_UNSIGNED_INT_8_8_8_8,
+            GL_UNSIGNED_INT_8_8_8_8_REV, GL_UNSIGNED_INT_10_10_10_2, and GL_UNSIGNED_INT_2_10_10_10_REV.
+        pixels: c_void_p
+            Specifies a pointer to the image data in memory.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated if target or the effective target of texture is not one of the
+            allowable values.
+        GL_INVALID_OPERATION is generated by glTextureSubImage1D if texture is not the name of an existing
+            texture object.
+        GL_INVALID_ENUM is generated if format is not an accepted format constant.
+        GL_INVALID_ENUM is generated if type is not a type constant.
+        GL_INVALID_VALUE is generated if level is less than 0.
+        GL_INVALID_VALUE may be generated if level is greater than log 2 max, where max is the returned
+            value of GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if xoffset &lt; - b, or if xoffset + width &gt; w - b, where w is the
+            GL_TEXTURE_WIDTH, and b is the width of the GL_TEXTURE_BORDER of the texture image being modified.
+            Note that w includes twice the border width.
+        GL_INVALID_VALUE is generated if width is less than 0.
+        GL_INVALID_OPERATION is generated if the texture array has not been defined by a previous
+            glTexImage1D operation.
+        GL_INVALID_OPERATION is generated if type is one of GL_UNSIGNED_BYTE_3_3_2,
+            GL_UNSIGNED_BYTE_2_3_3_REV, GL_UNSIGNED_SHORT_5_6_5, or GL_UNSIGNED_SHORT_5_6_5_REV and format is
+            not GL_RGB.
+        GL_INVALID_OPERATION is generated if type is one of GL_UNSIGNED_SHORT_4_4_4_4,
+            GL_UNSIGNED_SHORT_4_4_4_4_REV, GL_UNSIGNED_SHORT_5_5_5_1, GL_UNSIGNED_SHORT_1_5_5_5_REV,
+            GL_UNSIGNED_INT_8_8_8_8, GL_UNSIGNED_INT_8_8_8_8_REV, GL_UNSIGNED_INT_10_10_10_2, or
+            GL_UNSIGNED_INT_2_10_10_10_REV and format is neither GL_RGBA nor GL_BGRA.
+        GL_INVALID_OPERATION is generated if format is GL_STENCIL_INDEX and the base internal format is not
+            GL_STENCIL_INDEX.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the buffer object's data store is currently mapped.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the data would be unpacked from the buffer object such that the
+            memory reads required would exceed the data store size.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and pixels is not evenly divisible into the number of bytes needed to
+            store in memory a datum indicated by type.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexSubImage1D.xhtml
+        """
+        pass
+
+    def tex_sub_image_2d(self, target: int, level: int, xoffset: int, yoffset: int, width: int, height: int, format: int, type: int, pixels: c_void_p):
+        """
+        Specify a two-dimensional texture subimage
+
+        Wrapper for glTexSubImage2D
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target to which the texture is bound for glTexSubImage2D. Must be GL_TEXTURE_2D,
+            GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_CUBE_MAP_NEGATIVE_X, GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
+            GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, GL_TEXTURE_CUBE_MAP_POSITIVE_Z, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, or
+            GL_TEXTURE_1D_ARRAY.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        xoffset: int
+            Specifies a texel offset in the x direction within the texture array.
+        yoffset: int
+            Specifies a texel offset in the y direction within the texture array.
+        width: int
+            Specifies the width of the texture subimage.
+        height: int
+            Specifies the height of the texture subimage.
+        format: int
+            Specifies the format of the pixel data. The following symbolic values are accepted: GL_RED, GL_RG,
+            GL_RGB, GL_BGR, GL_RGBA, GL_BGRA, GL_DEPTH_COMPONENT, and GL_STENCIL_INDEX.
+        type: int
+            Specifies the data type of the pixel data. The following symbolic values are accepted:
+            GL_UNSIGNED_BYTE, GL_BYTE, GL_UNSIGNED_SHORT, GL_SHORT, GL_UNSIGNED_INT, GL_INT, GL_FLOAT,
+            GL_UNSIGNED_BYTE_3_3_2, GL_UNSIGNED_BYTE_2_3_3_REV, GL_UNSIGNED_SHORT_5_6_5,
+            GL_UNSIGNED_SHORT_5_6_5_REV, GL_UNSIGNED_SHORT_4_4_4_4, GL_UNSIGNED_SHORT_4_4_4_4_REV,
+            GL_UNSIGNED_SHORT_5_5_5_1, GL_UNSIGNED_SHORT_1_5_5_5_REV, GL_UNSIGNED_INT_8_8_8_8,
+            GL_UNSIGNED_INT_8_8_8_8_REV, GL_UNSIGNED_INT_10_10_10_2, and GL_UNSIGNED_INT_2_10_10_10_REV.
+        pixels: c_void_p
+            Specifies a pointer to the image data in memory.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated if target or the effective target of texture is not GL_TEXTURE_2D,
+            GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_CUBE_MAP_NEGATIVE_X, GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
+            GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, GL_TEXTURE_CUBE_MAP_POSITIVE_Z, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, or
+            GL_TEXTURE_1D_ARRAY.
+        GL_INVALID_OPERATION is generated by glTextureSubImage2D if texture is not the name of an existing
+            texture object.
+        GL_INVALID_ENUM is generated if format is not an accepted format constant.
+        GL_INVALID_ENUM is generated if type is not a type constant.
+        GL_INVALID_VALUE is generated if level is less than 0.
+        GL_INVALID_VALUE may be generated if level is greater than log 2 max, where max is the returned
+            value of GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if xoffset &lt; - b, xoffset + width &gt; w - b, yoffset &lt; - b, or
+            yoffset + height &gt; h - b, where w is the GL_TEXTURE_WIDTH, h is the GL_TEXTURE_HEIGHT, and b is
+            the border width of the texture image being modified. Note that w and h include twice the border
+            width.
+        GL_INVALID_VALUE is generated if width or height is less than 0.
+        GL_INVALID_OPERATION is generated if the texture array has not been defined by a previous
+            glTexImage2D operation.
+        GL_INVALID_OPERATION is generated if type is one of GL_UNSIGNED_BYTE_3_3_2,
+            GL_UNSIGNED_BYTE_2_3_3_REV, GL_UNSIGNED_SHORT_5_6_5, or GL_UNSIGNED_SHORT_5_6_5_REV and format is
+            not GL_RGB.
+        GL_INVALID_OPERATION is generated if type is one of GL_UNSIGNED_SHORT_4_4_4_4,
+            GL_UNSIGNED_SHORT_4_4_4_4_REV, GL_UNSIGNED_SHORT_5_5_5_1, GL_UNSIGNED_SHORT_1_5_5_5_REV,
+            GL_UNSIGNED_INT_8_8_8_8, GL_UNSIGNED_INT_8_8_8_8_REV, GL_UNSIGNED_INT_10_10_10_2, or
+            GL_UNSIGNED_INT_2_10_10_10_REV and format is neither GL_RGBA nor GL_BGRA.
+        GL_INVALID_OPERATION is generated if format is GL_STENCIL_INDEX and the base internal format is not
+            GL_STENCIL_INDEX.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the buffer object's data store is currently mapped.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the data would be unpacked from the buffer object such that the
+            memory reads required would exceed the data store size.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and pixels is not evenly divisible into the number of bytes needed to
+            store in memory a datum indicated by type.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexSubImage2D.xhtml
+        """
+        pass
+
+    def tex_sub_image_3d(self, target: int, level: int, xoffset: int, yoffset: int, zoffset: int, width: int, height: int, depth: int, format: int, type: int, pixels: c_void_p):
+        """
+        Specify a three-dimensional texture subimage
+
+        Wrapper for glTexSubImage3D
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target to which the texture is bound for glTexSubImage3D. Must be GL_TEXTURE_3D or
+            GL_TEXTURE_2D_ARRAY.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        xoffset: int
+            Specifies a texel offset in the x direction within the texture array.
+        yoffset: int
+            Specifies a texel offset in the y direction within the texture array.
+        zoffset: int
+            Specifies a texel offset in the z direction within the texture array.
+        width: int
+            Specifies the width of the texture subimage.
+        height: int
+            Specifies the height of the texture subimage.
+        depth: int
+            Specifies the depth of the texture subimage.
+        format: int
+            Specifies the format of the pixel data. The following symbolic values are accepted: GL_RED, GL_RG,
+            GL_RGB, GL_BGR, GL_RGBA, GL_DEPTH_COMPONENT, and GL_STENCIL_INDEX.
+        type: int
+            Specifies the data type of the pixel data. The following symbolic values are accepted:
+            GL_UNSIGNED_BYTE, GL_BYTE, GL_UNSIGNED_SHORT, GL_SHORT, GL_UNSIGNED_INT, GL_INT, GL_FLOAT,
+            GL_UNSIGNED_BYTE_3_3_2, GL_UNSIGNED_BYTE_2_3_3_REV, GL_UNSIGNED_SHORT_5_6_5,
+            GL_UNSIGNED_SHORT_5_6_5_REV, GL_UNSIGNED_SHORT_4_4_4_4, GL_UNSIGNED_SHORT_4_4_4_4_REV,
+            GL_UNSIGNED_SHORT_5_5_5_1, GL_UNSIGNED_SHORT_1_5_5_5_REV, GL_UNSIGNED_INT_8_8_8_8,
+            GL_UNSIGNED_INT_8_8_8_8_REV, GL_UNSIGNED_INT_10_10_10_2, and GL_UNSIGNED_INT_2_10_10_10_REV.
+        pixels: c_void_p
+            Specifies a pointer to the image data in memory.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated if target or the effective target of texture is not GL_TEXTURE_3D or
+            GL_TEXTURE_2D_ARRAY.
+        GL_INVALID_OPERATION is generated by glTextureSubImage3D if texture is not the name of an existing
+            texture object.
+        GL_INVALID_ENUM is generated if format is not an accepted format constant.
+        GL_INVALID_ENUM is generated if type is not a type constant.
+        GL_INVALID_VALUE is generated if level is less than 0.
+        GL_INVALID_VALUE may be generated if level is greater than log 2 max, where max is the returned
+            value of GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if xoffset &lt; - b, xoffset + width &gt; w - b, yoffset &lt; - b, or
+            yoffset + height &gt; h - b, or zoffset &lt; - b, or zoffset + depth &gt; d - b, where w is the
+            GL_TEXTURE_WIDTH, h is the GL_TEXTURE_HEIGHT, d is the GL_TEXTURE_DEPTH and b is the border width
+            of the texture image being modified. Note that w, h, and d include twice the border width.
+        GL_INVALID_VALUE is generated if width, height, or depth is less than 0.
+        GL_INVALID_OPERATION is generated if the texture array has not been defined by a previous
+            glTexImage3D or glTexStorage3D operation.
+        GL_INVALID_OPERATION is generated if type is one of GL_UNSIGNED_BYTE_3_3_2,
+            GL_UNSIGNED_BYTE_2_3_3_REV, GL_UNSIGNED_SHORT_5_6_5, or GL_UNSIGNED_SHORT_5_6_5_REV and format is
+            not GL_RGB.
+        GL_INVALID_OPERATION is generated if type is one of GL_UNSIGNED_SHORT_4_4_4_4,
+            GL_UNSIGNED_SHORT_4_4_4_4_REV, GL_UNSIGNED_SHORT_5_5_5_1, GL_UNSIGNED_SHORT_1_5_5_5_REV,
+            GL_UNSIGNED_INT_8_8_8_8, GL_UNSIGNED_INT_8_8_8_8_REV, GL_UNSIGNED_INT_10_10_10_2, or
+            GL_UNSIGNED_INT_2_10_10_10_REV and format is neither GL_RGBA nor GL_BGRA.
+        GL_INVALID_OPERATION is generated if format is GL_STENCIL_INDEX and the base internal format is not
+            GL_STENCIL_INDEX.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the buffer object's data store is currently mapped.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the data would be unpacked from the buffer object such that the
+            memory reads required would exceed the data store size.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and pixels is not evenly divisible into the number of bytes needed to
+            store in memory a datum indicated by type.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexSubImage3D.xhtml
+        """
+        pass
+
+    def uniform_1f(self, location: int, v0: float):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -3814,7 +4913,7 @@ class GL20(GL):
         """
         pass
 
-    def uniform2f(self, location: int, v0: float, v1: float):
+    def uniform_2f(self, location: int, v0: float, v1: float):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -3854,7 +4953,7 @@ class GL20(GL):
         """
         pass
 
-    def uniform3f(self, location: int, v0: float, v1: float, v2: float):
+    def uniform_3f(self, location: int, v0: float, v1: float, v2: float):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -3894,7 +4993,7 @@ class GL20(GL):
         """
         pass
 
-    def uniform4f(self, location: int, v0: float, v1: float, v2: float, v3: float):
+    def uniform_4f(self, location: int, v0: float, v1: float, v2: float, v3: float):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -3934,7 +5033,7 @@ class GL20(GL):
         """
         pass
 
-    def uniform1i(self, location: int, v0: int):
+    def uniform_1i(self, location: int, v0: int):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -3974,7 +5073,7 @@ class GL20(GL):
         """
         pass
 
-    def uniform2i(self, location: int, v0: int, v1: int):
+    def uniform_2i(self, location: int, v0: int, v1: int):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -4014,7 +5113,7 @@ class GL20(GL):
         """
         pass
 
-    def uniform3i(self, location: int, v0: int, v1: int, v2: int):
+    def uniform_3i(self, location: int, v0: int, v1: int, v2: int):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -4054,7 +5153,7 @@ class GL20(GL):
         """
         pass
 
-    def uniform4i(self, location: int, v0: int, v1: int, v2: int, v3: int):
+    def uniform_4i(self, location: int, v0: int, v1: int, v2: int, v3: int):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -4094,7 +5193,7 @@ class GL20(GL):
         """
         pass
 
-    def uniform1fv(self, location: int, count: int, value: POINTER(c_float)):
+    def uniform_1fv(self, location: int, count: int, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -4141,7 +5240,7 @@ class GL20(GL):
         """
         pass
 
-    def uniform2fv(self, location: int, count: int, value: POINTER(c_float)):
+    def uniform_2fv(self, location: int, count: int, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -4188,7 +5287,7 @@ class GL20(GL):
         """
         pass
 
-    def uniform3fv(self, location: int, count: int, value: POINTER(c_float)):
+    def uniform_3fv(self, location: int, count: int, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -4235,7 +5334,7 @@ class GL20(GL):
         """
         pass
 
-    def uniform4fv(self, location: int, count: int, value: POINTER(c_float)):
+    def uniform_4fv(self, location: int, count: int, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -4282,7 +5381,7 @@ class GL20(GL):
         """
         pass
 
-    def uniform1iv(self, location: int, count: int, value: POINTER(c_int)):
+    def uniform_1iv(self, location: int, count: int, value: POINTER(c_int)):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -4329,7 +5428,7 @@ class GL20(GL):
         """
         pass
 
-    def uniform2iv(self, location: int, count: int, value: POINTER(c_int)):
+    def uniform_2iv(self, location: int, count: int, value: POINTER(c_int)):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -4376,7 +5475,7 @@ class GL20(GL):
         """
         pass
 
-    def uniform3iv(self, location: int, count: int, value: POINTER(c_int)):
+    def uniform_3iv(self, location: int, count: int, value: POINTER(c_int)):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -4423,7 +5522,7 @@ class GL20(GL):
         """
         pass
 
-    def uniform4iv(self, location: int, count: int, value: POINTER(c_int)):
+    def uniform_4iv(self, location: int, count: int, value: POINTER(c_int)):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -4470,7 +5569,7 @@ class GL20(GL):
         """
         pass
 
-    def uniform_matrix2fv(self, location: int, count: int, transpose: bool, value: POINTER(c_float)):
+    def uniform_matrix_2fv(self, location: int, count: int, transpose: bool, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -4520,7 +5619,7 @@ class GL20(GL):
         """
         pass
 
-    def uniform_matrix3fv(self, location: int, count: int, transpose: bool, value: POINTER(c_float)):
+    def uniform_matrix_3fv(self, location: int, count: int, transpose: bool, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -4570,7 +5669,7 @@ class GL20(GL):
         """
         pass
 
-    def uniform_matrix4fv(self, location: int, count: int, transpose: bool, value: POINTER(c_float)):
+    def uniform_matrix_4fv(self, location: int, count: int, transpose: bool, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -4701,7 +5800,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib1f(self, index: int, v0: float):
+    def vertex_attrib_1f(self, index: int, v0: float):
         """
         Specifies the value of a generic vertex attribute
 
@@ -4727,7 +5826,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib1s(self, index: int, v0: int):
+    def vertex_attrib_1s(self, index: int, v0: int):
         """
         Specifies the value of a generic vertex attribute
 
@@ -4753,7 +5852,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib1d(self, index: int, v0: float):
+    def vertex_attrib_1d(self, index: int, v0: float):
         """
         Specifies the value of a generic vertex attribute
 
@@ -4779,7 +5878,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib2f(self, index: int, v0: float, v1: float):
+    def vertex_attrib_2f(self, index: int, v0: float, v1: float):
         """
         Specifies the value of a generic vertex attribute
 
@@ -4805,7 +5904,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib2s(self, index: int, v0: int, v1: int):
+    def vertex_attrib_2s(self, index: int, v0: int, v1: int):
         """
         Specifies the value of a generic vertex attribute
 
@@ -4831,7 +5930,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib2d(self, index: int, v0: float, v1: float):
+    def vertex_attrib_2d(self, index: int, v0: float, v1: float):
         """
         Specifies the value of a generic vertex attribute
 
@@ -4857,7 +5956,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib3f(self, index: int, v0: float, v1: float, v2: float):
+    def vertex_attrib_3f(self, index: int, v0: float, v1: float, v2: float):
         """
         Specifies the value of a generic vertex attribute
 
@@ -4883,7 +5982,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib3s(self, index: int, v0: int, v1: int, v2: int):
+    def vertex_attrib_3s(self, index: int, v0: int, v1: int, v2: int):
         """
         Specifies the value of a generic vertex attribute
 
@@ -4909,7 +6008,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib3d(self, index: int, v0: float, v1: float, v2: float):
+    def vertex_attrib_3d(self, index: int, v0: float, v1: float, v2: float):
         """
         Specifies the value of a generic vertex attribute
 
@@ -4935,7 +6034,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib4f(self, index: int, v0: float, v1: float, v2: float, v3: float):
+    def vertex_attrib_4f(self, index: int, v0: float, v1: float, v2: float, v3: float):
         """
         Specifies the value of a generic vertex attribute
 
@@ -4961,7 +6060,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib4s(self, index: int, v0: int, v1: int, v2: int, v3: int):
+    def vertex_attrib_4s(self, index: int, v0: int, v1: int, v2: int, v3: int):
         """
         Specifies the value of a generic vertex attribute
 
@@ -4987,7 +6086,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib4d(self, index: int, v0: float, v1: float, v2: float, v3: float):
+    def vertex_attrib_4d(self, index: int, v0: float, v1: float, v2: float, v3: float):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5013,7 +6112,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib4_nub(self, index: int, v0: c_ubyte, v1: c_ubyte, v2: c_ubyte, v3: c_ubyte):
+    def vertex_attrib_4nub(self, index: int, v0: c_ubyte, v1: c_ubyte, v2: c_ubyte, v3: c_ubyte):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5039,7 +6138,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib1fv(self, index: int, v: POINTER(c_float)):
+    def vertex_attrib_1fv(self, index: int, v: POINTER(c_float)):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5066,7 +6165,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib1sv(self, index: int, v: POINTER(c_int16)):
+    def vertex_attrib_1sv(self, index: int, v: POINTER(c_int16)):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5093,7 +6192,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib1dv(self, index: int, v: POINTER(c_double)):
+    def vertex_attrib_1dv(self, index: int, v: POINTER(c_double)):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5120,7 +6219,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib2fv(self, index: int, v: POINTER(c_float)):
+    def vertex_attrib_2fv(self, index: int, v: POINTER(c_float)):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5147,7 +6246,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib2sv(self, index: int, v: POINTER(c_int16)):
+    def vertex_attrib_2sv(self, index: int, v: POINTER(c_int16)):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5174,7 +6273,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib2dv(self, index: int, v: POINTER(c_double)):
+    def vertex_attrib_2dv(self, index: int, v: POINTER(c_double)):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5201,7 +6300,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib3fv(self, index: int, v: POINTER(c_float)):
+    def vertex_attrib_3fv(self, index: int, v: POINTER(c_float)):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5228,7 +6327,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib3sv(self, index: int, v: POINTER(c_int16)):
+    def vertex_attrib_3sv(self, index: int, v: POINTER(c_int16)):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5255,7 +6354,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib3dv(self, index: int, v: POINTER(c_double)):
+    def vertex_attrib_3dv(self, index: int, v: POINTER(c_double)):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5282,7 +6381,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib4fv(self, index: int, v: POINTER(c_float)):
+    def vertex_attrib_4fv(self, index: int, v: POINTER(c_float)):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5309,7 +6408,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib4sv(self, index: int, v: POINTER(c_int16)):
+    def vertex_attrib_4sv(self, index: int, v: POINTER(c_int16)):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5336,7 +6435,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib4dv(self, index: int, v: POINTER(c_double)):
+    def vertex_attrib_4dv(self, index: int, v: POINTER(c_double)):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5363,7 +6462,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib4iv(self, index: int, v: POINTER(c_int)):
+    def vertex_attrib_4iv(self, index: int, v: POINTER(c_int)):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5390,7 +6489,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib4bv(self, index: int, v: POINTER(c_byte)):
+    def vertex_attrib_4bv(self, index: int, v: POINTER(c_byte)):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5417,7 +6516,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib4ubv(self, index: int, v: POINTER(c_ubyte)):
+    def vertex_attrib_4ubv(self, index: int, v: POINTER(c_ubyte)):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5444,7 +6543,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib4usv(self, index: int, v: POINTER(c_ushort)):
+    def vertex_attrib_4usv(self, index: int, v: POINTER(c_ushort)):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5471,7 +6570,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib4uiv(self, index: int, v: POINTER(c_uint)):
+    def vertex_attrib_4uiv(self, index: int, v: POINTER(c_uint)):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5498,7 +6597,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib4_nbv(self, index: int, v: POINTER(c_byte)):
+    def vertex_attrib_4nbv(self, index: int, v: POINTER(c_byte)):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5525,7 +6624,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib4_nsv(self, index: int, v: POINTER(c_int16)):
+    def vertex_attrib_4nsv(self, index: int, v: POINTER(c_int16)):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5552,7 +6651,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib4_niv(self, index: int, v: POINTER(c_int)):
+    def vertex_attrib_4niv(self, index: int, v: POINTER(c_int)):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5579,7 +6678,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib4_nubv(self, index: int, v: POINTER(c_ubyte)):
+    def vertex_attrib_4nubv(self, index: int, v: POINTER(c_ubyte)):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5606,7 +6705,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib4_nusv(self, index: int, v: POINTER(c_ushort)):
+    def vertex_attrib_4nusv(self, index: int, v: POINTER(c_ushort)):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5633,7 +6732,7 @@ class GL20(GL):
         """
         pass
 
-    def vertex_attrib4_nuiv(self, index: int, v: POINTER(c_uint)):
+    def vertex_attrib_4nuiv(self, index: int, v: POINTER(c_uint)):
         """
         Specifies the value of a generic vertex attribute
 
@@ -5744,20 +6843,20 @@ class GL21(GL20):
     def __init__(self, glfw: GLFW):
         super().__init__(glfw)
 
-        self._load(self.uniform_matrix2x3fv, 'glUniformMatrix2x3fv',
+        self._load(self.uniform_matrix_2x3fv, 'glUniformMatrix2x3fv',
                    None, c_int, c_uint32, c_bool, POINTER(c_float))
-        self._load(self.uniform_matrix3x2fv, 'glUniformMatrix3x2fv',
+        self._load(self.uniform_matrix_3x2fv, 'glUniformMatrix3x2fv',
                    None, c_int, c_uint32, c_bool, POINTER(c_float))
-        self._load(self.uniform_matrix2x4fv, 'glUniformMatrix2x4fv',
+        self._load(self.uniform_matrix_2x4fv, 'glUniformMatrix2x4fv',
                    None, c_int, c_uint32, c_bool, POINTER(c_float))
-        self._load(self.uniform_matrix4x2fv, 'glUniformMatrix4x2fv',
+        self._load(self.uniform_matrix_4x2fv, 'glUniformMatrix4x2fv',
                    None, c_int, c_uint32, c_bool, POINTER(c_float))
-        self._load(self.uniform_matrix3x4fv, 'glUniformMatrix3x4fv',
+        self._load(self.uniform_matrix_3x4fv, 'glUniformMatrix3x4fv',
                    None, c_int, c_uint32, c_bool, POINTER(c_float))
-        self._load(self.uniform_matrix4x3fv, 'glUniformMatrix4x3fv',
+        self._load(self.uniform_matrix_4x3fv, 'glUniformMatrix4x3fv',
                    None, c_int, c_uint32, c_bool, POINTER(c_float))
 
-    def uniform_matrix2x3fv(self, location: int, count: int, transpose: bool, value: POINTER(c_float)):
+    def uniform_matrix_2x3fv(self, location: int, count: int, transpose: bool, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -5807,7 +6906,7 @@ class GL21(GL20):
         """
         pass
 
-    def uniform_matrix3x2fv(self, location: int, count: int, transpose: bool, value: POINTER(c_float)):
+    def uniform_matrix_3x2fv(self, location: int, count: int, transpose: bool, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -5857,7 +6956,7 @@ class GL21(GL20):
         """
         pass
 
-    def uniform_matrix2x4fv(self, location: int, count: int, transpose: bool, value: POINTER(c_float)):
+    def uniform_matrix_2x4fv(self, location: int, count: int, transpose: bool, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -5907,7 +7006,7 @@ class GL21(GL20):
         """
         pass
 
-    def uniform_matrix4x2fv(self, location: int, count: int, transpose: bool, value: POINTER(c_float)):
+    def uniform_matrix_4x2fv(self, location: int, count: int, transpose: bool, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -5957,7 +7056,7 @@ class GL21(GL20):
         """
         pass
 
-    def uniform_matrix3x4fv(self, location: int, count: int, transpose: bool, value: POINTER(c_float)):
+    def uniform_matrix_3x4fv(self, location: int, count: int, transpose: bool, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -6007,7 +7106,7 @@ class GL21(GL20):
         """
         pass
 
-    def uniform_matrix4x3fv(self, location: int, count: int, transpose: bool, value: POINTER(c_float)):
+    def uniform_matrix_4x3fv(self, location: int, count: int, transpose: bool, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -6115,11 +7214,11 @@ class GL30(GL21):
                    None, c_uint, c_int, c_uint32)
         self._load(self.framebuffer_renderbuffer, 'glFramebufferRenderbuffer',
                    None, c_uint, c_uint, c_uint, c_uint)
-        self._load(self.framebuffer_texture1_d, 'glFramebufferTexture1D',
+        self._load(self.framebuffer_texture_1d, 'glFramebufferTexture1D',
                    None, c_uint, c_uint, c_uint, c_uint, c_int)
-        self._load(self.framebuffer_texture2_d, 'glFramebufferTexture2D',
+        self._load(self.framebuffer_texture_2d, 'glFramebufferTexture2D',
                    None, c_uint, c_uint, c_uint, c_uint, c_int)
-        self._load(self.framebuffer_texture3_d, 'glFramebufferTexture3D',
+        self._load(self.framebuffer_texture_3d, 'glFramebufferTexture3D',
                    None, c_uint, c_uint, c_uint, c_uint, c_int, c_int)
         self._load(self.framebuffer_texture_layer, 'glFramebufferTextureLayer',
                    None, c_uint, c_uint, c_uint, c_int, c_int)
@@ -6155,13 +7254,13 @@ class GL30(GL21):
                    None, c_uint, c_uint, POINTER(c_int))
         self._load(self.get_vertex_attrib_iuiv, 'glGetVertexAttribIuiv',
                    None, c_uint, c_uint, POINTER(c_uint))
-        self._load(self.is_enabledi, 'glIsEnabledi',
+        self._load(self.isenabledi, 'glIsEnabledi',
                    c_bool, c_uint, c_uint)
-        self._load(self.is_framebuffer, 'glIsFramebuffer',
+        self._load(self.isframebuffer, 'glIsFramebuffer',
                    c_bool, c_uint)
-        self._load(self.is_renderbuffer, 'glIsRenderbuffer',
+        self._load(self.isrenderbuffer, 'glIsRenderbuffer',
                    c_bool, c_uint)
-        self._load(self.is_vertex_array, 'glIsVertexArray',
+        self._load(self.isvertex_array, 'glIsVertexArray',
                    c_bool, c_uint)
         self._load(self.map_buffer_range, 'glMapBufferRange',
                    c_void_p, c_uint, c_int, c_uint32, c_uint32)
@@ -6175,21 +7274,21 @@ class GL30(GL21):
                    None, c_uint, c_uint, POINTER(c_uint))
         self._load(self.transform_feedback_varyings, 'glTransformFeedbackVaryings',
                    None, c_uint, c_uint32, POINTER(c_char_p), c_uint)
-        self._load(self.uniform1ui, 'glUniform1ui',
+        self._load(self.uniform_1ui, 'glUniform1ui',
                    None, c_int, c_uint)
-        self._load(self.uniform2ui, 'glUniform2ui',
+        self._load(self.uniform_2ui, 'glUniform2ui',
                    None, c_int, c_uint, c_uint)
-        self._load(self.uniform3ui, 'glUniform3ui',
+        self._load(self.uniform_3ui, 'glUniform3ui',
                    None, c_int, c_uint, c_uint, c_uint)
-        self._load(self.uniform4ui, 'glUniform4ui',
+        self._load(self.uniform_4ui, 'glUniform4ui',
                    None, c_int, c_uint, c_uint, c_uint, c_uint)
-        self._load(self.uniform1uiv, 'glUniform1uiv',
+        self._load(self.uniform_1uiv, 'glUniform1uiv',
                    None, c_int, c_uint32, POINTER(c_uint))
-        self._load(self.uniform2uiv, 'glUniform2uiv',
+        self._load(self.uniform_2uiv, 'glUniform2uiv',
                    None, c_int, c_uint32, POINTER(c_uint))
-        self._load(self.uniform3uiv, 'glUniform3uiv',
+        self._load(self.uniform_3uiv, 'glUniform3uiv',
                    None, c_int, c_uint32, POINTER(c_uint))
-        self._load(self.uniform4uiv, 'glUniform4uiv',
+        self._load(self.uniform_4uiv, 'glUniform4uiv',
                    None, c_int, c_uint32, POINTER(c_uint))
         self._load(self.vertex_attrib_i1i, 'glVertexAttribI1i',
                    None, c_uint, c_int)
@@ -6967,7 +8066,7 @@ class GL30(GL21):
         """
         pass
 
-    def framebuffer_texture1_d(self, target: int, attachment: int, textarget: int, texture: int, level: int):
+    def framebuffer_texture_1d(self, target: int, attachment: int, textarget: int, texture: int, level: int):
         """
         Attach a level of a texture object as a logical buffer of a framebuffer object
 
@@ -7013,7 +8112,7 @@ class GL30(GL21):
         """
         pass
 
-    def framebuffer_texture2_d(self, target: int, attachment: int, textarget: int, texture: int, level: int):
+    def framebuffer_texture_2d(self, target: int, attachment: int, textarget: int, texture: int, level: int):
         """
         Attach a level of a texture object as a logical buffer of a framebuffer object
 
@@ -7059,7 +8158,7 @@ class GL30(GL21):
         """
         pass
 
-    def framebuffer_texture3_d(self, target: int, attachment: int, textarget: int, texture: int, level: int, layer: int):
+    def framebuffer_texture_3d(self, target: int, attachment: int, textarget: int, texture: int, level: int, layer: int):
         """
         Attach a level of a texture object as a logical buffer of a framebuffer object
 
@@ -7634,7 +8733,7 @@ class GL30(GL21):
         """
         pass
 
-    def is_enabledi(self, cap: int, index: int) -> bool:
+    def isenabledi(self, cap: int, index: int) -> bool:
         """
         Test whether a capability is enabled
 
@@ -7659,7 +8758,7 @@ class GL30(GL21):
         """
         pass
 
-    def is_framebuffer(self, framebuffer: int) -> bool:
+    def isframebuffer(self, framebuffer: int) -> bool:
         """
         Determine if a name corresponds to a framebuffer object
 
@@ -7676,7 +8775,7 @@ class GL30(GL21):
         """
         pass
 
-    def is_renderbuffer(self, renderbuffer: int) -> bool:
+    def isrenderbuffer(self, renderbuffer: int) -> bool:
         """
         Determine if a name corresponds to a renderbuffer object
 
@@ -7693,7 +8792,7 @@ class GL30(GL21):
         """
         pass
 
-    def is_vertex_array(self, array: int) -> bool:
+    def isvertex_array(self, array: int) -> bool:
         """
         Determine if a name corresponds to a vertex array object
 
@@ -7978,7 +9077,7 @@ class GL30(GL21):
         """
         pass
 
-    def uniform1ui(self, location: int, v0: int):
+    def uniform_1ui(self, location: int, v0: int):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -8018,7 +9117,7 @@ class GL30(GL21):
         """
         pass
 
-    def uniform2ui(self, location: int, v0: int, v1: int):
+    def uniform_2ui(self, location: int, v0: int, v1: int):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -8058,7 +9157,7 @@ class GL30(GL21):
         """
         pass
 
-    def uniform3ui(self, location: int, v0: int, v1: int, v2: int):
+    def uniform_3ui(self, location: int, v0: int, v1: int, v2: int):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -8098,7 +9197,7 @@ class GL30(GL21):
         """
         pass
 
-    def uniform4ui(self, location: int, v0: int, v1: int, v2: int, v3: int):
+    def uniform_4ui(self, location: int, v0: int, v1: int, v2: int, v3: int):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -8138,7 +9237,7 @@ class GL30(GL21):
         """
         pass
 
-    def uniform1uiv(self, location: int, count: int, value: POINTER(c_uint)):
+    def uniform_1uiv(self, location: int, count: int, value: POINTER(c_uint)):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -8185,7 +9284,7 @@ class GL30(GL21):
         """
         pass
 
-    def uniform2uiv(self, location: int, count: int, value: POINTER(c_uint)):
+    def uniform_2uiv(self, location: int, count: int, value: POINTER(c_uint)):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -8232,7 +9331,7 @@ class GL30(GL21):
         """
         pass
 
-    def uniform3uiv(self, location: int, count: int, value: POINTER(c_uint)):
+    def uniform_3uiv(self, location: int, count: int, value: POINTER(c_uint)):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -8279,7 +9378,7 @@ class GL30(GL21):
         """
         pass
 
-    def uniform4uiv(self, location: int, count: int, value: POINTER(c_uint)):
+    def uniform_4uiv(self, location: int, count: int, value: POINTER(c_uint)):
         """
         Specify the value of a uniform variable for the current program object
 
@@ -9310,19 +10409,19 @@ class GL32(GL31):
                    None, c_uint, c_uint, c_uint, c_int)
         self._load(self.gen_samplers, 'glGenSamplers',
                    None, c_uint32, POINTER(c_uint))
-        self._load(self.get_integer64v, 'glGetInteger64v',
+        self._load(self.get_integer_64v, 'glGetInteger64v',
                    None, c_uint, POINTER(c_int64))
-        self._load(self.get_integer64i_v, 'glGetInteger64i_v',
+        self._load(self.get_integer_64i_v, 'glGetInteger64i_v',
                    None, c_uint, c_uint, POINTER(c_int64))
-        self._load(self.get_buffer_parameteri64v, 'glGetBufferParameteri64v',
+        self._load(self.get_buffer_parameteri_64v, 'glGetBufferParameteri64v',
                    None, c_uint, c_uint, POINTER(c_int64))
         self._load(self.get_frag_data_index, 'glGetFragDataIndex',
                    c_int, c_uint, c_char_p)
         self._load(self.get_multisamplefv, 'glGetMultisamplefv',
                    None, c_uint, c_uint, POINTER(c_float))
-        self._load(self.get_query_objecti64v, 'glGetQueryObjecti64v',
+        self._load(self.get_query_objecti_64v, 'glGetQueryObjecti64v',
                    None, c_uint, c_uint, POINTER(c_int64))
-        self._load(self.get_query_objectui64v, 'glGetQueryObjectui64v',
+        self._load(self.get_query_objectui_64v, 'glGetQueryObjectui64v',
                    None, c_uint, c_uint, POINTER(c_uint64))
         self._load(self.get_sampler_parameterfv, 'glGetSamplerParameterfv',
                    None, c_uint, c_uint, POINTER(c_float))
@@ -9334,9 +10433,9 @@ class GL32(GL31):
                    None, c_uint, c_uint, POINTER(c_uint))
         self._load(self.get_synciv, 'glGetSynciv',
                    None, c_void_p, c_uint, c_uint32, POINTER(c_uint32), POINTER(c_int))
-        self._load(self.is_sampler, 'glIsSampler',
+        self._load(self.issampler, 'glIsSampler',
                    c_bool, c_uint)
-        self._load(self.is_sync, 'glIsSync',
+        self._load(self.issync, 'glIsSync',
                    c_bool, c_void_p)
         self._load(self.multi_draw_elements_base_vertex, 'glMultiDrawElementsBaseVertex',
                    None, c_uint, POINTER(c_uint32), c_uint, c_uint32, POINTER(c_int))
@@ -9358,6 +10457,10 @@ class GL32(GL31):
                    None, c_uint, c_uint, POINTER(c_int))
         self._load(self.sampler_parameter_iuiv, 'glSamplerParameterIuiv',
                    None, c_uint, c_uint, POINTER(c_uint))
+        self._load(self.tex_image_2dmultisample, 'glTexImage2DMultisample',
+                   None, c_uint, c_uint32, c_uint, c_uint32, c_uint32, c_bool)
+        self._load(self.tex_image_3dmultisample, 'glTexImage3DMultisample',
+                   None, c_uint, c_uint32, c_uint, c_uint32, c_uint32, c_uint32, c_bool)
         self._load(self.wait_sync, 'glWaitSync',
                    None, c_void_p, c_uint32, c_uint64)
 
@@ -9704,7 +10807,7 @@ class GL32(GL31):
         """
         pass
 
-    def get_integer64v(self, pname: int, data: POINTER(c_int64)):
+    def get_integer_64v(self, pname: int, data: POINTER(c_int64)):
         """
         Return the value or values of a selected parameter
 
@@ -9730,7 +10833,7 @@ class GL32(GL31):
         """
         pass
 
-    def get_integer64i_v(self, target: int, index: int, data: POINTER(c_int64)):
+    def get_integer_64i_v(self, target: int, index: int, data: POINTER(c_int64)):
         """
         Return the value or values of a selected parameter
 
@@ -9758,7 +10861,7 @@ class GL32(GL31):
         """
         pass
 
-    def get_buffer_parameteri64v(self, target: int, value: int, data: POINTER(c_int64)):
+    def get_buffer_parameteri_64v(self, target: int, value: int, data: POINTER(c_int64)):
         """
         Return parameters of a buffer object
 
@@ -9846,7 +10949,7 @@ class GL32(GL31):
         """
         pass
 
-    def get_query_objecti64v(self, id: int, pname: int, params: POINTER(c_int64)):
+    def get_query_objecti_64v(self, id: int, pname: int, params: POINTER(c_int64)):
         """
         Return parameters of a query object
 
@@ -9880,7 +10983,7 @@ class GL32(GL31):
         """
         pass
 
-    def get_query_objectui64v(self, id: int, pname: int, params: POINTER(c_uint64)):
+    def get_query_objectui_64v(self, id: int, pname: int, params: POINTER(c_uint64)):
         """
         Return parameters of a query object
 
@@ -10062,7 +11165,7 @@ class GL32(GL31):
         """
         pass
 
-    def is_sampler(self, id: int) -> bool:
+    def issampler(self, id: int) -> bool:
         """
         Determine if a name corresponds to a sampler object
 
@@ -10079,7 +11182,7 @@ class GL32(GL31):
         """
         pass
 
-    def is_sync(self, sync: c_void_p) -> bool:
+    def issync(self, sync: c_void_p) -> bool:
         """
         Determine if a name corresponds to a sync object
 
@@ -10390,6 +11493,97 @@ class GL32(GL31):
         """
         pass
 
+    def tex_image_2dmultisample(self, target: int, samples: int, internalformat: int, width: int, height: int, fixedsamplelocations: bool):
+        """
+        Establish the data storage, format, dimensions, and number of samples of a multisample texture's image
+
+        Wrapper for glTexImage2DMultisample
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target of the operation. target must be GL_TEXTURE_2D_MULTISAMPLE or
+            GL_PROXY_TEXTURE_2D_MULTISAMPLE.
+        samples: int
+            The number of samples in the multisample texture's image.
+        internalformat: int
+            The internal format to be used to store the multisample texture's image. internalformat must
+            specify a color-renderable, depth-renderable, or stencil-renderable format.
+        width: int
+            The width of the multisample texture's image, in texels.
+        height: int
+            The height of the multisample texture's image, in texels.
+        fixedsamplelocations: bool
+            Specifies whether the image will use identical sample locations and the same number of samples for
+            all texels in the image, and the sample locations will not depend on the internal format or size of
+            the image.
+
+        Raises
+        ------
+        GL_INVALID_OPERATION is generated if internalformat is a depth- or stencil-renderable format and
+            samples is greater than the value of GL_MAX_DEPTH_TEXTURE_SAMPLES.
+        GL_INVALID_OPERATION is generated if internalformat is a color-renderable format and samples is
+            greater than the value of GL_MAX_COLOR_TEXTURE_SAMPLES.
+        GL_INVALID_OPERATION is generated if internalformat is a signed or unsigned integer format and
+            samples is greater than the value of GL_MAX_INTEGER_SAMPLES.
+        GL_INVALID_VALUE is generated if either width or height negative or is greater than
+            GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if samples is zero.
+        GL_INVALID_OPERATION is generated if samples is greater than the maximum number of samples
+            supported for this target and internalformat.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexImage2DMultisample.xhtml
+        """
+        pass
+
+    def tex_image_3dmultisample(self, target: int, samples: int, internalformat: int, width: int, height: int, depth: int, fixedsamplelocations: bool):
+        """
+        Establish the data storage, format, dimensions, and number of samples of a multisample texture's image
+
+        Wrapper for glTexImage3DMultisample
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target of the operation. target must be GL_TEXTURE_2D_MULTISAMPLE_ARRAY or
+            GL_PROXY_TEXTURE_2D_MULTISAMPLE_ARRAY.
+        samples: int
+            The number of samples in the multisample texture's image.
+        internalformat: int
+            The internal format to be used to store the multisample texture's image. internalformat must
+            specify a color-renderable, depth-renderable, or stencil-renderable format.
+        width: int
+            The width of the multisample texture's image, in texels.
+        height: int
+            The height of the multisample texture's image, in texels.
+        fixedsamplelocations: bool
+            Specifies whether the image will use identical sample locations and the same number of samples for
+            all texels in the image, and the sample locations will not depend on the internal format or size of
+            the image.
+
+        Raises
+        ------
+        GL_INVALID_OPERATION is generated if internalformat is a depth- or stencil-renderable format and
+            samples is greater than the value of GL_MAX_DEPTH_TEXTURE_SAMPLES.
+        GL_INVALID_OPERATION is generated if internalformat is a color-renderable format and samples is
+            greater than the value of GL_MAX_COLOR_TEXTURE_SAMPLES.
+        GL_INVALID_OPERATION is generated if internalformat is a signed or unsigned integer format and
+            samples is greater than the value of GL_MAX_INTEGER_SAMPLES.
+        GL_INVALID_VALUE is generated if either width or height negative or is greater than
+            GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if depth is negative or is greater than GL_MAX_ARRAY_TEXTURE_LAYERS.
+        GL_INVALID_VALUE is generated if samples is zero.
+        GL_INVALID_OPERATION is generated if samples is greater than the maximum number of samples
+            supported for this target and internalformat.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexImage3DMultisample.xhtml
+        """
+        pass
+
     def wait_sync(self, sync: c_void_p, flags: int, timeout: int):
         """
         Instruct the GL server to block until the specified sync object becomes signaled
@@ -10654,7 +11848,7 @@ class GL40(GL33):
                    None, c_uint, c_int, POINTER(c_double))
         self._load(self.get_uniform_subroutineuiv, 'glGetUniformSubroutineuiv',
                    None, c_uint, c_int, POINTER(c_uint))
-        self._load(self.is_transform_feedback, 'glIsTransformFeedback',
+        self._load(self.istransform_feedback, 'glIsTransformFeedback',
                    c_bool, c_uint)
         self._load(self.min_sample_shading, 'glMinSampleShading',
                    None, c_float)
@@ -11345,7 +12539,7 @@ class GL40(GL33):
         """
         pass
 
-    def is_transform_feedback(self, id: int) -> bool:
+    def istransform_feedback(self, id: int) -> bool:
         """
         Determine if a name corresponds to a transform feedback object
 
@@ -11541,77 +12735,77 @@ class GL41(GL40):
                    None, c_uint, c_uint, POINTER(c_int), POINTER(c_int))
         self._load(self.get_vertex_attrib_ldv, 'glGetVertexAttribLdv',
                    None, c_uint, c_uint, POINTER(c_double))
-        self._load(self.is_program_pipeline, 'glIsProgramPipeline',
+        self._load(self.isprogram_pipeline, 'glIsProgramPipeline',
                    c_bool, c_uint)
         self._load(self.program_binary, 'glProgramBinary',
                    None, c_uint, c_uint, c_void_p, c_uint32)
         self._load(self.program_parameteri, 'glProgramParameteri',
                    None, c_uint, c_uint, c_int)
-        self._load(self.program_uniform1f, 'glProgramUniform1f',
+        self._load(self.program_uniform_1f, 'glProgramUniform1f',
                    None, c_uint, c_int, c_float)
-        self._load(self.program_uniform2f, 'glProgramUniform2f',
+        self._load(self.program_uniform_2f, 'glProgramUniform2f',
                    None, c_uint, c_int, c_float, c_float)
-        self._load(self.program_uniform3f, 'glProgramUniform3f',
+        self._load(self.program_uniform_3f, 'glProgramUniform3f',
                    None, c_uint, c_int, c_float, c_float, c_float)
-        self._load(self.program_uniform4f, 'glProgramUniform4f',
+        self._load(self.program_uniform_4f, 'glProgramUniform4f',
                    None, c_uint, c_int, c_float, c_float, c_float, c_float)
-        self._load(self.program_uniform1i, 'glProgramUniform1i',
+        self._load(self.program_uniform_1i, 'glProgramUniform1i',
                    None, c_uint, c_int, c_int)
-        self._load(self.program_uniform2i, 'glProgramUniform2i',
+        self._load(self.program_uniform_2i, 'glProgramUniform2i',
                    None, c_uint, c_int, c_int, c_int)
-        self._load(self.program_uniform3i, 'glProgramUniform3i',
+        self._load(self.program_uniform_3i, 'glProgramUniform3i',
                    None, c_uint, c_int, c_int, c_int, c_int)
-        self._load(self.program_uniform4i, 'glProgramUniform4i',
+        self._load(self.program_uniform_4i, 'glProgramUniform4i',
                    None, c_uint, c_int, c_int, c_int, c_int, c_int)
-        self._load(self.program_uniform1ui, 'glProgramUniform1ui',
+        self._load(self.program_uniform_1ui, 'glProgramUniform1ui',
                    None, c_uint, c_int, c_uint)
-        self._load(self.program_uniform2ui, 'glProgramUniform2ui',
+        self._load(self.program_uniform_2ui, 'glProgramUniform2ui',
                    None, c_uint, c_int, c_int, c_uint)
-        self._load(self.program_uniform3ui, 'glProgramUniform3ui',
+        self._load(self.program_uniform_3ui, 'glProgramUniform3ui',
                    None, c_uint, c_int, c_int, c_int, c_uint)
-        self._load(self.program_uniform4ui, 'glProgramUniform4ui',
+        self._load(self.program_uniform_4ui, 'glProgramUniform4ui',
                    None, c_uint, c_int, c_int, c_int, c_int, c_uint)
-        self._load(self.program_uniform1fv, 'glProgramUniform1fv',
+        self._load(self.program_uniform_1fv, 'glProgramUniform1fv',
                    None, c_uint, c_int, c_uint32, POINTER(c_float))
-        self._load(self.program_uniform2fv, 'glProgramUniform2fv',
+        self._load(self.program_uniform_2fv, 'glProgramUniform2fv',
                    None, c_uint, c_int, c_uint32, POINTER(c_float))
-        self._load(self.program_uniform3fv, 'glProgramUniform3fv',
+        self._load(self.program_uniform_3fv, 'glProgramUniform3fv',
                    None, c_uint, c_int, c_uint32, POINTER(c_float))
-        self._load(self.program_uniform4fv, 'glProgramUniform4fv',
+        self._load(self.program_uniform_4fv, 'glProgramUniform4fv',
                    None, c_uint, c_int, c_uint32, POINTER(c_float))
-        self._load(self.program_uniform1iv, 'glProgramUniform1iv',
+        self._load(self.program_uniform_1iv, 'glProgramUniform1iv',
                    None, c_uint, c_int, c_uint32, POINTER(c_int))
-        self._load(self.program_uniform2iv, 'glProgramUniform2iv',
+        self._load(self.program_uniform_2iv, 'glProgramUniform2iv',
                    None, c_uint, c_int, c_uint32, POINTER(c_int))
-        self._load(self.program_uniform3iv, 'glProgramUniform3iv',
+        self._load(self.program_uniform_3iv, 'glProgramUniform3iv',
                    None, c_uint, c_int, c_uint32, POINTER(c_int))
-        self._load(self.program_uniform4iv, 'glProgramUniform4iv',
+        self._load(self.program_uniform_4iv, 'glProgramUniform4iv',
                    None, c_uint, c_int, c_uint32, POINTER(c_int))
-        self._load(self.program_uniform1uiv, 'glProgramUniform1uiv',
+        self._load(self.program_uniform_1uiv, 'glProgramUniform1uiv',
                    None, c_uint, c_int, c_uint32, POINTER(c_uint))
-        self._load(self.program_uniform2uiv, 'glProgramUniform2uiv',
+        self._load(self.program_uniform_2uiv, 'glProgramUniform2uiv',
                    None, c_uint, c_int, c_uint32, POINTER(c_uint))
-        self._load(self.program_uniform3uiv, 'glProgramUniform3uiv',
+        self._load(self.program_uniform_3uiv, 'glProgramUniform3uiv',
                    None, c_uint, c_int, c_uint32, POINTER(c_uint))
-        self._load(self.program_uniform4uiv, 'glProgramUniform4uiv',
+        self._load(self.program_uniform_4uiv, 'glProgramUniform4uiv',
                    None, c_uint, c_int, c_uint32, POINTER(c_uint))
-        self._load(self.program_uniform_matrix2fv, 'glProgramUniformMatrix2fv',
+        self._load(self.program_uniform_matrix_2fv, 'glProgramUniformMatrix2fv',
                    None, c_uint, c_int, c_uint32, c_bool, POINTER(c_float))
-        self._load(self.program_uniform_matrix3fv, 'glProgramUniformMatrix3fv',
+        self._load(self.program_uniform_matrix_3fv, 'glProgramUniformMatrix3fv',
                    None, c_uint, c_int, c_uint32, c_bool, POINTER(c_float))
-        self._load(self.program_uniform_matrix4fv, 'glProgramUniformMatrix4fv',
+        self._load(self.program_uniform_matrix_4fv, 'glProgramUniformMatrix4fv',
                    None, c_uint, c_int, c_uint32, c_bool, POINTER(c_float))
-        self._load(self.program_uniform_matrix2x3fv, 'glProgramUniformMatrix2x3fv',
+        self._load(self.program_uniform_matrix_2x3fv, 'glProgramUniformMatrix2x3fv',
                    None, c_uint, c_int, c_uint32, c_bool, POINTER(c_float))
-        self._load(self.program_uniform_matrix3x2fv, 'glProgramUniformMatrix3x2fv',
+        self._load(self.program_uniform_matrix_3x2fv, 'glProgramUniformMatrix3x2fv',
                    None, c_uint, c_int, c_uint32, c_bool, POINTER(c_float))
-        self._load(self.program_uniform_matrix2x4fv, 'glProgramUniformMatrix2x4fv',
+        self._load(self.program_uniform_matrix_2x4fv, 'glProgramUniformMatrix2x4fv',
                    None, c_uint, c_int, c_uint32, c_bool, POINTER(c_float))
-        self._load(self.program_uniform_matrix4x2fv, 'glProgramUniformMatrix4x2fv',
+        self._load(self.program_uniform_matrix_4x2fv, 'glProgramUniformMatrix4x2fv',
                    None, c_uint, c_int, c_uint32, c_bool, POINTER(c_float))
-        self._load(self.program_uniform_matrix3x4fv, 'glProgramUniformMatrix3x4fv',
+        self._load(self.program_uniform_matrix_3x4fv, 'glProgramUniformMatrix3x4fv',
                    None, c_uint, c_int, c_uint32, c_bool, POINTER(c_float))
-        self._load(self.program_uniform_matrix4x3fv, 'glProgramUniformMatrix4x3fv',
+        self._load(self.program_uniform_matrix_4x3fv, 'glProgramUniformMatrix4x3fv',
                    None, c_uint, c_int, c_uint32, c_bool, POINTER(c_float))
         self._load(self.release_shader_compiler, 'glReleaseShaderCompiler',
                    None, )
@@ -12042,7 +13236,7 @@ class GL41(GL40):
         """
         pass
 
-    def is_program_pipeline(self, pipeline: int) -> bool:
+    def isprogram_pipeline(self, pipeline: int) -> bool:
         """
         Determine if a name corresponds to a program pipeline object
 
@@ -12112,7 +13306,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform1f(self, program: int, location: int, v0: float):
+    def program_uniform_1f(self, program: int, location: int, v0: float):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -12154,7 +13348,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform2f(self, program: int, location: int, v0: float, v1: float):
+    def program_uniform_2f(self, program: int, location: int, v0: float, v1: float):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -12196,7 +13390,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform3f(self, program: int, location: int, v0: float, v1: float, v2: float):
+    def program_uniform_3f(self, program: int, location: int, v0: float, v1: float, v2: float):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -12238,7 +13432,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform4f(self, program: int, location: int, v0: float, v1: float, v2: float, v3: float):
+    def program_uniform_4f(self, program: int, location: int, v0: float, v1: float, v2: float, v3: float):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -12280,7 +13474,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform1i(self, program: int, location: int, v0: int):
+    def program_uniform_1i(self, program: int, location: int, v0: int):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -12322,7 +13516,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform2i(self, program: int, location: int, v0: int, v1: int):
+    def program_uniform_2i(self, program: int, location: int, v0: int, v1: int):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -12364,7 +13558,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform3i(self, program: int, location: int, v0: int, v1: int, v2: int):
+    def program_uniform_3i(self, program: int, location: int, v0: int, v1: int, v2: int):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -12406,7 +13600,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform4i(self, program: int, location: int, v0: int, v1: int, v2: int, v3: int):
+    def program_uniform_4i(self, program: int, location: int, v0: int, v1: int, v2: int, v3: int):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -12448,7 +13642,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform1ui(self, program: int, location: int, v0: int):
+    def program_uniform_1ui(self, program: int, location: int, v0: int):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -12490,7 +13684,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform2ui(self, program: int, location: int, v0: int, v1: int):
+    def program_uniform_2ui(self, program: int, location: int, v0: int, v1: int):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -12532,7 +13726,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform3ui(self, program: int, location: int, v0: int, v1: int, v2: int):
+    def program_uniform_3ui(self, program: int, location: int, v0: int, v1: int, v2: int):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -12574,7 +13768,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform4ui(self, program: int, location: int, v0: int, v1: int, v2: int, v3: int):
+    def program_uniform_4ui(self, program: int, location: int, v0: int, v1: int, v2: int, v3: int):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -12616,7 +13810,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform1fv(self, program: int, location: int, count: int, value: POINTER(c_float)):
+    def program_uniform_1fv(self, program: int, location: int, count: int, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -12665,7 +13859,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform2fv(self, program: int, location: int, count: int, value: POINTER(c_float)):
+    def program_uniform_2fv(self, program: int, location: int, count: int, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -12714,7 +13908,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform3fv(self, program: int, location: int, count: int, value: POINTER(c_float)):
+    def program_uniform_3fv(self, program: int, location: int, count: int, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -12763,7 +13957,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform4fv(self, program: int, location: int, count: int, value: POINTER(c_float)):
+    def program_uniform_4fv(self, program: int, location: int, count: int, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -12812,7 +14006,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform1iv(self, program: int, location: int, count: int, value: POINTER(c_int)):
+    def program_uniform_1iv(self, program: int, location: int, count: int, value: POINTER(c_int)):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -12861,7 +14055,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform2iv(self, program: int, location: int, count: int, value: POINTER(c_int)):
+    def program_uniform_2iv(self, program: int, location: int, count: int, value: POINTER(c_int)):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -12910,7 +14104,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform3iv(self, program: int, location: int, count: int, value: POINTER(c_int)):
+    def program_uniform_3iv(self, program: int, location: int, count: int, value: POINTER(c_int)):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -12959,7 +14153,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform4iv(self, program: int, location: int, count: int, value: POINTER(c_int)):
+    def program_uniform_4iv(self, program: int, location: int, count: int, value: POINTER(c_int)):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -13008,7 +14202,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform1uiv(self, program: int, location: int, count: int, value: POINTER(c_uint)):
+    def program_uniform_1uiv(self, program: int, location: int, count: int, value: POINTER(c_uint)):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -13057,7 +14251,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform2uiv(self, program: int, location: int, count: int, value: POINTER(c_uint)):
+    def program_uniform_2uiv(self, program: int, location: int, count: int, value: POINTER(c_uint)):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -13106,7 +14300,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform3uiv(self, program: int, location: int, count: int, value: POINTER(c_uint)):
+    def program_uniform_3uiv(self, program: int, location: int, count: int, value: POINTER(c_uint)):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -13155,7 +14349,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform4uiv(self, program: int, location: int, count: int, value: POINTER(c_uint)):
+    def program_uniform_4uiv(self, program: int, location: int, count: int, value: POINTER(c_uint)):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -13204,7 +14398,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform_matrix2fv(self, program: int, location: int, count: int, transpose: bool, value: POINTER(c_float)):
+    def program_uniform_matrix_2fv(self, program: int, location: int, count: int, transpose: bool, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -13256,7 +14450,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform_matrix3fv(self, program: int, location: int, count: int, transpose: bool, value: POINTER(c_float)):
+    def program_uniform_matrix_3fv(self, program: int, location: int, count: int, transpose: bool, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -13308,7 +14502,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform_matrix4fv(self, program: int, location: int, count: int, transpose: bool, value: POINTER(c_float)):
+    def program_uniform_matrix_4fv(self, program: int, location: int, count: int, transpose: bool, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -13360,7 +14554,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform_matrix2x3fv(self, program: int, location: int, count: int, transpose: bool, value: POINTER(c_float)):
+    def program_uniform_matrix_2x3fv(self, program: int, location: int, count: int, transpose: bool, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -13412,7 +14606,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform_matrix3x2fv(self, program: int, location: int, count: int, transpose: bool, value: POINTER(c_float)):
+    def program_uniform_matrix_3x2fv(self, program: int, location: int, count: int, transpose: bool, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -13464,7 +14658,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform_matrix2x4fv(self, program: int, location: int, count: int, transpose: bool, value: POINTER(c_float)):
+    def program_uniform_matrix_2x4fv(self, program: int, location: int, count: int, transpose: bool, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -13516,7 +14710,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform_matrix4x2fv(self, program: int, location: int, count: int, transpose: bool, value: POINTER(c_float)):
+    def program_uniform_matrix_4x2fv(self, program: int, location: int, count: int, transpose: bool, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -13568,7 +14762,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform_matrix3x4fv(self, program: int, location: int, count: int, transpose: bool, value: POINTER(c_float)):
+    def program_uniform_matrix_3x4fv(self, program: int, location: int, count: int, transpose: bool, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -13620,7 +14814,7 @@ class GL41(GL40):
         """
         pass
 
-    def program_uniform_matrix4x3fv(self, program: int, location: int, count: int, transpose: bool, value: POINTER(c_float)):
+    def program_uniform_matrix_4x3fv(self, program: int, location: int, count: int, transpose: bool, value: POINTER(c_float)):
         """
         Specify the value of a uniform variable for a specified program object
 
@@ -14214,6 +15408,12 @@ class GL42(GL41):
                    None, c_uint, c_uint, c_uint, c_uint32, POINTER(c_int))
         self._load(self.memory_barrier, 'glMemoryBarrier',
                    None, c_uint32)
+        self._load(self.tex_storage_1d, 'glTexStorage1D',
+                   None, c_uint, c_uint32, c_uint, c_uint32)
+        self._load(self.tex_storage_2d, 'glTexStorage2D',
+                   None, c_uint, c_uint32, c_uint, c_uint32, c_uint32)
+        self._load(self.tex_storage_3d, 'glTexStorage3D',
+                   None, c_uint, c_uint32, c_uint, c_uint32, c_uint32, c_uint32)
 
     def bind_image_texture(self, unit: int, texture: int, level: int, layered: bool, layer: int, access: int, format: int):
         """
@@ -14549,6 +15749,126 @@ class GL42(GL41):
         """
         pass
 
+    def tex_storage_1d(self, target: int, levels: int, internalformat: int, width: int):
+        """
+        Simultaneously specify storage for all levels of a one-dimensional texture
+
+        Wrapper for glTexStorage1D
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target to which the texture object is bound for glTexStorage1D. Must be one of
+            GL_TEXTURE_1D or GL_PROXY_TEXTURE_1D.
+        levels: int
+            Specify the number of texture levels.
+        internalformat: int
+            Specifies the sized internal format to be used to store texture image data.
+        width: int
+            Specifies the width of the texture, in texels.
+
+        Raises
+        ------
+        GL_INVALID_OPERATION is generated by glTexStorage1D if zero is bound to target.
+        GL_INVALID_OPERATION is generated by glTextureStorage1D if texture is not the name of an existing
+            texture object.
+        GL_INVALID_ENUM is generated if internalformat is not a valid sized internal format.
+        GL_INVALID_ENUM is generated if target or the effective target of texture is not one of the
+            accepted targets described above.
+        GL_INVALID_VALUE is generated if width or levels are less than 1.
+        GL_INVALID_OPERATION is generated if levels is greater than log 2 width + 1.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage1D.xhtml
+        """
+        pass
+
+    def tex_storage_2d(self, target: int, levels: int, internalformat: int, width: int, height: int):
+        """
+        Simultaneously specify storage for all levels of a two-dimensional or one-dimensional array texture
+
+        Wrapper for glTexStorage2D
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target to which the texture object is bound for glTexStorage2D. Must be one of
+            GL_TEXTURE_2D, GL_TEXTURE_1D_ARRAY, GL_TEXTURE_RECTANGLE, GL_TEXTURE_CUBE_MAP, GL_PROXY_TEXTURE_2D,
+            GL_PROXY_TEXTURE_1D_ARRAY, GL_PROXY_TEXTURE_RECTANGLE, or GL_PROXY_TEXTURE_CUBE_MAP.
+        levels: int
+            Specify the number of texture levels.
+        internalformat: int
+            Specifies the sized internal format to be used to store texture image data.
+        width: int
+            Specifies the width of the texture, in texels.
+        height: int
+            Specifies the height of the texture, in texels.
+
+        Raises
+        ------
+        GL_INVALID_OPERATION is generated by glTexStorage2D if zero is bound to target.
+        GL_INVALID_OPERATION is generated by glTextureStorage2D if texture is not the name of an existing
+            texture object.
+        GL_INVALID_ENUM is generated if internalformat is not a valid sized internal format.
+        GL_INVALID_ENUM is generated if target or the effective target of texture is not one of the
+            accepted targets described above.
+        GL_INVALID_VALUE is generated if width, height or levels are less than 1.
+        GL_INVALID_OPERATION is generated if target is GL_TEXTURE_1D_ARRAY or GL_PROXY_TEXTURE_1D_ARRAY and
+            levels is greater than log 2 width + 1.
+        GL_INVALID_OPERATION is generated if target is not GL_TEXTURE_1D_ARRAY or GL_PROXY_TEXTURE_1D_ARRAY
+            and levels is greater than log 2 max width, height + 1.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage2D.xhtml
+        """
+        pass
+
+    def tex_storage_3d(self, target: int, levels: int, internalformat: int, width: int, height: int, depth: int):
+        """
+        Simultaneously specify storage for all levels of a three-dimensional, two-dimensional array or cube-map array texture
+
+        Wrapper for glTexStorage3D
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target to which the texture object is bound for glTexStorage3D. Must be one of
+            GL_TEXTURE_3D, GL_TEXTURE_2D_ARRAY, GL_TEXTURE_CUBE_MAP_ARRAY, GL_PROXY_TEXTURE_3D,
+            GL_PROXY_TEXTURE_2D_ARRAY or GL_PROXY_TEXTURE_CUBE_MAP_ARRAY.
+        levels: int
+            Specify the number of texture levels.
+        internalformat: int
+            Specifies the sized internal format to be used to store texture image data.
+        width: int
+            Specifies the width of the texture, in texels.
+        height: int
+            Specifies the height of the texture, in texels.
+        depth: int
+            Specifies the depth of the texture, in texels.
+
+        Raises
+        ------
+        GL_INVALID_OPERATION is generated by glTexStorage3D if zero is bound to target.
+        GL_INVALID_OPERATION is generated by glTextureStorage3D if texture is not the name of an existing
+            texture object.
+        GL_INVALID_ENUM is generated if internalformat is not a valid sized internal format.
+        GL_INVALID_ENUM is generated if target or the effective target of texture is not one of the
+            accepted targets described above.
+        GL_INVALID_VALUE is generated if width, height, depth or levels are less than 1.
+        GL_INVALID_OPERATION is generated if target is GL_TEXTURE_3D or GL_PROXY_TEXTURE_3D and levels is
+            greater than log 2 max width, height, depth + 1.
+        GL_INVALID_OPERATION is generated if target is GL_TEXTURE_2D_ARRAY, GL_PROXY_TEXTURE_2D_ARRAY,
+            GL_TEXURE_CUBE_MAP_ARRAY, or GL_PROXY_TEXTURE_CUBE_MAP_ARRAY and levels is greater than log 2 max
+            width, height + 1.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage3D.xhtml
+        """
+        pass
+
 class GL43(GL42):
 
     MAJOR = 4
@@ -14581,7 +15901,7 @@ class GL43(GL42):
                    c_uint, c_uint, c_uint32, POINTER(c_uint32), POINTER(c_uint32), POINTER(c_uint), POINTER(c_uint32), POINTER(c_uint32), c_char_p)
         self._load(self.get_framebuffer_parameteriv, 'glGetFramebufferParameteriv',
                    None, c_uint, c_uint, POINTER(c_int))
-        self._load(self.get_internalformati64v, 'glGetInternalformati64v',
+        self._load(self.get_internalformati_64v, 'glGetInternalformati64v',
                    None, c_uint, c_uint, c_uint, c_uint32, POINTER(c_int64))
         self._load(self.get_object_label, 'glGetObjectLabel',
                    None, c_uint, c_uint, c_uint32, POINTER(c_uint32), c_char_p)
@@ -14629,6 +15949,10 @@ class GL43(GL42):
                    None, c_uint, c_uint, c_uint)
         self._load(self.tex_buffer_range, 'glTexBufferRange',
                    None, c_uint, c_uint, c_uint, c_int, c_uint32)
+        self._load(self.tex_storage_2dmultisample, 'glTexStorage2DMultisample',
+                   None, c_uint, c_uint32, c_uint, c_uint32, c_uint32, c_bool)
+        self._load(self.tex_storage_3dmultisample, 'glTexStorage3DMultisample',
+                   None, c_uint, c_uint32, c_uint, c_uint32, c_uint32, c_uint32, c_bool)
         self._load(self.texture_view, 'glTextureView',
                    None, c_uint, c_uint, c_uint, c_uint, c_uint, c_uint, c_uint, c_uint)
         self._load(self.vertex_attrib_binding, 'glVertexAttribBinding',
@@ -15054,7 +16378,7 @@ class GL43(GL42):
         """
         pass
 
-    def get_internalformati64v(self, target: int, internalformat: int, pname: int, buf_size: int, params: POINTER(c_int64)):
+    def get_internalformati_64v(self, target: int, internalformat: int, pname: int, buf_size: int, params: POINTER(c_int64)):
         """
         Retrieve information about implementation-dependent support for internal formats
 
@@ -15784,6 +17108,106 @@ class GL43(GL42):
         """
         pass
 
+    def tex_storage_2dmultisample(self, target: int, samples: int, internalformat: int, width: int, height: int, fixedsamplelocations: bool):
+        """
+        Specify storage for a two-dimensional multisample texture
+
+        Wrapper for glTexStorage2DMultisample
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target to which the texture object is bound for glTexStorage2DMultisample. Must be
+            one of GL_TEXTURE_2D_MULTISAMPLE or GL_PROXY_TEXTURE_2D_MULTISAMPLE.
+        samples: int
+            Specify the number of samples in the texture.
+        internalformat: int
+            Specifies the sized internal format to be used to store texture image data.
+        width: int
+            Specifies the width of the texture, in texels.
+        height: int
+            Specifies the height of the texture, in texels.
+        fixedsamplelocations: bool
+            Specifies whether the image will use identical sample locations and the same number of samples for
+            all texels in the image, and the sample locations will not depend on the internal format or size of
+            the image.
+
+        Raises
+        ------
+        GL_INVALID_OPERATION is generated by glTexStorage2DMultisample if zero is bound to target.
+        GL_INVALID_OPERATION is generated by glTextureStorage2DMultisample if texture is not the name of an
+            existing texture object.
+        GL_INVALID_ENUM is generated if internalformat is not a valid color-renderable, depth-renderable or
+            stencil-renderable format.
+        GL_INVALID_ENUM is generated if target or the effective target of texture is not one of the
+            accepted targets described above.
+        GL_INVALID_VALUE is generated if width or height are less than 1 or greater than the value of
+            GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if levels is less than 1.
+        GL_INVALID_VALUE is generated if samples is zero.
+        GL_INVALID_OPERATION is generated if samples is greater than the maximum number of samples
+            supported for this target and internalformat.
+        GL_INVALID_OPERATION is generated if the value of GL_TEXTURE_IMMUTABLE_FORMAT for the texture bound
+            to target is not GL_FALSE.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage2DMultisample.xhtml
+        """
+        pass
+
+    def tex_storage_3dmultisample(self, target: int, samples: int, internalformat: int, width: int, height: int, depth: int, fixedsamplelocations: bool):
+        """
+        Specify storage for a two-dimensional multisample array texture
+
+        Wrapper for glTexStorage3DMultisample
+
+        Parameters
+        ----------
+        target: int
+            Specifies the target to which the texture object is bound for glTexStorage3DMultisample. Must be
+            one of GL_TEXTURE_2D_MULTISAMPLE_ARRAY or GL_PROXY_TEXTURE_2D_MULTISAMPLE_ARRAY.
+        samples: int
+            Specify the number of samples in the texture.
+        internalformat: int
+            Specifies the sized internal format to be used to store texture image data.
+        width: int
+            Specifies the width of the texture, in texels.
+        height: int
+            Specifies the height of the texture, in texels.
+        depth: int
+            Specifies the depth of the texture, in layers.
+        fixedsamplelocations: bool
+            Specifies whether the image will use identical sample locations and the same number of samples for
+            all texels in the image, and the sample locations will not depend on the internal format or size of
+            the image.
+
+        Raises
+        ------
+        GL_INVALID_OPERATION is generated by glTexStorage3DMultisample if zero is bound to target.
+        GL_INVALID_OPERATION is generated by glTextureStorage3DMultisample if texture is not the name of an
+            existing texture object.
+        GL_INVALID_ENUM is generated if internalformat is not a valid color-renderable, depth-renderable or
+            stencil-renderable format.
+        GL_INVALID_ENUM is generated if target or the effective target of texture is not one of the
+            accepted targets described above.
+        GL_INVALID_VALUE is generated if width or height are less than 1 or greater than the value of
+            GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if depth is less than 1 or greater than the value of
+            GL_MAX_ARRAY_TEXTURE_LAYERS.
+        GL_INVALID_VALUE is generated if levels is less than 1.
+        GL_INVALID_VALUE is generated if samples is zero.
+        GL_INVALID_OPERATION is generated if samples is greater than the maximum number of samples
+            supported for this target and internalformat.
+        GL_INVALID_OPERATION is generated if the value of GL_TEXTURE_IMMUTABLE_FORMAT for the texture bound
+            to target is not GL_FALSE.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage3DMultisample.xhtml
+        """
+        pass
+
     def texture_view(self, texture: int, target: int, origtexture: int, internalformat: int, minlevel: int, numlevels: int, minlayer: int, numlayers: int):
         """
         Initialize a texture as a data alias of another texture's data store
@@ -16446,8 +17870,20 @@ class GL45(GL44):
                    None, c_uint, c_uint, c_int, c_uint32, c_uint, c_uint, c_void_p)
         self._load(self.clip_control, 'glClipControl',
                    None, c_uint, c_uint)
+        self._load(self.compressed_texture_sub_image_1d, 'glCompressedTextureSubImage1D',
+                   None, c_uint, c_int, c_int, c_uint32, c_uint, c_uint32, c_void_p)
+        self._load(self.compressed_texture_sub_image_2d, 'glCompressedTextureSubImage2D',
+                   None, c_uint, c_int, c_int, c_int, c_uint32, c_uint32, c_uint, c_uint32, c_void_p)
+        self._load(self.compressed_texture_sub_image_3d, 'glCompressedTextureSubImage3D',
+                   None, c_uint, c_int, c_int, c_int, c_int, c_uint32, c_uint32, c_uint32, c_uint, c_uint32, c_void_p)
         self._load(self.copy_named_buffer_sub_data, 'glCopyNamedBufferSubData',
                    None, c_uint, c_uint, c_int, c_int, c_uint32)
+        self._load(self.copy_texture_sub_image_1d, 'glCopyTextureSubImage1D',
+                   None, c_uint, c_int, c_int, c_int, c_int, c_uint32)
+        self._load(self.copy_texture_sub_image_2d, 'glCopyTextureSubImage2D',
+                   None, c_uint, c_int, c_int, c_int, c_int, c_int, c_uint32, c_uint32)
+        self._load(self.copy_texture_sub_image_3d, 'glCopyTextureSubImage3D',
+                   None, c_uint, c_int, c_int, c_int, c_int, c_int, c_int, c_uint32, c_uint32)
         self._load(self.create_buffers, 'glCreateBuffers',
                    None, c_uint32, POINTER(c_uint))
         self._load(self.create_framebuffers, 'glCreateFramebuffers',
@@ -16488,7 +17924,7 @@ class GL45(GL44):
                    None, c_uint)
         self._load(self.get_named_buffer_parameteriv, 'glGetNamedBufferParameteriv',
                    None, c_uint, c_uint, POINTER(c_int))
-        self._load(self.get_named_buffer_parameteri64v, 'glGetNamedBufferParameteri64v',
+        self._load(self.get_named_buffer_parameteri_64v, 'glGetNamedBufferParameteri64v',
                    None, c_uint, c_uint, POINTER(c_int64))
         self._load(self.get_named_buffer_pointerv, 'glGetNamedBufferPointerv',
                    None, c_uint, c_uint, POINTER(c_void_p))
@@ -16530,7 +17966,7 @@ class GL45(GL44):
                    None, c_uint, c_uint, POINTER(c_int))
         self._load(self.get_transform_feedbacki_v, 'glGetTransformFeedbacki_v',
                    None, c_uint, c_uint, c_uint, POINTER(c_int))
-        self._load(self.get_transform_feedbacki64_v, 'glGetTransformFeedbacki64_v',
+        self._load(self.get_transform_feedbacki_64_v, 'glGetTransformFeedbacki64_v',
                    None, c_uint, c_uint, c_uint, POINTER(c_int64))
         self._load(self.getn_uniformfv, 'glGetnUniformfv',
                    None, c_uint, c_int, c_uint32, POINTER(c_float))
@@ -16540,7 +17976,7 @@ class GL45(GL44):
                    None, c_uint, c_int, c_uint32, POINTER(c_uint))
         self._load(self.getn_uniformdv, 'glGetnUniformdv',
                    None, c_uint, c_int, c_uint32, POINTER(c_double))
-        self._load(self.get_vertex_array_indexed64iv, 'glGetVertexArrayIndexed64iv',
+        self._load(self.get_vertex_array_indexed_64iv, 'glGetVertexArrayIndexed64iv',
                    None, c_uint, c_uint, c_uint, POINTER(c_int64))
         self._load(self.get_vertex_array_indexediv, 'glGetVertexArrayIndexediv',
                    None, c_uint, c_uint, c_uint, POINTER(c_int))
@@ -16554,7 +17990,7 @@ class GL45(GL44):
                    c_void_p, c_uint, c_uint)
         self._load(self.map_named_buffer_range, 'glMapNamedBufferRange',
                    c_void_p, c_uint, c_int, c_uint32, c_uint32)
-        self._load(self.memory_barrier_by_region, 'glMemoryBarrierByRegion',
+        self._load(self.memory_barrier_byregion, 'glMemoryBarrierByRegion',
                    None, c_uint32)
         self._load(self.named_framebuffer_read_buffer, 'glNamedFramebufferReadBuffer',
                    None, c_uint, c_uint)
@@ -16580,6 +18016,22 @@ class GL45(GL44):
                    None, c_uint, c_uint, POINTER(c_int))
         self._load(self.texture_parameter_iuiv, 'glTextureParameterIuiv',
                    None, c_uint, c_uint, POINTER(c_uint))
+        self._load(self.texture_storage_1d, 'glTextureStorage1D',
+                   None, c_uint, c_uint32, c_uint, c_uint32)
+        self._load(self.texture_storage_2d, 'glTextureStorage2D',
+                   None, c_uint, c_uint32, c_uint, c_uint32, c_uint32)
+        self._load(self.texture_storage_2dmultisample, 'glTextureStorage2DMultisample',
+                   None, c_uint, c_uint32, c_uint, c_uint32, c_uint32, c_bool)
+        self._load(self.texture_storage_3d, 'glTextureStorage3D',
+                   None, c_uint, c_uint32, c_uint, c_uint32, c_uint32, c_uint32)
+        self._load(self.texture_storage_3dmultisample, 'glTextureStorage3DMultisample',
+                   None, c_uint, c_uint32, c_uint, c_uint32, c_uint32, c_uint32, c_bool)
+        self._load(self.texture_sub_image_1d, 'glTextureSubImage1D',
+                   None, c_uint, c_int, c_int, c_uint32, c_uint, c_uint, c_void_p)
+        self._load(self.texture_sub_image_2d, 'glTextureSubImage2D',
+                   None, c_uint, c_int, c_int, c_int, c_uint32, c_uint32, c_uint, c_uint, c_void_p)
+        self._load(self.texture_sub_image_3d, 'glTextureSubImage3D',
+                   None, c_uint, c_int, c_int, c_int, c_int, c_uint32, c_uint32, c_uint32, c_uint, c_uint, c_void_p)
         self._load(self.texture_barrier, 'glTextureBarrier',
                    None, )
         self._load(self.transform_feedback_buffer_base, 'glTransformFeedbackBufferBase',
@@ -17162,6 +18614,163 @@ class GL45(GL44):
         """
         pass
 
+    def compressed_texture_sub_image_1d(self, texture: int, level: int, xoffset: int, width: int, format: int, image_size: int, data: c_void_p):
+        """
+        Specify a one-dimensional texture subimage in a compressed format
+
+        Wrapper for glCompressedTextureSubImage1D
+
+        Parameters
+        ----------
+        texture: int
+            Specifies the texture object name for glCompressedTextureSubImage1D function.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        xoffset: int
+            Specifies a texel offset in the x direction within the texture array.
+        width: int
+            Specifies the width of the texture subimage.
+        format: int
+            Specifies the format of the compressed image data stored at address data.
+        data: c_void_p
+            Specifies a pointer to the compressed image data in memory.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated if internalformat is not one of the generic compressed internal
+            formats: GL_COMPRESSED_RED, GL_COMPRESSED_RG, GL_COMPRESSED_RGB, GL_COMPRESSED_RGBA.
+            GL_COMPRESSED_SRGB, or GL_COMPRESSED_SRGB_ALPHA.
+        GL_INVALID_VALUE is generated if imageSize is not consistent with the format, dimensions, and
+            contents of the specified compressed image data.
+        GL_INVALID_OPERATION is generated if parameter combinations are not supported by the specific
+            compressed internal format as specified in the specific texture compression extension.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the buffer object's data store is currently mapped.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the data would be unpacked from the buffer object such that the
+            memory reads required would exceed the data store size.
+        GL_INVALID_OPERATION is generated by glCompressedTextureSubImage1D function if texture is not the
+            name of an existing texture object.
+        Undefined results, including abnormal program termination, are generated if data is not encoded in
+            a manner consistent with the extension specification defining the internal compression format.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glCompressedTexSubImage1D.xhtml
+        """
+        pass
+
+    def compressed_texture_sub_image_2d(self, texture: int, level: int, xoffset: int, yoffset: int, width: int, height: int, format: int, image_size: int, data: c_void_p):
+        """
+        Specify a two-dimensional texture subimage in a compressed format
+
+        Wrapper for glCompressedTextureSubImage2D
+
+        Parameters
+        ----------
+        texture: int
+            Specifies the texture object name for glCompressedTextureSubImage2D function.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        xoffset: int
+            Specifies a texel offset in the x direction within the texture array.
+        yoffset: int
+            Specifies a texel offset in the y direction within the texture array.
+        width: int
+            Specifies the width of the texture subimage.
+        height: int
+            Specifies the height of the texture subimage.
+        format: int
+            Specifies the format of the compressed image data stored at address data.
+        data: c_void_p
+            Specifies a pointer to the compressed image data in memory.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated if internalformat is of the generic compressed internal formats:
+            GL_COMPRESSED_RED, GL_COMPRESSED_RG, GL_COMPRESSED_RGB, GL_COMPRESSED_RGBA. GL_COMPRESSED_SRGB, or
+            GL_COMPRESSED_SRGB_ALPHA.
+        GL_INVALID_ENUM is generated by glCompressedTexSubImage2D if target is GL_TEXTURE_RECTANGLE or
+            GL_PROXY_TEXTURE_RECTANGLE.
+        GL_INVALID_VALUE is generated if imageSize is not consistent with the format, dimensions, and
+            contents of the specified compressed image data.
+        GL_INVALID_OPERATION is generated if parameter combinations are not supported by the specific
+            compressed internal format as specified in the specific texture compression extension.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the buffer object's data store is currently mapped.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the data would be unpacked from the buffer object such that the
+            memory reads required would exceed the data store size.
+        GL_INVALID_OPERATION is generated by glCompressedTextureSubImage2D if texture is not the name of an
+            existing texture object.
+        GL_INVALID_OPERATION is generated by glCompressedTextureSubImage2D if the effective target is
+            GL_TEXTURE_RECTANGLE.
+        Undefined results, including abnormal program termination, are generated if data is not encoded in
+            a manner consistent with the extension specification defining the internal compression format.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glCompressedTexSubImage2D.xhtml
+        """
+        pass
+
+    def compressed_texture_sub_image_3d(self, texture: int, level: int, xoffset: int, yoffset: int, zoffset: int, width: int, height: int, depth: int, format: int, image_size: int, data: c_void_p):
+        """
+        Specify a three-dimensional texture subimage in a compressed format
+
+        Wrapper for glCompressedTextureSubImage3D
+
+        Parameters
+        ----------
+        texture: int
+            Specifies the texture object name for glCompressedTextureSubImage3D function.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        xoffset: int
+            Specifies a texel offset in the x direction within the texture array.
+        yoffset: int
+            Specifies a texel offset in the y direction within the texture array.
+        width: int
+            Specifies the width of the texture subimage.
+        height: int
+            Specifies the height of the texture subimage.
+        depth: int
+            Specifies the depth of the texture subimage.
+        format: int
+            Specifies the format of the compressed image data stored at address data.
+        data: c_void_p
+            Specifies a pointer to the compressed image data in memory.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated if internalformat is one of the generic compressed internal formats:
+            GL_COMPRESSED_RED, GL_COMPRESSED_RG, GL_COMPRESSED_RGB, GL_COMPRESSED_RGBA. GL_COMPRESSED_SRGB, or
+            GL_COMPRESSED_SRGB_ALPHA.
+        GL_INVALID_ENUM is generated by glCompressedTexSubImage3D if target is not GL_TEXTURE_2D_ARRAY,
+            GL_TEXTURE_3D, or GL_TEXTURE_CUBE_MAP_ARRAY.
+        GL_INVALID_OPERATION is generated by glCompressedTextureSubImage3D if texture is not the name of an
+            existing texture object.
+        GL_INVALID_VALUE is generated if imageSize is not consistent with the format, dimensions, and
+            contents of the specified compressed image data.
+        GL_INVALID_OPERATION is generated if parameter combinations are not supported by the specific
+            compressed internal format as specified in the specific texture compression extension.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the buffer object's data store is currently mapped.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the data would be unpacked from the buffer object such that the
+            memory reads required would exceed the data store size.
+        Undefined results, including abnormal program termination, are generated if data is not encoded in
+            a manner consistent with the extension specification defining the internal compression format.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glCompressedTexSubImage3D.xhtml
+        """
+        pass
+
     def copy_named_buffer_sub_data(self, read_buffer: int, write_buffer: int, read_offset: int, write_offset: int, size: int):
         """
         Copy all or part of the data store of a buffer object to the data store of another buffer object
@@ -17194,6 +18803,170 @@ class GL45(GL44):
         Notes
         -----
         https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glCopyBufferSubData.xhtml
+        """
+        pass
+
+    def copy_texture_sub_image_1d(self, texture: int, level: int, xoffset: int, x: int, y: int, width: int):
+        """
+        Copy a one-dimensional texture subimage
+
+        Wrapper for glCopyTextureSubImage1D
+
+        Parameters
+        ----------
+        texture: int
+            Specifies the texture object name for glCopyTextureSubImage1D function.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        xoffset: int
+            Specifies the texel offset within the texture array.
+        x, y: int
+            Specify the window coordinates of the left corner of the row of pixels to be copied.
+        width: int
+            Specifies the width of the texture subimage.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated by glCopyTexSubImage1D if target is not GL_TEXTURE_1D.
+        GL_INVALID_FRAMEBUFFER_OPERATION is generated if the object bound to GL_READ_FRAMEBUFFER_BINDING is
+            not framebuffer complete.
+        GL_INVALID_OPERATION is generated by glCopyTextureSubImage1D if texture is not the name of an
+            existing texture object, or if the effective target of texture is not GL_TEXTURE_1D.
+        GL_INVALID_OPERATION is generated if the texture array has not been defined by a previous
+            glTexImage1D, glCopyTexImage1D, or glTexStorage1D operation.
+        GL_INVALID_VALUE is generated if level is less than 0.
+        GL_INVALID_VALUE may be generated if level &gt; log 2 ⁡ max, where max is the returned value of
+            GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if xoffset &lt; 0, or xoffset + width &gt; w, where w is the
+            GL_TEXTURE_WIDTH of the texture image being modified.
+        GL_INVALID_OPERATION is generated if:
+        the read buffer is GL_NONE, or
+        the value of GL_READ_FRAMEBUFFER_BINDING is non-zero, and:
+        the read buffer selects an attachment that has no image attached, or
+        the effective value of GL_SAMPLE_BUFFERS for the read framebuffer is one.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glCopyTexSubImage1D.xhtml
+        """
+        pass
+
+    def copy_texture_sub_image_2d(self, texture: int, level: int, xoffset: int, yoffset: int, x: int, y: int, width: int, height: int):
+        """
+        Copy a two-dimensional texture subimage
+
+        Wrapper for glCopyTextureSubImage2D
+
+        Parameters
+        ----------
+        texture: int
+            Specifies the texture object name for glCopyTextureSubImage2D function.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        xoffset: int
+            Specifies a texel offset in the x direction within the texture array.
+        yoffset: int
+            Specifies a texel offset in the y direction within the texture array.
+        x, y: int
+            Specify the window coordinates of the lower left corner of the rectangular region of pixels to be
+            copied.
+        width: int
+            Specifies the width of the texture subimage.
+        height: int
+            Specifies the height of the texture subimage.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated if target is not GL_TEXTURE_2D, GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+            GL_TEXTURE_CUBE_MAP_NEGATIVE_X, GL_TEXTURE_CUBE_MAP_POSITIVE_Y, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+            GL_TEXTURE_CUBE_MAP_POSITIVE_Z, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, GL_TEXTURE_1D_ARRAY, or
+            GL_RECTANGLE.
+        GL_INVALID_FRAMEBUFFER_OPERATION is generated if the object bound to GL_READ_FRAMEBUFFER_BINDING is
+            not framebuffer complete.
+        GL_INVALID_OPERATION is generated if the texture array has not been defined by a previous
+            glTexImage2D, glTexStorage2D or glCopyTexImage2D operation.
+        GL_INVALID_OPERATION is generated by glCopyTextureSubImage2D if texture is not the name of an
+            existing texture object.
+        GL_INVALID_OPERATION is generated by glCopyTextureSubImage2D if the effective target of texture
+            does not correspond to one of the texture targets supported by the function.
+        GL_INVALID_VALUE is generated if level is less than 0.
+        GL_INVALID_VALUE is generated if the effective target is GL_TEXTURE_RECTANGLE and level is not
+            zero.
+        GL_INVALID_VALUE may be generated if level &gt; log 2 ⁡ max, where max is the returned value of
+            GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if xoffset &lt; 0, xoffset + width &gt; w, yoffset &lt; 0, or yoffset
+            + height &gt; 0,, where w is the GL_TEXTURE_WIDTH, h is the GL_TEXTURE_HEIGHT and of the texture
+            image being modified.
+        GL_INVALID_OPERATION is generated if:
+        the read buffer is GL_NONE, or
+        the value of GL_READ_FRAMEBUFFER_BINDING is non-zero, and:
+        the read buffer selects an attachment that has no image attached, or
+        the effective value of GL_SAMPLE_BUFFERS for the read framebuffer is one.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glCopyTexSubImage2D.xhtml
+        """
+        pass
+
+    def copy_texture_sub_image_3d(self, texture: int, level: int, xoffset: int, yoffset: int, zoffset: int, x: int, y: int, width: int, height: int):
+        """
+        Copy a three-dimensional texture subimage
+
+        Wrapper for glCopyTextureSubImage3D
+
+        Parameters
+        ----------
+        texture: int
+            Specifies the texture object name for glCopyTextureSubImage3D function.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        xoffset: int
+            Specifies a texel offset in the x direction within the texture array.
+        yoffset: int
+            Specifies a texel offset in the y direction within the texture array.
+        zoffset: int
+            Specifies a texel offset in the z direction within the texture array.
+        x, y: int
+            Specify the window coordinates of the lower left corner of the rectangular region of pixels to be
+            copied.
+        width: int
+            Specifies the width of the texture subimage.
+        height: int
+            Specifies the height of the texture subimage.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated by glCopyTexSubImage3D if target is not GL_TEXTURE_3D,
+            GL_TEXTURE_2D_ARRAY or GL_TEXTURE_CUBE_MAP_ARRAY.
+        GL_INVALID_OPERATION is generated by glCopyTextureSubImage3D if the effective target is not
+            GL_TEXTURE_3D, GL_TEXTURE_2D_ARRAY, GL_TEXTURE_CUBE_MAP_ARRAY or GL_TEXTURE_CUBE_MAP.
+        GL_INVALID_FRAMEBUFFER_OPERATION is generated if the object bound to GL_READ_FRAMEBUFFER_BINDING is
+            not framebuffer complete.
+        GL_INVALID_OPERATION is generated if the texture array has not been defined by a previous
+            glTexImage3D or glTexStorage3D operation.
+        GL_INVALID_OPERATION is generated by glCopyTextureSubImage3D if texture is not the name of an
+            existing texture object.
+        GL_INVALID_VALUE is generated if level is less than 0.
+        GL_INVALID_VALUE may be generated if level &gt; log 2 ⁡ max, where max is the returned value of
+            GL_MAX_3D_TEXTURE_SIZE if target is GL_TEXTURE_3D or the returned value of
+            GL_MAX_ARRAY_TEXTURE_LAYERS if target is GL_TEXTURE_2D_ARRAY.
+        GL_INVALID_VALUE is generated if xoffset &lt; 0, xoffset + width &gt; w, yoffset &lt; 0, yoffset +
+            height &gt; h, zoffset &lt; 0, or zoffset + 1 &gt; d, where w is the GL_TEXTURE_WIDTH, h is the
+            GL_TEXTURE_HEIGHT, d is the GL_TEXTURE_DEPTH and of the texture image being modified. Note that w,
+            h, and d include twice the border width.
+        GL_INVALID_OPERATION is generated if:
+        the read buffer is GL_NONE, or
+        the value of GL_READ_FRAMEBUFFER_BINDING is non-zero, and:
+        the read buffer selects an attachment that has no image attached, or
+        the effective value of GL_SAMPLE_BUFFERS for the read framebuffer is one.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glCopyTexSubImage3D.xhtml
         """
         pass
 
@@ -17786,7 +19559,7 @@ class GL45(GL44):
         """
         pass
 
-    def get_named_buffer_parameteri64v(self, buffer: int, pname: int, params: POINTER(c_int64)):
+    def get_named_buffer_parameteri_64v(self, buffer: int, pname: int, params: POINTER(c_int64)):
         """
         Return parameters of a buffer object
 
@@ -18608,7 +20381,7 @@ class GL45(GL44):
         """
         pass
 
-    def get_transform_feedbacki64_v(self, xfb: int, pname: int, index: int, param: POINTER(c_int64)):
+    def get_transform_feedbacki_64_v(self, xfb: int, pname: int, index: int, param: POINTER(c_int64)):
         """
         Query the state of a transform feedback object.
 
@@ -18772,7 +20545,7 @@ class GL45(GL44):
         """
         pass
 
-    def get_vertex_array_indexed64iv(self, vaobj: int, index: int, pname: int, param: POINTER(c_int64)):
+    def get_vertex_array_indexed_64iv(self, vaobj: int, index: int, pname: int, param: POINTER(c_int64)):
         """
         Retrieve parameters of an attribute of a vertex array object
 
@@ -19022,7 +20795,7 @@ class GL45(GL44):
         """
         pass
 
-    def memory_barrier_by_region(self, barriers: int):
+    def memory_barrier_byregion(self, barriers: int):
         """
         Defines a barrier ordering memory transactions
 
@@ -19601,6 +21374,456 @@ class GL45(GL44):
         Notes
         -----
         https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexParameter.xhtml
+        """
+        pass
+
+    def texture_storage_1d(self, texture: int, levels: int, internalformat: int, width: int):
+        """
+        Simultaneously specify storage for all levels of a one-dimensional texture
+
+        Wrapper for glTextureStorage1D
+
+        Parameters
+        ----------
+        texture: int
+            Specifies the texture object name for glTextureStorage1D. The effective target of texture must be
+            one of the valid non-proxy target values above.
+        levels: int
+            Specify the number of texture levels.
+        internalformat: int
+            Specifies the sized internal format to be used to store texture image data.
+        width: int
+            Specifies the width of the texture, in texels.
+
+        Raises
+        ------
+        GL_INVALID_OPERATION is generated by glTexStorage1D if zero is bound to target.
+        GL_INVALID_OPERATION is generated by glTextureStorage1D if texture is not the name of an existing
+            texture object.
+        GL_INVALID_ENUM is generated if internalformat is not a valid sized internal format.
+        GL_INVALID_ENUM is generated if target or the effective target of texture is not one of the
+            accepted targets described above.
+        GL_INVALID_VALUE is generated if width or levels are less than 1.
+        GL_INVALID_OPERATION is generated if levels is greater than log 2 width + 1.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage1D.xhtml
+        """
+        pass
+
+    def texture_storage_2d(self, texture: int, levels: int, internalformat: int, width: int, height: int):
+        """
+        Simultaneously specify storage for all levels of a two-dimensional or one-dimensional array texture
+
+        Wrapper for glTextureStorage2D
+
+        Parameters
+        ----------
+        texture: int
+            Specifies the texture object name for glTextureStorage2D. The effective target of texture must be
+            one of the valid non-proxy target values above.
+        levels: int
+            Specify the number of texture levels.
+        internalformat: int
+            Specifies the sized internal format to be used to store texture image data.
+        width: int
+            Specifies the width of the texture, in texels.
+        height: int
+            Specifies the height of the texture, in texels.
+
+        Raises
+        ------
+        GL_INVALID_OPERATION is generated by glTexStorage2D if zero is bound to target.
+        GL_INVALID_OPERATION is generated by glTextureStorage2D if texture is not the name of an existing
+            texture object.
+        GL_INVALID_ENUM is generated if internalformat is not a valid sized internal format.
+        GL_INVALID_ENUM is generated if target or the effective target of texture is not one of the
+            accepted targets described above.
+        GL_INVALID_VALUE is generated if width, height or levels are less than 1.
+        GL_INVALID_OPERATION is generated if target is GL_TEXTURE_1D_ARRAY or GL_PROXY_TEXTURE_1D_ARRAY and
+            levels is greater than log 2 width + 1.
+        GL_INVALID_OPERATION is generated if target is not GL_TEXTURE_1D_ARRAY or GL_PROXY_TEXTURE_1D_ARRAY
+            and levels is greater than log 2 max width, height + 1.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage2D.xhtml
+        """
+        pass
+
+    def texture_storage_2dmultisample(self, texture: int, samples: int, internalformat: int, width: int, height: int, fixedsamplelocations: bool):
+        """
+        Specify storage for a two-dimensional multisample texture
+
+        Wrapper for glTextureStorage2DMultisample
+
+        Parameters
+        ----------
+        texture: int
+            Specifies the texture object name for glTextureStorage2DMultisample. The effective target of
+            texture must be one of the valid non-proxy target values above.
+        samples: int
+            Specify the number of samples in the texture.
+        internalformat: int
+            Specifies the sized internal format to be used to store texture image data.
+        width: int
+            Specifies the width of the texture, in texels.
+        height: int
+            Specifies the height of the texture, in texels.
+        fixedsamplelocations: bool
+            Specifies whether the image will use identical sample locations and the same number of samples for
+            all texels in the image, and the sample locations will not depend on the internal format or size of
+            the image.
+
+        Raises
+        ------
+        GL_INVALID_OPERATION is generated by glTexStorage2DMultisample if zero is bound to target.
+        GL_INVALID_OPERATION is generated by glTextureStorage2DMultisample if texture is not the name of an
+            existing texture object.
+        GL_INVALID_ENUM is generated if internalformat is not a valid color-renderable, depth-renderable or
+            stencil-renderable format.
+        GL_INVALID_ENUM is generated if target or the effective target of texture is not one of the
+            accepted targets described above.
+        GL_INVALID_VALUE is generated if width or height are less than 1 or greater than the value of
+            GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if levels is less than 1.
+        GL_INVALID_VALUE is generated if samples is zero.
+        GL_INVALID_OPERATION is generated if samples is greater than the maximum number of samples
+            supported for this target and internalformat.
+        GL_INVALID_OPERATION is generated if the value of GL_TEXTURE_IMMUTABLE_FORMAT for the texture bound
+            to target is not GL_FALSE.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage2DMultisample.xhtml
+        """
+        pass
+
+    def texture_storage_3d(self, texture: int, levels: int, internalformat: int, width: int, height: int, depth: int):
+        """
+        Simultaneously specify storage for all levels of a three-dimensional, two-dimensional array or cube-map array texture
+
+        Wrapper for glTextureStorage3D
+
+        Parameters
+        ----------
+        texture: int
+            Specifies the texture object name for glTextureStorage3D. The effective target of texture must be
+            one of the valid non-proxy target values above.
+        levels: int
+            Specify the number of texture levels.
+        internalformat: int
+            Specifies the sized internal format to be used to store texture image data.
+        width: int
+            Specifies the width of the texture, in texels.
+        height: int
+            Specifies the height of the texture, in texels.
+        depth: int
+            Specifies the depth of the texture, in texels.
+
+        Raises
+        ------
+        GL_INVALID_OPERATION is generated by glTexStorage3D if zero is bound to target.
+        GL_INVALID_OPERATION is generated by glTextureStorage3D if texture is not the name of an existing
+            texture object.
+        GL_INVALID_ENUM is generated if internalformat is not a valid sized internal format.
+        GL_INVALID_ENUM is generated if target or the effective target of texture is not one of the
+            accepted targets described above.
+        GL_INVALID_VALUE is generated if width, height, depth or levels are less than 1.
+        GL_INVALID_OPERATION is generated if target is GL_TEXTURE_3D or GL_PROXY_TEXTURE_3D and levels is
+            greater than log 2 max width, height, depth + 1.
+        GL_INVALID_OPERATION is generated if target is GL_TEXTURE_2D_ARRAY, GL_PROXY_TEXTURE_2D_ARRAY,
+            GL_TEXURE_CUBE_MAP_ARRAY, or GL_PROXY_TEXTURE_CUBE_MAP_ARRAY and levels is greater than log 2 max
+            width, height + 1.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage3D.xhtml
+        """
+        pass
+
+    def texture_storage_3dmultisample(self, texture: int, samples: int, internalformat: int, width: int, height: int, depth: int, fixedsamplelocations: bool):
+        """
+        Specify storage for a two-dimensional multisample array texture
+
+        Wrapper for glTextureStorage3DMultisample
+
+        Parameters
+        ----------
+        texture: int
+            Specifies the texture object name for glTextureStorage3DMultisample. The effective target of
+            texture must be one of the valid non-proxy target values above.
+        samples: int
+            Specify the number of samples in the texture.
+        internalformat: int
+            Specifies the sized internal format to be used to store texture image data.
+        width: int
+            Specifies the width of the texture, in texels.
+        height: int
+            Specifies the height of the texture, in texels.
+        depth: int
+            Specifies the depth of the texture, in layers.
+        fixedsamplelocations: bool
+            Specifies whether the image will use identical sample locations and the same number of samples for
+            all texels in the image, and the sample locations will not depend on the internal format or size of
+            the image.
+
+        Raises
+        ------
+        GL_INVALID_OPERATION is generated by glTexStorage3DMultisample if zero is bound to target.
+        GL_INVALID_OPERATION is generated by glTextureStorage3DMultisample if texture is not the name of an
+            existing texture object.
+        GL_INVALID_ENUM is generated if internalformat is not a valid color-renderable, depth-renderable or
+            stencil-renderable format.
+        GL_INVALID_ENUM is generated if target or the effective target of texture is not one of the
+            accepted targets described above.
+        GL_INVALID_VALUE is generated if width or height are less than 1 or greater than the value of
+            GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if depth is less than 1 or greater than the value of
+            GL_MAX_ARRAY_TEXTURE_LAYERS.
+        GL_INVALID_VALUE is generated if levels is less than 1.
+        GL_INVALID_VALUE is generated if samples is zero.
+        GL_INVALID_OPERATION is generated if samples is greater than the maximum number of samples
+            supported for this target and internalformat.
+        GL_INVALID_OPERATION is generated if the value of GL_TEXTURE_IMMUTABLE_FORMAT for the texture bound
+            to target is not GL_FALSE.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage3DMultisample.xhtml
+        """
+        pass
+
+    def texture_sub_image_1d(self, texture: int, level: int, xoffset: int, width: int, format: int, type: int, pixels: c_void_p):
+        """
+        Specify a one-dimensional texture subimage
+
+        Wrapper for glTextureSubImage1D
+
+        Parameters
+        ----------
+        texture: int
+            Specifies the texture object name for glTextureSubImage1D. The effective target of texture must be
+            one of the valid target values above.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        xoffset: int
+            Specifies a texel offset in the x direction within the texture array.
+        width: int
+            Specifies the width of the texture subimage.
+        format: int
+            Specifies the format of the pixel data. The following symbolic values are accepted: GL_RED, GL_RG,
+            GL_RGB, GL_BGR, GL_RGBA, GL_DEPTH_COMPONENT, and GL_STENCIL_INDEX.
+        type: int
+            Specifies the data type of the pixel data. The following symbolic values are accepted:
+            GL_UNSIGNED_BYTE, GL_BYTE, GL_UNSIGNED_SHORT, GL_SHORT, GL_UNSIGNED_INT, GL_INT, GL_FLOAT,
+            GL_UNSIGNED_BYTE_3_3_2, GL_UNSIGNED_BYTE_2_3_3_REV, GL_UNSIGNED_SHORT_5_6_5,
+            GL_UNSIGNED_SHORT_5_6_5_REV, GL_UNSIGNED_SHORT_4_4_4_4, GL_UNSIGNED_SHORT_4_4_4_4_REV,
+            GL_UNSIGNED_SHORT_5_5_5_1, GL_UNSIGNED_SHORT_1_5_5_5_REV, GL_UNSIGNED_INT_8_8_8_8,
+            GL_UNSIGNED_INT_8_8_8_8_REV, GL_UNSIGNED_INT_10_10_10_2, and GL_UNSIGNED_INT_2_10_10_10_REV.
+        pixels: c_void_p
+            Specifies a pointer to the image data in memory.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated if target or the effective target of texture is not one of the
+            allowable values.
+        GL_INVALID_OPERATION is generated by glTextureSubImage1D if texture is not the name of an existing
+            texture object.
+        GL_INVALID_ENUM is generated if format is not an accepted format constant.
+        GL_INVALID_ENUM is generated if type is not a type constant.
+        GL_INVALID_VALUE is generated if level is less than 0.
+        GL_INVALID_VALUE may be generated if level is greater than log 2 max, where max is the returned
+            value of GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if xoffset &lt; - b, or if xoffset + width &gt; w - b, where w is the
+            GL_TEXTURE_WIDTH, and b is the width of the GL_TEXTURE_BORDER of the texture image being modified.
+            Note that w includes twice the border width.
+        GL_INVALID_VALUE is generated if width is less than 0.
+        GL_INVALID_OPERATION is generated if the texture array has not been defined by a previous
+            glTexImage1D operation.
+        GL_INVALID_OPERATION is generated if type is one of GL_UNSIGNED_BYTE_3_3_2,
+            GL_UNSIGNED_BYTE_2_3_3_REV, GL_UNSIGNED_SHORT_5_6_5, or GL_UNSIGNED_SHORT_5_6_5_REV and format is
+            not GL_RGB.
+        GL_INVALID_OPERATION is generated if type is one of GL_UNSIGNED_SHORT_4_4_4_4,
+            GL_UNSIGNED_SHORT_4_4_4_4_REV, GL_UNSIGNED_SHORT_5_5_5_1, GL_UNSIGNED_SHORT_1_5_5_5_REV,
+            GL_UNSIGNED_INT_8_8_8_8, GL_UNSIGNED_INT_8_8_8_8_REV, GL_UNSIGNED_INT_10_10_10_2, or
+            GL_UNSIGNED_INT_2_10_10_10_REV and format is neither GL_RGBA nor GL_BGRA.
+        GL_INVALID_OPERATION is generated if format is GL_STENCIL_INDEX and the base internal format is not
+            GL_STENCIL_INDEX.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the buffer object's data store is currently mapped.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the data would be unpacked from the buffer object such that the
+            memory reads required would exceed the data store size.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and pixels is not evenly divisible into the number of bytes needed to
+            store in memory a datum indicated by type.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexSubImage1D.xhtml
+        """
+        pass
+
+    def texture_sub_image_2d(self, texture: int, level: int, xoffset: int, yoffset: int, width: int, height: int, format: int, type: int, pixels: c_void_p):
+        """
+        Specify a two-dimensional texture subimage
+
+        Wrapper for glTextureSubImage2D
+
+        Parameters
+        ----------
+        texture: int
+            Specifies the texture object name for glTextureSubImage2D. The effective target of texture must be
+            one of the valid target values above.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        xoffset: int
+            Specifies a texel offset in the x direction within the texture array.
+        yoffset: int
+            Specifies a texel offset in the y direction within the texture array.
+        width: int
+            Specifies the width of the texture subimage.
+        height: int
+            Specifies the height of the texture subimage.
+        format: int
+            Specifies the format of the pixel data. The following symbolic values are accepted: GL_RED, GL_RG,
+            GL_RGB, GL_BGR, GL_RGBA, GL_BGRA, GL_DEPTH_COMPONENT, and GL_STENCIL_INDEX.
+        type: int
+            Specifies the data type of the pixel data. The following symbolic values are accepted:
+            GL_UNSIGNED_BYTE, GL_BYTE, GL_UNSIGNED_SHORT, GL_SHORT, GL_UNSIGNED_INT, GL_INT, GL_FLOAT,
+            GL_UNSIGNED_BYTE_3_3_2, GL_UNSIGNED_BYTE_2_3_3_REV, GL_UNSIGNED_SHORT_5_6_5,
+            GL_UNSIGNED_SHORT_5_6_5_REV, GL_UNSIGNED_SHORT_4_4_4_4, GL_UNSIGNED_SHORT_4_4_4_4_REV,
+            GL_UNSIGNED_SHORT_5_5_5_1, GL_UNSIGNED_SHORT_1_5_5_5_REV, GL_UNSIGNED_INT_8_8_8_8,
+            GL_UNSIGNED_INT_8_8_8_8_REV, GL_UNSIGNED_INT_10_10_10_2, and GL_UNSIGNED_INT_2_10_10_10_REV.
+        pixels: c_void_p
+            Specifies a pointer to the image data in memory.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated if target or the effective target of texture is not GL_TEXTURE_2D,
+            GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_CUBE_MAP_NEGATIVE_X, GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
+            GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, GL_TEXTURE_CUBE_MAP_POSITIVE_Z, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, or
+            GL_TEXTURE_1D_ARRAY.
+        GL_INVALID_OPERATION is generated by glTextureSubImage2D if texture is not the name of an existing
+            texture object.
+        GL_INVALID_ENUM is generated if format is not an accepted format constant.
+        GL_INVALID_ENUM is generated if type is not a type constant.
+        GL_INVALID_VALUE is generated if level is less than 0.
+        GL_INVALID_VALUE may be generated if level is greater than log 2 max, where max is the returned
+            value of GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if xoffset &lt; - b, xoffset + width &gt; w - b, yoffset &lt; - b, or
+            yoffset + height &gt; h - b, where w is the GL_TEXTURE_WIDTH, h is the GL_TEXTURE_HEIGHT, and b is
+            the border width of the texture image being modified. Note that w and h include twice the border
+            width.
+        GL_INVALID_VALUE is generated if width or height is less than 0.
+        GL_INVALID_OPERATION is generated if the texture array has not been defined by a previous
+            glTexImage2D operation.
+        GL_INVALID_OPERATION is generated if type is one of GL_UNSIGNED_BYTE_3_3_2,
+            GL_UNSIGNED_BYTE_2_3_3_REV, GL_UNSIGNED_SHORT_5_6_5, or GL_UNSIGNED_SHORT_5_6_5_REV and format is
+            not GL_RGB.
+        GL_INVALID_OPERATION is generated if type is one of GL_UNSIGNED_SHORT_4_4_4_4,
+            GL_UNSIGNED_SHORT_4_4_4_4_REV, GL_UNSIGNED_SHORT_5_5_5_1, GL_UNSIGNED_SHORT_1_5_5_5_REV,
+            GL_UNSIGNED_INT_8_8_8_8, GL_UNSIGNED_INT_8_8_8_8_REV, GL_UNSIGNED_INT_10_10_10_2, or
+            GL_UNSIGNED_INT_2_10_10_10_REV and format is neither GL_RGBA nor GL_BGRA.
+        GL_INVALID_OPERATION is generated if format is GL_STENCIL_INDEX and the base internal format is not
+            GL_STENCIL_INDEX.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the buffer object's data store is currently mapped.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the data would be unpacked from the buffer object such that the
+            memory reads required would exceed the data store size.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and pixels is not evenly divisible into the number of bytes needed to
+            store in memory a datum indicated by type.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexSubImage2D.xhtml
+        """
+        pass
+
+    def texture_sub_image_3d(self, texture: int, level: int, xoffset: int, yoffset: int, zoffset: int, width: int, height: int, depth: int, format: int, type: int, pixels: c_void_p):
+        """
+        Specify a three-dimensional texture subimage
+
+        Wrapper for glTextureSubImage3D
+
+        Parameters
+        ----------
+        texture: int
+            Specifies the texture object name for glTextureSubImage3D. The effective target of texture must be
+            one of the valid target values above.
+        level: int
+            Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
+            reduction image.
+        xoffset: int
+            Specifies a texel offset in the x direction within the texture array.
+        yoffset: int
+            Specifies a texel offset in the y direction within the texture array.
+        zoffset: int
+            Specifies a texel offset in the z direction within the texture array.
+        width: int
+            Specifies the width of the texture subimage.
+        height: int
+            Specifies the height of the texture subimage.
+        depth: int
+            Specifies the depth of the texture subimage.
+        format: int
+            Specifies the format of the pixel data. The following symbolic values are accepted: GL_RED, GL_RG,
+            GL_RGB, GL_BGR, GL_RGBA, GL_DEPTH_COMPONENT, and GL_STENCIL_INDEX.
+        type: int
+            Specifies the data type of the pixel data. The following symbolic values are accepted:
+            GL_UNSIGNED_BYTE, GL_BYTE, GL_UNSIGNED_SHORT, GL_SHORT, GL_UNSIGNED_INT, GL_INT, GL_FLOAT,
+            GL_UNSIGNED_BYTE_3_3_2, GL_UNSIGNED_BYTE_2_3_3_REV, GL_UNSIGNED_SHORT_5_6_5,
+            GL_UNSIGNED_SHORT_5_6_5_REV, GL_UNSIGNED_SHORT_4_4_4_4, GL_UNSIGNED_SHORT_4_4_4_4_REV,
+            GL_UNSIGNED_SHORT_5_5_5_1, GL_UNSIGNED_SHORT_1_5_5_5_REV, GL_UNSIGNED_INT_8_8_8_8,
+            GL_UNSIGNED_INT_8_8_8_8_REV, GL_UNSIGNED_INT_10_10_10_2, and GL_UNSIGNED_INT_2_10_10_10_REV.
+        pixels: c_void_p
+            Specifies a pointer to the image data in memory.
+
+        Raises
+        ------
+        GL_INVALID_ENUM is generated if target or the effective target of texture is not GL_TEXTURE_3D or
+            GL_TEXTURE_2D_ARRAY.
+        GL_INVALID_OPERATION is generated by glTextureSubImage3D if texture is not the name of an existing
+            texture object.
+        GL_INVALID_ENUM is generated if format is not an accepted format constant.
+        GL_INVALID_ENUM is generated if type is not a type constant.
+        GL_INVALID_VALUE is generated if level is less than 0.
+        GL_INVALID_VALUE may be generated if level is greater than log 2 max, where max is the returned
+            value of GL_MAX_TEXTURE_SIZE.
+        GL_INVALID_VALUE is generated if xoffset &lt; - b, xoffset + width &gt; w - b, yoffset &lt; - b, or
+            yoffset + height &gt; h - b, or zoffset &lt; - b, or zoffset + depth &gt; d - b, where w is the
+            GL_TEXTURE_WIDTH, h is the GL_TEXTURE_HEIGHT, d is the GL_TEXTURE_DEPTH and b is the border width
+            of the texture image being modified. Note that w, h, and d include twice the border width.
+        GL_INVALID_VALUE is generated if width, height, or depth is less than 0.
+        GL_INVALID_OPERATION is generated if the texture array has not been defined by a previous
+            glTexImage3D or glTexStorage3D operation.
+        GL_INVALID_OPERATION is generated if type is one of GL_UNSIGNED_BYTE_3_3_2,
+            GL_UNSIGNED_BYTE_2_3_3_REV, GL_UNSIGNED_SHORT_5_6_5, or GL_UNSIGNED_SHORT_5_6_5_REV and format is
+            not GL_RGB.
+        GL_INVALID_OPERATION is generated if type is one of GL_UNSIGNED_SHORT_4_4_4_4,
+            GL_UNSIGNED_SHORT_4_4_4_4_REV, GL_UNSIGNED_SHORT_5_5_5_1, GL_UNSIGNED_SHORT_1_5_5_5_REV,
+            GL_UNSIGNED_INT_8_8_8_8, GL_UNSIGNED_INT_8_8_8_8_REV, GL_UNSIGNED_INT_10_10_10_2, or
+            GL_UNSIGNED_INT_2_10_10_10_REV and format is neither GL_RGBA nor GL_BGRA.
+        GL_INVALID_OPERATION is generated if format is GL_STENCIL_INDEX and the base internal format is not
+            GL_STENCIL_INDEX.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the buffer object's data store is currently mapped.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and the data would be unpacked from the buffer object such that the
+            memory reads required would exceed the data store size.
+        GL_INVALID_OPERATION is generated if a non-zero buffer object name is bound to the
+            GL_PIXEL_UNPACK_BUFFER target and pixels is not evenly divisible into the number of bytes needed to
+            store in memory a datum indicated by type.
+
+        Notes
+        -----
+        https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexSubImage3D.xhtml
         """
         pass
 

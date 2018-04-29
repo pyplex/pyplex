@@ -1,8 +1,12 @@
 from pyplex import gl
 from pyplex.glow.shader import Shader
-from pyplex.glow.buffer import *
-from pyplex.glow.type import BASE_TYPE
+from pyplex.glow.buffer import ArrayBuffer
+from pyplex.glow.texture import Texture
+from pyplex.glow.type import Type
+import numpy as np
 from ctypes import *
+
+from typing import List
 
 
 class LinkError(Exception):
@@ -38,7 +42,7 @@ class VertexArray:
 
 
 class Program:
-    def __init__(self, ctx: gl.GL_ANY, *shaders: Shader):
+    def __init__(self, ctx: gl.GL43, *shaders: Shader):
         self._ctx = ctx
 
         self._ptr = self._ctx.create_program()
@@ -59,17 +63,26 @@ class Program:
         index = self._ctx.get_program_resource_index(self._ptr, gl.Interface.PROGRAM_INPUT, name.encode())
         location = self._ctx.get_program_resource_location(self._ptr, gl.Interface.PROGRAM_INPUT, name.encode())
 
-        print(index, location)
-
-        resource_type = c_int(0)
-        self._ctx.get_program_resourceiv(
-            self._ptr, gl.Interface.PROGRAM_INPUT, index, 1,
-            pointer(c_uint(gl.ResourceParameter.TYPE)), 1, None, pointer(resource_type))
+        t = Type(self._resource_parameters(gl.Interface.PROGRAM_INPUT, index, gl.ResourceParameter.TYPE)[0])
 
         with buffer, self._vao:
-            self._ctx.vertex_attrib_pointer(
-                location, buffer.shape[-1], BASE_TYPE[resource_type.value], False, 0, c_void_p(0))
+            self._ctx.vertex_attrib_pointer(location, t.count, t.gl_base, False, 0, c_void_p(0))
             self._ctx.enable_vertex_attrib_array(location)
+
+    def uniform(self, name: str, value: np.ndarray):
+        index = self._ctx.get_program_resource_index(self._ptr, gl.Interface.UNIFORM, name.encode())
+        location = self._ctx.get_program_resource_location(self._ptr, gl.Interface.UNIFORM, name.encode())
+
+        t = Type(self._resource_parameters(gl.Interface.UNIFORM, index, gl.ResourceParameter.TYPE)[0])
+
+        func = self._ctx.__getattribute__(t.uniform_func.__name__)
+        func(self._ptr, location, int(value.nbytes / t.nbytes), value.ctypes.data_as(POINTER(t.ctypes)))
+
+    def texture(self, name: str, texture: Texture, unit: gl.TextureUnit):
+        location = self._ctx.get_program_resource_location(self._ptr, gl.Interface.UNIFORM, name.encode())
+        self._ctx.program_uniform_1i(self._ptr, location, unit - gl.TextureUnit.TEXTURE0)
+        self._ctx.active_texture(unit)
+        self._ctx.bind_texture(texture.target, texture.ptr)
 
     def draw(self, mode: gl.DrawMode, start: int, count: int):
         self._ctx.use_program(self._ptr)
@@ -86,3 +99,18 @@ class Program:
         result = c_int(0)
         self._ctx.get_programiv(self._ptr, parameter, pointer(result))
         return result.value
+
+    def _resource_parameters(self, interface: gl.Interface, index: int, *properties: gl.ResourceParameter) -> List[int]:
+        num = len(properties)
+        props = (c_uint32 * len(properties))()
+        for i, prop in enumerate(properties): props[i] = c_uint32(prop)
+
+        results = (c_int * len(properties))()
+
+        self._ctx.get_program_resourceiv(
+            self._ptr, interface, index,    # Where to Look
+            num, props,                     # What to Query
+            num, None, results)    # Return
+
+        return [results[i] for i in range(num)]
+

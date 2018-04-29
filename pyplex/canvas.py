@@ -80,9 +80,9 @@ class Monitor:
     def gamma_ramp(self) -> np.ndarray:
         ramp = Canvas.GLFW.get_gamma_ramp(self._monitor)[0]
         return np.concatenate([
-            (np.ctypeslib.as_array(ramp.red, (ramp.size, 1))),
-            (np.ctypeslib.as_array(ramp.green, (ramp.size, 1))),
-            (np.ctypeslib.as_array(ramp.blue, (ramp.size, 1)))], axis=1)
+            (np.ctypeslib.as_array(ramp.red, (ramp.nbytes, 1))),
+            (np.ctypeslib.as_array(ramp.green, (ramp.nbytes, 1))),
+            (np.ctypeslib.as_array(ramp.blue, (ramp.nbytes, 1)))], axis=1)
 
     @gamma_ramp.setter
     def gamma_ramp(self, value: np.ndarray):
