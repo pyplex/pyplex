@@ -106,6 +106,51 @@ class Error(IntEnum):
     STACK_UNDERFLOW = 0x0504
 
 
+class FrameBufferAttachment(IntEnum):
+    DEPTH = 0x8D00
+    STENCIL = 0x8D20
+    DEPTH_STENCIL = 0x821A
+
+    COLOR_0 = 0x8CE0
+    COLOR_1 = 0x8CE1
+    COLOR_2 = 0x8CE2
+    COLOR_3 = 0x8CE3
+    COLOR_4 = 0x8CE4
+    COLOR_5 = 0x8CE5
+    COLOR_6 = 0x8CE6
+    COLOR_7 = 0x8CE7
+    COLOR_8 = 0x8CE8
+    COLOR_9 = 0x8CE9
+    COLOR_10 = 0x8CEA
+    COLOR_11 = 0x8CEB
+    COLOR_12 = 0x8CEC
+    COLOR_13 = 0x8CED
+    COLOR_14 = 0x8CEE
+    COLOR_15 = 0x8CEF
+    COLOR_16 = 0x8CF0
+    COLOR_17 = 0x8CF1
+    COLOR_18 = 0x8CF2
+    COLOR_19 = 0x8CF3
+    COLOR_20 = 0x8CF4
+    COLOR_21 = 0x8CF5
+    COLOR_22 = 0x8CF6
+    COLOR_23 = 0x8CF7
+    COLOR_24 = 0x8CF8
+    COLOR_25 = 0x8CF9
+    COLOR_26 = 0x8CFA
+    COLOR_27 = 0x8CFB
+    COLOR_28 = 0x8CFC
+    COLOR_29 = 0x8CFD
+    COLOR_30 = 0x8CFE
+    COLOR_31 = 0x8CFF
+
+
+class FrameBufferTarget(IntEnum):
+    FRAMEBUFFER = 0x8D40
+    READ_FRAMEBUFFER = 0x8CA8
+    DRAW_FRAMEBUFFER = 0x8CA9
+
+
 class ProgramParameter(IntEnum):
     DELETE_STATUS = 0x8B80
     LINK_STATUS = 0x8B82

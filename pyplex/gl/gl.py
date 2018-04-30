@@ -6835,6 +6835,7 @@ class GL20(GL):
         """
         pass
 
+
 class GL21(GL20):
 
     MAJOR = 2
@@ -7155,6 +7156,7 @@ class GL21(GL20):
         https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glUniform.xhtml
         """
         pass
+
 
 class GL30(GL21):
 
@@ -10006,6 +10008,7 @@ class GL30(GL21):
         """
         pass
 
+
 class GL31(GL30):
 
     MAJOR = 3
@@ -10378,6 +10381,7 @@ class GL31(GL30):
         https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glUniformBlockBinding.xhtml
         """
         pass
+
 
 class GL32(GL31):
 
@@ -11612,6 +11616,7 @@ class GL32(GL31):
         """
         pass
 
+
 class GL33(GL32):
 
     MAJOR = 3
@@ -11795,6 +11800,7 @@ class GL33(GL32):
         https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glVertexAttribDivisor.xhtml
         """
         pass
+
 
 class GL40(GL33):
 
@@ -12694,6 +12700,7 @@ class GL40(GL33):
         https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glUniformSubroutines.xhtml
         """
         pass
+
 
 class GL41(GL40):
 
@@ -15382,6 +15389,7 @@ class GL41(GL40):
         """
         pass
 
+
 class GL42(GL41):
 
     MAJOR = 4
@@ -15868,6 +15876,7 @@ class GL42(GL41):
         https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage3D.xhtml
         """
         pass
+
 
 class GL43(GL42):
 
@@ -17452,6 +17461,7 @@ class GL43(GL42):
         """
         pass
 
+
 class GL44(GL43):
 
     MAJOR = 4
@@ -17831,6 +17841,7 @@ class GL44(GL43):
         https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glClearTexSubImage.xhtml
         """
         pass
+
 
 class GL45(GL44):
 
