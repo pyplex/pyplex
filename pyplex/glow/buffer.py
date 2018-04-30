@@ -55,11 +55,11 @@ class Buffer:
 
     @property
     def data(self) -> np.ndarray:
-        data = (c_uint8 * self._nbytes)()
+        data = np.empty(self._shape, self._dtype)
         self._ctx.bind_buffer(self._target, self._ptr)
-        self._ctx.get_buffer_sub_data(self._target, 0, self._nbytes, pointer(data))
+        self._ctx.get_buffer_sub_data(self._target, 0, self._nbytes, data.ctypes.data_as(c_void_p))
         self._ctx.bind_buffer(self._target, 0)
-        return np.ctypeslib.as_array(data).view(self._dtype).reshape(self._shape)
+        return data
 
     @data.setter
     def data(self, value: np.ndarray):

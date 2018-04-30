@@ -47,6 +47,7 @@ class Program:
 
         self._ptr = self._ctx.create_program()
         self._vao = VertexArray(self._ctx)
+        self._textures = {}
 
         for shader in shaders:
             self._ctx.attach_shader(self._ptr, shader.ptr)
@@ -78,22 +79,40 @@ class Program:
         func = self._ctx.__getattribute__(t.uniform_func.__name__)
         func(self._ptr, location, int(value.nbytes / t.nbytes), value.ctypes.data_as(POINTER(t.ctypes)))
 
-    def texture(self, name: str, texture: Texture, unit: gl.TextureUnit):
+    def texture(self, name: str, texture: Texture):
+        if not name in self._textures:
+            unit = len(self._textures) + gl.TextureUnit.TEXTURE0
+            self._textures[name] = (texture, unit)
+
         location = self._ctx.get_program_resource_location(self._ptr, gl.Interface.UNIFORM, name.encode())
-        self._ctx.program_uniform_1i(self._ptr, location, unit - gl.TextureUnit.TEXTURE0)
-        self._ctx.active_texture(unit)
-        self._ctx.bind_texture(texture.target, texture.ptr)
+        self._ctx.program_uniform_1i(self._ptr, location, self._textures[name][1] - gl.TextureUnit.TEXTURE0)
 
     def draw(self, mode: gl.DrawMode, start: int, count: int):
-        self._ctx.use_program(self._ptr)
-        with self._vao: self._ctx.draw_arrays(mode, start, count)
-        self._ctx.use_program(0)
+        self.bind()
+        self._ctx.draw_arrays(mode, start, count)
+        self.unbind()
 
     def log(self):
         log_length = self._parameter(gl.ProgramParameter.INFO_LOG_LENGTH)
         result = bytes(log_length)
         self._ctx.get_program_info_log(self._ptr, log_length, None, result)
         return result.decode()
+
+    def bind(self):
+        self._ctx.use_program(self._ptr)
+        self._vao.bind()
+
+        for texture, unit in self._textures.values():
+            self._ctx.active_texture(unit)
+            self._ctx.bind_texture(texture.target, texture.ptr)
+
+    def unbind(self):
+        self._ctx.use_program(0)
+        self._vao.unbind()
+
+        for texture, unit in self._textures.values():
+            self._ctx.active_texture(unit)
+            self._ctx.bind_texture(texture.target, 0)
 
     def _parameter(self, parameter: gl.ProgramParameter) -> int:
         result = c_int(0)

@@ -42,25 +42,6 @@ class TextureLOD:
 
 
 class Texture:
-
-    _TYPE = {
-        np.dtype(np.int8): gl.TextureType.BYTE,
-        np.dtype(np.uint8): gl.TextureType.UNSIGNED_BYTE,
-        np.dtype(np.int16): gl.TextureType.SHORT,
-        np.dtype(np.uint16): gl.TextureType.UNSIGNED_SHORT,
-        np.dtype(np.int32): gl.TextureType.INT,
-        np.dtype(np.uint32): gl.TextureType.UNSIGNED_INT,
-        np.dtype(np.float32): gl.TextureType.FLOAT,
-        np.dtype(np.float16): gl.TextureType.HALF_FLOAT
-    }
-
-    _CHANNELS = {
-        1: (gl.TextureFormat.RED, gl.TextureInternalFormat.RED),
-        2: (gl.TextureFormat.RG, gl.TextureInternalFormat.RG),
-        3: (gl.TextureFormat.RGB, gl.TextureInternalFormat.RGB),
-        4: (gl.TextureFormat.RGBA, gl.TextureInternalFormat.RGBA)
-    }
-
     def __init__(self, ctx: gl.GL_ANY, target: gl.TextureTarget, type: gl.TextureType,
                  format: gl.TextureFormat, internal_format: gl.TextureInternalFormat,
                  filter: TextureFilter = TextureFilter(), wrap: TextureWrap = TextureWrap(),
@@ -156,49 +137,111 @@ class Texture:
         self._lod = value
 
 
-class Texture1D(Texture):
-    def __init__(self, ctx: gl.GL_ANY, image: np.ndarray,
+class ImageTexture(Texture):
+
+    _CHANNELS = {
+        1: (gl.TextureFormat.RED, gl.TextureInternalFormat.RED),
+        2: (gl.TextureFormat.RG, gl.TextureInternalFormat.RG),
+        3: (gl.TextureFormat.RGB, gl.TextureInternalFormat.RGB),
+        4: (gl.TextureFormat.RGBA, gl.TextureInternalFormat.RGBA)
+    }
+
+    _SETTER = {
+        gl.TextureTarget.TEXTURE_1D: gl.GL20.tex_image_1d,
+        gl.TextureTarget.TEXTURE_2D: gl.GL20.tex_image_2d,
+        gl.TextureTarget.TEXTURE_3D: gl.GL20.tex_image_3d
+    }
+
+    _TYPE = {
+        np.dtype(np.int8): gl.TextureType.BYTE,
+        np.dtype(np.uint8): gl.TextureType.UNSIGNED_BYTE,
+        np.dtype(np.int16): gl.TextureType.SHORT,
+        np.dtype(np.uint16): gl.TextureType.UNSIGNED_SHORT,
+        np.dtype(np.int32): gl.TextureType.INT,
+        np.dtype(np.uint32): gl.TextureType.UNSIGNED_INT,
+        np.dtype(np.float32): gl.TextureType.FLOAT,
+        np.dtype(np.float16): gl.TextureType.HALF_FLOAT
+    }
+
+    def __init__(self, ctx: gl.GL_ANY, data: np.ndarray, target: gl.TextureTarget,
                  filter: TextureFilter = TextureFilter(), wrap: TextureWrap = TextureWrap(),
                  swizzle: TextureSwizzle = TextureSwizzle(), lod: TextureLOD = TextureLOD()):
 
-        type = self._TYPE[image.dtype]
-        format, internal_format = self._CHANNELS[image.shape[1]]
+        type = self._TYPE[data.dtype]
+        format, internal_format = self._CHANNELS[data.shape[-1]]
 
-        super().__init__(ctx, gl.TextureTarget.TEXTURE_1D, type, format, internal_format, filter, wrap, swizzle, lod)
+        super().__init__(ctx, target, type, format, internal_format, filter, wrap, swizzle, lod)
 
+        self._setter = self._ctx.__getattribute__(self._SETTER[target].__name__)
+        self._dtype = self._size = self._itemsize = self._nbytes = self._ndim = self._shape = None
+
+        self.data = data
+
+    @property
+    def dtype(self) -> np.dtype:
+        return self._dtype
+
+    @property
+    def size(self) -> int:
+        return self._size
+
+    @property
+    def itemsize(self) -> int:
+        return self._itemsize
+
+    @property
+    def nbytes(self) -> int:
+        return self._nbytes
+
+    @property
+    def ndim(self) -> int:
+        return self._ndim
+
+    @property
+    def shape(self) -> tuple:
+        return self._shape
+
+    @property
+    def data(self) -> np.ndarray:
+        data = np.empty(self._shape, self._dtype)
         self._ctx.bind_texture(self._target, self._ptr)
-        self._ctx.tex_image_1d(self._target, 0, internal_format, image.shape[0],
-                               0, format, type, image.ctypes.data_as(c_void_p))
+        self._ctx.get_tex_image(self._target, 0, self._format, self._type, data.ctypes.data_as(c_void_p))
         self._ctx.bind_texture(self._target, 0)
+        return data
+
+    @data.setter
+    def data(self, value: np.ndarray):
+        self._ctx.bind_texture(self._target, self._ptr)
+        self._setter(self._target, 0, self._internal_format, *value.shape[:-1],
+                     0, self._format, self._type, value.ctypes.data_as(c_void_p))
+        self._ctx.bind_texture(self._target, 0)
+        self._update_dimensionality(value)
+
+    def _update_dimensionality(self, data: np.ndarray):
+        self._dtype = data.dtype
+        self._size = data.size
+        self._itemsize = data.itemsize
+        self._nbytes = data.nbytes
+        self._ndim = data.ndim
+        self._shape = data.shape
 
 
-class Texture2D(Texture):
-    def __init__(self, ctx: gl.GL_ANY, image: np.ndarray,
+class Texture1D(ImageTexture):
+    def __init__(self, ctx: gl.GL_ANY, data: np.ndarray,
                  filter: TextureFilter = TextureFilter(), wrap: TextureWrap = TextureWrap(),
                  swizzle: TextureSwizzle = TextureSwizzle(), lod: TextureLOD = TextureLOD()):
-
-        type = self._TYPE[image.dtype]
-        format, internal_format = self._CHANNELS[image.shape[2]]
-
-        super().__init__(ctx, gl.TextureTarget.TEXTURE_2D, type, format, internal_format, filter, wrap, swizzle, lod)
-
-        self._ctx.bind_texture(self._target, self._ptr)
-        self._ctx.tex_image_2d(self._target, 0, internal_format, image.shape[0], image.shape[1],
-                               0, format, type, image.ctypes.data_as(c_void_p))
-        self._ctx.bind_texture(self._target, 0)
+        super().__init__(ctx, data, gl.TextureTarget.TEXTURE_1D, filter, wrap, swizzle, lod)
 
 
-class Texture3D(Texture):
-    def __init__(self, ctx: gl.GL_ANY, image: np.ndarray,
+class Texture2D(ImageTexture):
+    def __init__(self, ctx: gl.GL_ANY, data: np.ndarray,
                  filter: TextureFilter = TextureFilter(), wrap: TextureWrap = TextureWrap(),
                  swizzle: TextureSwizzle = TextureSwizzle(), lod: TextureLOD = TextureLOD()):
+        super().__init__(ctx, data, gl.TextureTarget.TEXTURE_2D, filter, wrap, swizzle, lod)
 
-        type = self._TYPE[image.dtype]
-        format, internal_format = self._CHANNELS[image.shape[3]]
 
-        super().__init__(ctx, gl.TextureTarget.TEXTURE_3D, type, format, internal_format, filter, wrap, swizzle, lod)
-
-        self._ctx.bind_texture(self._target, self._ptr)
-        self._ctx.tex_image_3d(self._target, 0, internal_format, image.shape[0], image.shape[1], image.shape[2],
-                               0, format, type, image.ctypes.data_as(c_void_p))
-        self._ctx.bind_texture(self._target, 0)
+class Texture3D(ImageTexture):
+    def __init__(self, ctx: gl.GL_ANY, data: np.ndarray,
+                 filter: TextureFilter = TextureFilter(), wrap: TextureWrap = TextureWrap(),
+                 swizzle: TextureSwizzle = TextureSwizzle(), lod: TextureLOD = TextureLOD()):
+        super().__init__(ctx, data, gl.TextureTarget.TEXTURE_3D, filter, wrap, swizzle, lod)
