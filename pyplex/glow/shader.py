@@ -1,4 +1,5 @@
 from pyplex import gl
+from pyplex.glow import abstract
 from ctypes import *
 
 from typing import List
@@ -8,11 +9,12 @@ class CompilationError(Exception):
     pass
 
 
-class Shader:
+class Shader(abstract.Object):
 
     SOURCE_EXTENSION = '.glsl'
 
     def __init__(self, ctx: gl.GL20, type: gl.ShaderType, *sources: str):
+
         self._ctx = ctx
         self._type = type
 

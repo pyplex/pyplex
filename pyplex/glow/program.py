@@ -3,6 +3,7 @@ from pyplex.glow.shader import Shader
 from pyplex.glow.buffer import ArrayBuffer
 from pyplex.glow.texture import Texture
 from pyplex.glow.type import Type
+from pyplex.glow import abstract
 import numpy as np
 from ctypes import *
 
@@ -13,7 +14,7 @@ class LinkError(Exception):
     pass
 
 
-class VertexArray:
+class VertexArray(abstract.BindableObject):
     def __init__(self, ctx: gl.GL30):
         self._ctx = ctx
 
@@ -34,14 +35,8 @@ class VertexArray:
     def delete(self):
         self._ctx.delete_vertex_arrays(1, pointer(self._ptr))
 
-    def __enter__(self):
-        self._ctx.bind_vertex_array(self._ptr)
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self._ctx.bind_vertex_array(0)
-
-
-class Program:
+class Program(abstract.BindableObject):
     def __init__(self, ctx: gl.GL43, *shaders: Shader):
         self._ctx = ctx
 
@@ -88,9 +83,7 @@ class Program:
         self._ctx.program_uniform_1i(self._ptr, location, self._textures[name][1] - gl.TextureUnit.TEXTURE0)
 
     def draw(self, mode: gl.DrawMode, start: int, count: int):
-        self.bind()
-        self._ctx.draw_arrays(mode, start, count)
-        self.unbind()
+        with self: self._ctx.draw_arrays(mode, start, count)
 
     def log(self):
         log_length = self._parameter(gl.ProgramParameter.INFO_LOG_LENGTH)

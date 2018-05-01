@@ -1,4 +1,5 @@
 from pyplex import gl
+from pyplex.glow import abstract
 import numpy as np
 from ctypes import *
 
@@ -49,7 +50,7 @@ class TextureLOD:
         self.max = max
 
 
-class Texture:
+class Texture(abstract.BindableObject, abstract.Array):
 
     _CHANNELS = {
         1: (gl.TextureFormat.RED, gl.TextureInternalFormat.RED),

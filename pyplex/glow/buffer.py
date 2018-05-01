@@ -1,10 +1,12 @@
 from pyplex import gl
+from pyplex.glow import abstract
 import numpy as np
 from ctypes import *
 
 
-class Buffer:
+class Buffer(abstract.BindableObject, abstract.Array):
     def __init__(self, ctx: gl.GL20, target: gl.BufferTarget, data: np.ndarray, usage: gl.BufferUsage):
+
         self._ctx = ctx
         self._target = target
         self._usage = usage
@@ -84,12 +86,6 @@ class Buffer:
         self._nbytes = data.nbytes
         self._ndim = data.ndim
         self._shape = data.shape
-
-    def __enter__(self):
-        self._ctx.bind_buffer(self._target, self._ptr)
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self._ctx.bind_buffer(self._target, 0)
 
 
 class ArrayBuffer(Buffer):

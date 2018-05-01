@@ -1,9 +1,10 @@
 from pyplex import gl
+from pyplex.glow import abstract
 from pyplex.glow.texture import Texture2D
 from ctypes import *
 
 
-class FrameBuffer:
+class FrameBuffer(abstract.BindableObject):
     def __init__(self, ctx: gl.GL_ANY, target: gl.FrameBufferTarget = gl.FrameBufferTarget.FRAMEBUFFER):
         self._ctx = ctx
         self._target = target
@@ -33,9 +34,3 @@ class FrameBuffer:
 
     def delete(self):
         self._ctx.delete_framebuffers(1, pointer(self._ptr))
-
-    def __enter__(self):
-        self._ctx.bind_framebuffer(self._target, self._ptr)
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self._ctx.bind_framebuffer(self._target, 0)
