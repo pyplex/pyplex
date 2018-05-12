@@ -370,6 +370,11 @@ class Canvas:
         return size
 
     @property
+    def aspect(self) -> float:
+        width, height = self.framebuffer_size
+        return width / height
+
+    @property
     def frame_size(self) -> np.ndarray:
         size = np.empty((4), np.int)
         Canvas.GLFW.get_window_frame_size(self._window,
@@ -383,8 +388,8 @@ class Canvas:
     def mouse_position(self) -> np.ndarray:
         pos = np.empty(2, np.double)
         Canvas.GLFW.get_cursor_pos(self._window,
-                                   cast(pos.ctypes.data, POINTER(c_int)),
-                                   cast(pos.ctypes.data + sizeof(c_double), POINTER(c_int)))
+                                   cast(pos.ctypes.data, POINTER(c_double)),
+                                   cast(pos.ctypes.data + sizeof(c_double), POINTER(c_double)))
         return pos
 
     @mouse_position.setter

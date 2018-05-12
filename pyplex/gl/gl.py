@@ -629,7 +629,7 @@ class GL20(GL):
 
         Parameters
         ----------
-        red, green, blue, alpha: float
+        alpha: float
             specify the components of GL_BLEND_COLOR
 
         Notes
@@ -671,6 +671,13 @@ class GL20(GL):
 
         Parameters
         ----------
+        mode_rgb: int
+            specifies the RGB blend equation, how the red, green, and blue components of the source and
+            destination colors are combined. It must be GL_FUNC_ADD, GL_FUNC_SUBTRACT,
+            GL_FUNC_REVERSE_SUBTRACT, GL_MIN, GL_MAX.
+        mode_alpha: int
+            specifies the alpha blend equation, how the alpha component of the source and destination colors
+            are combined. It must be GL_FUNC_ADD, GL_FUNC_SUBTRACT, GL_FUNC_REVERSE_SUBTRACT, GL_MIN, GL_MAX.
 
         Raises
         ------
@@ -723,6 +730,15 @@ class GL20(GL):
 
         Parameters
         ----------
+        src_rgb: int
+            Specifies how the red, green, and blue blending factors are computed. The initial value is GL_ONE.
+        dst_rgb: int
+            Specifies how the red, green, and blue destination blending factors are computed. The initial value
+            is GL_ZERO.
+        src_alpha: int
+            Specified how the alpha source blending factor is computed. The initial value is GL_ONE.
+        dst_alpha: int
+            Specified how the alpha destination blending factor is computed. The initial value is GL_ZERO.
 
         Raises
         ------
@@ -863,7 +879,7 @@ class GL20(GL):
 
         Parameters
         ----------
-        red, green, blue, alpha: float
+        alpha: float
             Specify the red, green, blue, and alpha values used when the color buffers are cleared. The initial
             values are all 0.
 
@@ -915,7 +931,7 @@ class GL20(GL):
 
         Parameters
         ----------
-        red, green, blue, alpha: bool
+        alpha: bool
             Specify whether red, green, blue, and alpha are to be written into the frame buffer. The initial
             values are all GL_TRUE, indicating that the color components are written.
 
@@ -967,6 +983,8 @@ class GL20(GL):
             least 64 texels wide. The height of the 1D texture image is 1.
         border: int
             This value must be 0.
+        image_size: int
+            Specifies the number of unsigned bytes of image data starting at the address specified by data.
         data: c_void_p
             Specifies a pointer to the compressed image data in memory.
 
@@ -1020,6 +1038,8 @@ class GL20(GL):
             texture images that are at least 16384 texels high.
         border: int
             This value must be 0.
+        image_size: int
+            Specifies the number of unsigned bytes of image data starting at the address specified by data.
         data: c_void_p
             Specifies a pointer to the compressed image data in memory.
 
@@ -1079,6 +1099,8 @@ class GL20(GL):
             least 16 texels deep.
         border: int
             This value must be 0.
+        image_size: int
+            Specifies the number of unsigned bytes of image data starting at the address specified by data.
         data: c_void_p
             Specifies a pointer to the compressed image data in memory.
 
@@ -1126,6 +1148,8 @@ class GL20(GL):
             Specifies the width of the texture subimage.
         format: int
             Specifies the format of the compressed image data stored at address data.
+        image_size: int
+            Specifies the number of unsigned bytes of image data starting at the address specified by data.
         data: c_void_p
             Specifies a pointer to the compressed image data in memory.
 
@@ -1180,6 +1204,8 @@ class GL20(GL):
             Specifies the height of the texture subimage.
         format: int
             Specifies the format of the compressed image data stored at address data.
+        image_size: int
+            Specifies the number of unsigned bytes of image data starting at the address specified by data.
         data: c_void_p
             Specifies a pointer to the compressed image data in memory.
 
@@ -1238,6 +1264,8 @@ class GL20(GL):
             Specifies the depth of the texture subimage.
         format: int
             Specifies the format of the compressed image data stored at address data.
+        image_size: int
+            Specifies the number of unsigned bytes of image data starting at the address specified by data.
         data: c_void_p
             Specifies a pointer to the compressed image data in memory.
 
@@ -1288,7 +1316,7 @@ class GL20(GL):
             GL_DEPTH_COMPONENT32, GL_STENCIL_INDEX8, GL_RED, GL_RG, GL_RGB, GL_R3_G3_B2, GL_RGB4, GL_RGB5,
             GL_RGB8, GL_RGB10, GL_RGB12, GL_RGB16, GL_RGBA, GL_RGBA2, GL_RGBA4, GL_RGB5_A1, GL_RGBA8,
             GL_RGB10_A2, GL_RGBA12, GL_RGBA16, GL_SRGB, GL_SRGB8, GL_SRGB_ALPHA, or GL_SRGB8_ALPHA8.
-        x, y: int
+        y: int
             Specify the window coordinates of the left corner of the row of pixels to be copied.
         width: int
             Specifies the width of the texture image. The height of the texture image is 1.
@@ -1335,7 +1363,7 @@ class GL20(GL):
             GL_DEPTH_COMPONENT32, GL_STENCIL_INDEX8, GL_RED, GL_RG, GL_RGB, GL_R3_G3_B2, GL_RGB4, GL_RGB5,
             GL_RGB8, GL_RGB10, GL_RGB12, GL_RGB16, GL_RGBA, GL_RGBA2, GL_RGBA4, GL_RGB5_A1, GL_RGBA8,
             GL_RGB10_A2, GL_RGBA12, GL_RGBA16, GL_SRGB, GL_SRGB8, GL_SRGB_ALPHA, or GL_SRGB8_ALPHA8.
-        x, y: int
+        y: int
             Specify the window coordinates of the lower left corner of the rectangular region of pixels to be
             copied.
         width: int
@@ -1381,7 +1409,7 @@ class GL20(GL):
             reduction image.
         xoffset: int
             Specifies the texel offset within the texture array.
-        x, y: int
+        y: int
             Specify the window coordinates of the left corner of the row of pixels to be copied.
         width: int
             Specifies the width of the texture subimage.
@@ -1432,7 +1460,7 @@ class GL20(GL):
             Specifies a texel offset in the x direction within the texture array.
         yoffset: int
             Specifies a texel offset in the y direction within the texture array.
-        x, y: int
+        y: int
             Specify the window coordinates of the lower left corner of the rectangular region of pixels to be
             copied.
         width: int
@@ -1494,7 +1522,7 @@ class GL20(GL):
             Specifies a texel offset in the y direction within the texture array.
         zoffset: int
             Specifies a texel offset in the z direction within the texture array.
-        x, y: int
+        y: int
             Specify the window coordinates of the lower left corner of the rectangular region of pixels to be
             copied.
         width: int
@@ -1558,6 +1586,9 @@ class GL20(GL):
 
         Parameters
         ----------
+        shader_type: int
+            Specifies the type of shader to be created. Must be one of GL_COMPUTE_SHADER, GL_VERTEX_SHADER,
+            GL_TESS_CONTROL_SHADER, GL_TESS_EVALUATION_SHADER, GL_GEOMETRY_SHADER, or GL_FRAGMENT_SHADER.
 
         Raises
         ------
@@ -1751,6 +1782,10 @@ class GL20(GL):
 
         Parameters
         ----------
+        near_val: float
+            Specifies the mapping of the near clipping plane to window coordinates. The initial value is 0.
+        far_val: float
+            Specifies the mapping of the far clipping plane to window coordinates. The initial value is 1.
 
         Notes
         -----
@@ -1863,9 +1898,6 @@ class GL20(GL):
         bufs: POINTER(c_uint32)
             Points to an array of symbolic constants specifying the buffers into which fragment colors or data
             values will be written.
-        n: int
-            The fragment shader output value is written into the n th color attachment of the current
-            framebuffer. n may range from zero to the value of GL_MAX_COLOR_ATTACHMENTS.
 
         Raises
         ------
@@ -2296,6 +2328,9 @@ class GL20(GL):
             Specifies the program object to be queried.
         index: int
             Specifies the index of the attribute variable to be queried.
+        buf_size: int
+            Specifies the maximum number of characters OpenGL is allowed to write in the character buffer
+            indicated by name.
         length: POINTER(c_uint32)
             Returns the number of characters actually written by OpenGL in the string indicated by name
             (excluding the null terminator) if a value other than NULL is passed.
@@ -2332,6 +2367,9 @@ class GL20(GL):
             Specifies the program object to be queried.
         index: int
             Specifies the index of the uniform variable to be queried.
+        buf_size: int
+            Specifies the maximum number of characters OpenGL is allowed to write in the character buffer
+            indicated by name.
         length: POINTER(c_uint32)
             Returns the number of characters actually written by OpenGL in the string indicated by name
             (excluding the null terminator) if a value other than NULL is passed.
@@ -2366,6 +2404,8 @@ class GL20(GL):
         ----------
         program: int
             Specifies the program object to be queried.
+        max_count: int
+            Specifies the size of the array for storing the returned object names.
         count: POINTER(c_uint32)
             Returns the number of names actually returned in shaders.
         shaders: POINTER(c_uint)
@@ -2632,8 +2672,12 @@ class GL20(GL):
         ----------
         program: int
             Specifies the program object whose information log is to be queried.
+        max_length: int
+            Specifies the size of the character buffer for storing the returned information log.
         length: POINTER(c_uint32)
             Returns the length of the string returned in infoLog (excluding the null terminator).
+        info_log: bytes
+            Specifies an array of characters that is used to return the information log.
 
         Raises
         ------
@@ -2781,8 +2825,12 @@ class GL20(GL):
         ----------
         shader: int
             Specifies the shader object whose information log is to be queried.
+        max_length: int
+            Specifies the size of the character buffer for storing the returned information log.
         length: POINTER(c_uint32)
             Returns the length of the string returned in infoLog (excluding the null terminator).
+        info_log: bytes
+            Specifies an array of characters that is used to return the information log.
 
         Raises
         ------
@@ -2806,6 +2854,8 @@ class GL20(GL):
         ----------
         shader: int
             Specifies the shader object to be queried.
+        buf_size: int
+            Specifies the size of the character buffer for storing the returned source code string.
         length: POINTER(c_uint32)
             Returns the length of the string returned in source (excluding the null terminator).
         source: bytes
@@ -3872,10 +3922,10 @@ class GL20(GL):
 
         Parameters
         ----------
-        x, y: int
+        y: int
             Specify the window coordinates of the first pixel that is read from the frame buffer. This location
             is the lower left corner of a rectangular block of pixels.
-        width, height: int
+        height: int
             Specify the dimensions of the pixel rectangle. width and height of one correspond to a single
             pixel.
         format: int
@@ -3959,9 +4009,9 @@ class GL20(GL):
 
         Parameters
         ----------
-        x, y: int
+        y: int
             Specify the lower left corner of the scissor box. Initially (0, 0).
-        width, height: int
+        height: int
             Specify the width and height of the scissor box. When a GL context is first attached to a window,
             width and height are set to the dimensions of that window.
 
@@ -4186,6 +4236,10 @@ class GL20(GL):
         level: int
             Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
             reduction image.
+        internal_format: int
+            Specifies the number of color components in the texture. Must be one of base internal formats given
+            in Table 1, one of the sized internal formats given in Table 2, or one of the compressed internal
+            formats given in Table 3, below.
         width: int
             Specifies the width of the texture image. All implementations support texture images that are at
             least 1024 texels wide. The height of the 1D texture image is 1.
@@ -4261,6 +4315,10 @@ class GL20(GL):
         level: int
             Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
             reduction image. If target is GL_TEXTURE_RECTANGLE or GL_PROXY_TEXTURE_RECTANGLE, level must be 0.
+        internal_format: int
+            Specifies the number of color components in the texture. Must be one of base internal formats given
+            in Table 1, one of the sized internal formats given in Table 2, or one of the compressed internal
+            formats given in Table 3, below.
         width: int
             Specifies the width of the texture image. All implementations support texture images that are at
             least 1024 texels wide.
@@ -4354,6 +4412,10 @@ class GL20(GL):
         level: int
             Specifies the level-of-detail number. Level 0 is the base image level. Level n is the n th mipmap
             reduction image.
+        internal_format: int
+            Specifies the number of color components in the texture. Must be one of base internal formats given
+            in Table 1, one of the sized internal formats given in Table 2, or one of the compressed internal
+            formats given in Table 3, below.
         width: int
             Specifies the width of the texture image. All implementations support 3D texture images that are at
             least 16 texels wide.
@@ -4883,8 +4945,6 @@ class GL20(GL):
         ----------
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0: float
-            For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
         ------
@@ -4923,8 +4983,6 @@ class GL20(GL):
         ----------
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0, v1: float
-            For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
         ------
@@ -4963,8 +5021,6 @@ class GL20(GL):
         ----------
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0, v1, v2: float
-            For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
         ------
@@ -5003,7 +5059,7 @@ class GL20(GL):
         ----------
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0, v1, v2, v3: float
+        v3: float
             For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
@@ -5043,8 +5099,6 @@ class GL20(GL):
         ----------
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0: int
-            For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
         ------
@@ -5083,8 +5137,6 @@ class GL20(GL):
         ----------
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0, v1: int
-            For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
         ------
@@ -5123,8 +5175,6 @@ class GL20(GL):
         ----------
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0, v1, v2: int
-            For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
         ------
@@ -5163,7 +5213,7 @@ class GL20(GL):
         ----------
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0, v1, v2, v3: int
+        v3: int
             For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
@@ -5810,8 +5860,6 @@ class GL20(GL):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0: float
-            For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
         ------
@@ -5836,8 +5884,6 @@ class GL20(GL):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0: int
-            For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
         ------
@@ -5862,8 +5908,6 @@ class GL20(GL):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0: float
-            For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
         ------
@@ -5888,8 +5932,6 @@ class GL20(GL):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0, v1: float
-            For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
         ------
@@ -5914,8 +5956,6 @@ class GL20(GL):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0, v1: int
-            For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
         ------
@@ -5940,8 +5980,6 @@ class GL20(GL):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0, v1: float
-            For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
         ------
@@ -5966,8 +6004,6 @@ class GL20(GL):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0, v1, v2: float
-            For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
         ------
@@ -5992,8 +6028,6 @@ class GL20(GL):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0, v1, v2: int
-            For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
         ------
@@ -6018,8 +6052,6 @@ class GL20(GL):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0, v1, v2: float
-            For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
         ------
@@ -6044,7 +6076,7 @@ class GL20(GL):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0, v1, v2, v3: float
+        v3: float
             For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
@@ -6070,7 +6102,7 @@ class GL20(GL):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0, v1, v2, v3: int
+        v3: int
             For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
@@ -6096,7 +6128,7 @@ class GL20(GL):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0, v1, v2, v3: float
+        v3: float
             For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
@@ -6122,7 +6154,7 @@ class GL20(GL):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0, v1, v2, v3: c_ubyte
+        v3: c_ubyte
             For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
@@ -6819,9 +6851,9 @@ class GL20(GL):
 
         Parameters
         ----------
-        x, y: int
+        y: int
             Specify the lower left corner of the viewport rectangle, in pixels. The initial value is (0,0).
-        width, height: int
+        height: int
             Specify the width and height of the viewport. When a GL context is first attached to a window,
             width and height are set to the dimensions of that window.
 
@@ -7395,6 +7427,9 @@ class GL30(GL21):
 
         Parameters
         ----------
+        primitive_mode: int
+            Specify the output type of the primitives that will be recorded into the buffer objects that are
+            bound for transform feedback.
 
         Raises
         ------
@@ -7526,6 +7561,8 @@ class GL30(GL21):
         ----------
         program: int
             The name of the program containing varying out variable whose binding to modify
+        color_number: int
+            The color number to bind the user-defined varying out variable to
         name: bytes
             The name of the user-defined varying out variable whose binding to modify
 
@@ -7622,6 +7659,10 @@ class GL30(GL21):
 
         Parameters
         ----------
+        src_y1: int
+            Specify the bounds of the source rectangle within the read buffer of the read framebuffer.
+        dst_y1: int
+            Specify the bounds of the destination rectangle within the write buffer of the write framebuffer.
         mask: int
             The bitwise OR of the flags indicating which buffers are to be copied. The allowed flags are
             GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT and GL_STENCIL_BUFFER_BIT.
@@ -7863,7 +7904,7 @@ class GL30(GL21):
         ----------
         buf: int
             For glColorMaski, specifies the index of the draw buffer whose color mask to set.
-        red, green, blue, alpha: bool
+        alpha: bool
             Specify whether red, green, blue, and alpha are to be written into the frame buffer. The initial
             values are all GL_TRUE, indicating that the color components are written.
 
@@ -8617,6 +8658,8 @@ class GL30(GL21):
             The name of the target program object.
         index: int
             The index of the varying variable whose information to retrieve.
+        buf_size: int
+            The maximum number of characters, including the null terminator, that may be written into name.
         length: POINTER(c_uint32)
             The address of a variable which will receive the number of characters written into name, excluding
             the null-terminator. If length is NULL no length is returned.
@@ -9066,6 +9109,9 @@ class GL30(GL21):
         varyings: POINTER(c_char_p)
             An array of count zero-terminated strings specifying the names of the varying variables to use for
             transform feedback.
+        buffer_mode: int
+            Identifies the mode used to capture the varying variables when transform feedback is active.
+            bufferMode must be GL_INTERLEAVED_ATTRIBS or GL_SEPARATE_ATTRIBS.
 
         Raises
         ------
@@ -9089,8 +9135,6 @@ class GL30(GL21):
         ----------
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0: int
-            For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
         ------
@@ -9129,8 +9173,6 @@ class GL30(GL21):
         ----------
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0, v1: int
-            For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
         ------
@@ -9169,8 +9211,6 @@ class GL30(GL21):
         ----------
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0, v1, v2: int
-            For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
         ------
@@ -9209,7 +9249,7 @@ class GL30(GL21):
         ----------
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0, v1, v2, v3: int
+        v3: int
             For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
@@ -9437,8 +9477,6 @@ class GL30(GL21):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0: int
-            For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
         ------
@@ -9463,8 +9501,6 @@ class GL30(GL21):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0: int
-            For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
         ------
@@ -9489,8 +9525,6 @@ class GL30(GL21):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0, v1: int
-            For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
         ------
@@ -9515,8 +9549,6 @@ class GL30(GL21):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0, v1: int
-            For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
         ------
@@ -9541,8 +9573,6 @@ class GL30(GL21):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0, v1, v2: int
-            For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
         ------
@@ -9567,8 +9597,6 @@ class GL30(GL21):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0, v1, v2: int
-            For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
         ------
@@ -9593,7 +9621,7 @@ class GL30(GL21):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0, v1, v2, v3: int
+        v3: int
             For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
@@ -9619,7 +9647,7 @@ class GL30(GL21):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0, v1, v2, v3: int
+        v3: int
             For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
@@ -10050,6 +10078,16 @@ class GL31(GL30):
 
         Parameters
         ----------
+        read_target: int
+            Specifies the target to which the source buffer object is bound for glCopyBufferSubData
+        write_target: int
+            Specifies the target to which the destination buffer object is bound for glCopyBufferSubData.
+        read_offset: int
+            Specifies the offset, in basic machine units, within the data store of the source buffer object at
+            which data will be read.
+        write_offset: int
+            Specifies the offset, in basic machine units, within the data store of the destination buffer
+            object at which data will be written.
         size: int
             Specifies the size, in basic machine units, of the data to be copied from the source buffer object
             to the destination buffer object.
@@ -10161,6 +10199,8 @@ class GL31(GL30):
         ----------
         program: int
             Specifies the name of a program containing the uniform block.
+        uniform_block_index: int
+            Specifies the index of the uniform block within program.
         pname: int
             Specifies the name of the parameter to query.
         params: POINTER(c_int)
@@ -10190,9 +10230,16 @@ class GL31(GL30):
         ----------
         program: int
             Specifies the name of a program containing the uniform block.
+        uniform_block_index: int
+            Specifies the index of the uniform block within program.
+        buf_size: int
+            Specifies the size of the buffer addressed by uniformBlockName.
         length: POINTER(c_uint32)
             Specifies the address of a variable to receive the number of characters that were written to
             uniformBlockName.
+        uniform_block_name: bytes
+            Specifies the address an array of characters to receive the name of the uniform block at
+            uniformBlockIndex.
 
         Raises
         ------
@@ -10217,9 +10264,17 @@ class GL31(GL30):
         ----------
         program: int
             Specifies the program containing the active uniform index uniformIndex.
+        uniform_index: int
+            Specifies the index of the active uniform whose name to query.
+        buf_size: int
+            Specifies the size of the buffer, in units of GLchar, of the buffer whose address is specified in
+            uniformName.
         length: POINTER(c_uint32)
             Specifies the address of a variable that will receive the number of characters that were or would
             have been written to the buffer addressed by uniformName.
+        uniform_name: bytes
+            Specifies the address of a buffer into which the GL will place the name of the active uniform at
+            uniformIndex within program.
 
         Raises
         ------
@@ -10245,6 +10300,12 @@ class GL31(GL30):
         ----------
         program: int
             Specifies the program object to be queried.
+        uniform_count: int
+            Specifies both the number of elements in the array of indices uniformIndices and the number of
+            parameters written to params upon successful return.
+        uniform_indices: POINTER(c_uint)
+            Specifies the address of an array of uniformCount integers containing the indices of uniforms
+            within program whose parameter pname should be queried.
         pname: int
             Specifies the property of each uniform in uniformIndices that should be written into the
             corresponding element of params.
@@ -10276,6 +10337,9 @@ class GL31(GL30):
         ----------
         program: int
             Specifies the name of a program containing the uniform block.
+        uniform_block_name: bytes
+            Specifies the address an array of characters to containing the name of the uniform block whose
+            index to retrieve.
 
         Raises
         ------
@@ -10298,6 +10362,13 @@ class GL31(GL30):
         ----------
         program: int
             Specifies the name of a program containing uniforms whose indices to query.
+        uniform_count: int
+            Specifies the number of uniforms whose indices to query.
+        uniform_names: POINTER(c_char_p)
+            Specifies the address of an array of pointers to buffers containing the names of the queried
+            uniforms.
+        uniform_indices: POINTER(c_uint)
+            Specifies the address of an array that will receive the indices of the uniforms.
 
         Raises
         ------
@@ -10337,6 +10408,8 @@ class GL31(GL30):
         ----------
         target: int
             Specifies the target to which the texture is bound for glTexBuffer. Must be GL_TEXTURE_BUFFER.
+        internal_format: int
+            Specifies the internal format of the data in the store belonging to buffer.
         buffer: int
             Specifies the name of the buffer object whose storage to attach to the active buffer texture.
 
@@ -10368,6 +10441,11 @@ class GL31(GL30):
         ----------
         program: int
             The name of a program object containing the active uniform block whose binding to assign.
+        uniform_block_index: int
+            The index of the active uniform block within program whose binding to assign.
+        uniform_block_binding: int
+            Specifies the binding point to which to bind the uniform block with index uniformBlockIndex within
+            program.
 
         Raises
         ------
@@ -10478,6 +10556,8 @@ class GL32(GL31):
         ----------
         program: int
             The name of the program containing varying out variable whose binding to modify
+        color_number: int
+            The color number to bind the user-defined varying out variable to
         index: int
             The index of the color input to bind the user-defined varying out variable to
         name: bytes
@@ -11153,6 +11233,8 @@ class GL32(GL31):
             Specifies the sync object whose properties to query.
         pname: int
             Specifies the parameter whose value to retrieve from the sync object specified in sync.
+        buf_size: int
+            Specifies the size of the buffer whose address is given in values.
         length: POINTER(c_uint32)
             Specifies the address of an variable to receive the number of integers placed in values.
         values: POINTER(c_int)
@@ -11247,6 +11329,8 @@ class GL32(GL31):
 
         Parameters
         ----------
+        provoke_mode: int
+            Specifies the vertex to be used as the source of data for flat shaded varyings.
 
         Raises
         ------
@@ -11293,6 +11377,8 @@ class GL32(GL31):
 
         Parameters
         ----------
+        mask_number: int
+            Specifies which 32-bit sub-word of the sample mask to update.
         mask: int
             Specifies the new value of the mask sub-word.
 
@@ -12006,6 +12092,13 @@ class GL40(GL33):
         buf: int
             for glBlendEquationSeparatei, specifies the index of the draw buffer for which to set the blend
             equations.
+        mode_rgb: int
+            specifies the RGB blend equation, how the red, green, and blue components of the source and
+            destination colors are combined. It must be GL_FUNC_ADD, GL_FUNC_SUBTRACT,
+            GL_FUNC_REVERSE_SUBTRACT, GL_MIN, GL_MAX.
+        mode_alpha: int
+            specifies the alpha blend equation, how the alpha component of the source and destination colors
+            are combined. It must be GL_FUNC_ADD, GL_FUNC_SUBTRACT, GL_FUNC_REVERSE_SUBTRACT, GL_MIN, GL_MAX.
 
         Raises
         ------
@@ -12063,6 +12156,15 @@ class GL40(GL33):
         buf: int
             For glBlendFuncSeparatei, specifies the index of the draw buffer for which to set the blend
             functions.
+        src_rgb: int
+            Specifies how the red, green, and blue blending factors are computed. The initial value is GL_ONE.
+        dst_rgb: int
+            Specifies how the red, green, and blue destination blending factors are computed. The initial value
+            is GL_ZERO.
+        src_alpha: int
+            Specified how the alpha source blending factor is computed. The initial value is GL_ONE.
+        dst_alpha: int
+            Specified how the alpha destination blending factor is computed. The initial value is GL_ZERO.
 
         Raises
         ------
@@ -12975,6 +13077,10 @@ class GL41(GL40):
 
         Parameters
         ----------
+        near_val: float
+            Specifies the mapping of the near clipping plane to window coordinates. The initial value is 0.
+        far_val: float
+            Specifies the mapping of the far clipping plane to window coordinates. The initial value is 1.
 
         Notes
         -----
@@ -13020,6 +13126,10 @@ class GL41(GL40):
         ----------
         index: int
             Specifies the index of the viewport whose depth range to update.
+        near_val: float
+            Specifies the mapping of the near clipping plane to window coordinates. The initial value is 0.
+        far_val: float
+            Specifies the mapping of the far clipping plane to window coordinates. The initial value is 1.
 
         Raises
         ------
@@ -13118,6 +13228,9 @@ class GL41(GL40):
             Specifies the name of a program object whose binary representation to retrieve.
         length: POINTER(c_uint32)
             Specifies the address of a variable to receive the number of bytes written into binary.
+        binary_format: POINTER(c_uint32)
+            Specifies the address of a variable to receive a token indicating the format of the binary data
+            returned by the GL.
         binary: c_void_p
             Specifies the address an array into which the GL will return program 's binary representation.
 
@@ -13171,9 +13284,15 @@ class GL41(GL40):
         ----------
         pipeline: int
             Specifies the name of a program pipeline object from which to retrieve the info log.
+        buf_size: int
+            Specifies the maximum number of characters, including the null terminator, that may be written into
+            infoLog.
         length: POINTER(c_uint32)
             Specifies the address of a variable into which will be written the number of characters written
             into infoLog.
+        info_log: bytes
+            Specifies the address of an array of characters into which will be written the info log for
+            pipeline.
 
         Raises
         ------
@@ -13194,6 +13313,11 @@ class GL41(GL40):
 
         Parameters
         ----------
+        shader_type: int
+            Specifies the type of shader whose precision to query. shaderType must be GL_VERTEX_SHADER or
+            GL_FRAGMENT_SHADER.
+        precision_type: int
+            Specifies the numeric format whose precision and range to query.
         range: POINTER(c_int)
             Specifies the address of array of two integers into which encodings of the implementation's numeric
             range are returned.
@@ -13270,6 +13394,8 @@ class GL41(GL40):
         ----------
         program: int
             Specifies the name of a program object into which to load a program binary.
+        binary_format: int
+            Specifies the format of the binary data in binary.
         binary: c_void_p
             Specifies the address an array containing the binary to be loaded into program.
         length: int
@@ -13325,8 +13451,6 @@ class GL41(GL40):
             Specifies the handle of the program containing the uniform variable to be modified.
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0: float
-            For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
         ------
@@ -13367,8 +13491,6 @@ class GL41(GL40):
             Specifies the handle of the program containing the uniform variable to be modified.
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0, v1: float
-            For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
         ------
@@ -13409,8 +13531,6 @@ class GL41(GL40):
             Specifies the handle of the program containing the uniform variable to be modified.
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0, v1, v2: float
-            For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
         ------
@@ -13451,7 +13571,7 @@ class GL41(GL40):
             Specifies the handle of the program containing the uniform variable to be modified.
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0, v1, v2, v3: float
+        v3: float
             For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
@@ -13493,8 +13613,6 @@ class GL41(GL40):
             Specifies the handle of the program containing the uniform variable to be modified.
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0: int
-            For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
         ------
@@ -13535,8 +13653,6 @@ class GL41(GL40):
             Specifies the handle of the program containing the uniform variable to be modified.
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0, v1: int
-            For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
         ------
@@ -13577,8 +13693,6 @@ class GL41(GL40):
             Specifies the handle of the program containing the uniform variable to be modified.
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0, v1, v2: int
-            For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
         ------
@@ -13619,7 +13733,7 @@ class GL41(GL40):
             Specifies the handle of the program containing the uniform variable to be modified.
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0, v1, v2, v3: int
+        v3: int
             For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
@@ -13661,8 +13775,6 @@ class GL41(GL40):
             Specifies the handle of the program containing the uniform variable to be modified.
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0: int
-            For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
         ------
@@ -13703,8 +13815,6 @@ class GL41(GL40):
             Specifies the handle of the program containing the uniform variable to be modified.
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0, v1: int
-            For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
         ------
@@ -13745,8 +13855,6 @@ class GL41(GL40):
             Specifies the handle of the program containing the uniform variable to be modified.
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0, v1, v2: int
-            For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
         ------
@@ -13787,7 +13895,7 @@ class GL41(GL40):
             Specifies the handle of the program containing the uniform variable to be modified.
         location: int
             Specifies the location of the uniform variable to be modified.
-        v0, v1, v2, v3: int
+        v3: int
             For the scalar commands, specifies the new values to be used for the specified uniform variable.
 
         Raises
@@ -14924,9 +15032,9 @@ class GL41(GL40):
         ----------
         index: int
             Specifies the index of the viewport whose scissor box to modify.
-        left, bottom: int
+        bottom: int
             Specify the coordinate of the bottom left corner of the scissor box, in pixels.
-        width, height: int
+        height: int
             Specify ths dimensions of the scissor box, in pixels.
 
         Raises
@@ -14978,6 +15086,8 @@ class GL41(GL40):
         shaders: POINTER(c_uint)
             Specifies the address of an array of shader handles into which to load pre-compiled shader
             binaries.
+        binary_format: int
+            Specifies the format of the shader binaries contained in binary.
         binary: c_void_p
             Specifies the address of an array of bytes containing pre-compiled binary shader code.
         length: int
@@ -15061,8 +15171,6 @@ class GL41(GL40):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0: float
-            For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
         ------
@@ -15087,8 +15195,6 @@ class GL41(GL40):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0, v1: float
-            For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
         ------
@@ -15113,8 +15219,6 @@ class GL41(GL40):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0, v1, v2: float
-            For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
         ------
@@ -15139,7 +15243,7 @@ class GL41(GL40):
         ----------
         index: int
             Specifies the index of the generic vertex attribute to be modified.
-        v0, v1, v2, v3: float
+        v3: float
             For the scalar commands, specifies the new values to be used for the specified vertex attribute.
 
         Raises
@@ -15350,7 +15454,7 @@ class GL41(GL40):
         ----------
         index: int
             Specify the first viewport to set.
-        x, y: float
+        y: float
             For glViewportIndexedf, specifies the lower left corner of the viewport rectangle, in pixels. The
             initial value is (0,0).
 
@@ -15672,6 +15776,8 @@ class GL42(GL41):
         ----------
         program: int
             The name of a program object from which to retrieve information.
+        buffer_index: int
+            Specifies index of an active atomic counter buffer.
         pname: int
             Specifies which parameter of the atomic counter buffer to retrieve.
         params: POINTER(c_int)
@@ -15708,6 +15814,9 @@ class GL42(GL41):
             Specifies the internal format about which to retrieve information.
         pname: int
             Specifies the type of information to query.
+        buf_size: int
+            Specifies the maximum number of integers of the specified width that may be written to params by
+            the function.
         params: POINTER(c_int)
             Specifies the address of a variable into which to write the retrieved information.
 
@@ -16122,6 +16231,34 @@ class GL43(GL42):
 
         Parameters
         ----------
+        src_name: int
+            The name of a texture or renderbuffer object from which to copy.
+        src_target: int
+            The target representing the namespace of the source name srcName.
+        src_level: int
+            The mipmap level to read from the source.
+        src_x: int
+            The X coordinate of the left edge of the souce region to copy.
+        src_y: int
+            The Y coordinate of the top edge of the souce region to copy.
+        src_z: int
+            The Z coordinate of the near edge of the souce region to copy.
+        dst_name: int
+            The name of a texture or renderbuffer object to which to copy.
+        dst_target: int
+            The target representing the namespace of the destination name dstName.
+        dst_x: int
+            The X coordinate of the left edge of the destination region.
+        dst_y: int
+            The Y coordinate of the top edge of the destination region.
+        dst_z: int
+            The Z coordinate of the near edge of the destination region.
+        src_width: int
+            The width of the region to be copied.
+        src_height: int
+            The height of the region to be copied.
+        src_depth: int
+            The depth of the region to be copied.
 
         Raises
         ------
@@ -16157,6 +16294,8 @@ class GL43(GL42):
         ----------
         callback: c_void_p
             The address of a callback function that will be called when a debug message is generated.
+        user_param: c_void_p
+            A user supplied pointer that will be passed on each invocation of callback.
 
         Notes
         -----
@@ -16334,6 +16473,8 @@ class GL43(GL42):
         ----------
         count: int
             The number of debug messages to retrieve from the log.
+        buf_size: int
+            The size of the buffer whose address is given by messageLog.
         sources: POINTER(c_uint32)
             The address of an array of variables to receive the sources of the retrieved messages.
         types: POINTER(c_uint32)
@@ -16344,6 +16485,8 @@ class GL43(GL42):
             The address of an array of variables to receive the severites of the retrieved messages.
         lengths: POINTER(c_uint32)
             The address of an array of variables to receive the lengths of the received messages.
+        message_log: bytes
+            The address of an array of characters that will receive the messages.
 
         Raises
         ------
@@ -16404,6 +16547,9 @@ class GL43(GL42):
             Specifies the internal format about which to retrieve information.
         pname: int
             Specifies the type of information to query.
+        buf_size: int
+            Specifies the maximum number of integers of the specified width that may be written to params by
+            the function.
         params: POINTER(c_int64)
             Specifies the address of a variable into which to write the retrieved information.
 
@@ -16516,6 +16662,8 @@ class GL43(GL42):
         ----------
         program: int
             The name of a program object whose interface to query.
+        program_interface: int
+            A token identifying the interface within program to query.
         pname: int
             The name of the parameter within programInterface to query.
         params: POINTER(c_int)
@@ -16551,6 +16699,8 @@ class GL43(GL42):
         ----------
         program: int
             The name of a program object whose resources to query.
+        program_interface: int
+            A token identifying the interface within program containing the resource named name.
 
         Raises
         ------
@@ -16576,6 +16726,8 @@ class GL43(GL42):
         ----------
         program: int
             The name of a program object whose resources to query.
+        program_interface: int
+            A token identifying the interface within program containing the resource named name.
         name: bytes
             The name of the resource to query the index of.
 
@@ -16604,6 +16756,8 @@ class GL43(GL42):
         ----------
         program: int
             The name of a program object whose resources to query.
+        program_interface: int
+            A token identifying the interface within program containing the resource named name.
         name: bytes
             The name of the resource to query the location of.
 
@@ -16629,6 +16783,8 @@ class GL43(GL42):
         ----------
         program: int
             The name of a program object whose resources to query.
+        program_interface: int
+            A token identifying the interface within program containing the resource named name.
         name: bytes
             The name of the resource to query the location of.
 
@@ -16654,8 +16810,12 @@ class GL43(GL42):
         ----------
         program: int
             The name of a program object whose resources to query.
+        program_interface: int
+            A token identifying the interface within program containing the indexed resource.
         index: int
             The index of the resource within programInterface of program.
+        buf_size: int
+            The size of the character array whose address is given by name.
         length: POINTER(c_uint32)
             The address of a variable which will receive the length of the resource name.
         name: bytes
@@ -16737,6 +16897,8 @@ class GL43(GL42):
         ----------
         target: int
             Specifies the target to which the framebuffer object is attached for glInvalidateFramebuffer.
+        num_attachments: int
+            Specifies the number of entries in the attachments array.
         attachments: POINTER(c_uint32)
             Specifies a pointer to an array identifying the attachments to be invalidated.
 
@@ -16768,6 +16930,8 @@ class GL43(GL42):
         ----------
         target: int
             Specifies the target to which the framebuffer object is attached for glInvalidateSubFramebuffer.
+        num_attachments: int
+            Specifies the number of entries in the attachments array.
         attachments: POINTER(c_uint32)
             Specifies a pointer to an array identifying the attachments to be invalidated.
         x: int
@@ -17062,6 +17226,10 @@ class GL43(GL42):
         ----------
         program: int
             The name of the program containing the block whose binding to change.
+        storage_block_index: int
+            The index storage block within the program.
+        storage_block_binding: int
+            The index storage block binding to associate with the specified storage block.
 
         Raises
         ------
@@ -17088,6 +17256,8 @@ class GL43(GL42):
         target: int
             Specifies the target to which the texture object is bound for glTexBufferRange. Must be
             GL_TEXTURE_BUFFER.
+        internal_format: int
+            Specifies the internal format of the data in the store belonging to buffer.
         buffer: int
             Specifies the name of the buffer object whose storage to attach to the active buffer texture.
         offset: int
@@ -18170,6 +18340,14 @@ class GL45(GL44):
 
         Parameters
         ----------
+        read_framebuffer: int
+            Specifies the name of the source framebuffer object for glBlitNamedFramebuffer.
+        draw_framebuffer: int
+            Specifies the name of the destination framebuffer object for glBlitNamedFramebuffer.
+        src_y1: int
+            Specify the bounds of the source rectangle within the read buffer of the read framebuffer.
+        dst_y1: int
+            Specify the bounds of the destination rectangle within the write buffer of the write framebuffer.
         mask: int
             The bitwise OR of the flags indicating which buffers are to be copied. The allowed flags are
             GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT and GL_STENCIL_BUFFER_BIT.
@@ -18644,6 +18822,8 @@ class GL45(GL44):
             Specifies the width of the texture subimage.
         format: int
             Specifies the format of the compressed image data stored at address data.
+        image_size: int
+            Specifies the number of unsigned bytes of image data starting at the address specified by data.
         data: c_void_p
             Specifies a pointer to the compressed image data in memory.
 
@@ -18695,6 +18875,8 @@ class GL45(GL44):
             Specifies the height of the texture subimage.
         format: int
             Specifies the format of the compressed image data stored at address data.
+        image_size: int
+            Specifies the number of unsigned bytes of image data starting at the address specified by data.
         data: c_void_p
             Specifies a pointer to the compressed image data in memory.
 
@@ -18752,6 +18934,8 @@ class GL45(GL44):
             Specifies the depth of the texture subimage.
         format: int
             Specifies the format of the compressed image data stored at address data.
+        image_size: int
+            Specifies the number of unsigned bytes of image data starting at the address specified by data.
         data: c_void_p
             Specifies a pointer to the compressed image data in memory.
 
@@ -18790,6 +18974,16 @@ class GL45(GL44):
 
         Parameters
         ----------
+        read_buffer: int
+            Specifies the name of the source buffer object for glCopyNamedBufferSubData.
+        write_buffer: int
+            Specifies the name of the destination buffer object for glCopyNamedBufferSubData.
+        read_offset: int
+            Specifies the offset, in basic machine units, within the data store of the source buffer object at
+            which data will be read.
+        write_offset: int
+            Specifies the offset, in basic machine units, within the data store of the destination buffer
+            object at which data will be written.
         size: int
             Specifies the size, in basic machine units, of the data to be copied from the source buffer object
             to the destination buffer object.
@@ -18832,7 +19026,7 @@ class GL45(GL44):
             reduction image.
         xoffset: int
             Specifies the texel offset within the texture array.
-        x, y: int
+        y: int
             Specify the window coordinates of the left corner of the row of pixels to be copied.
         width: int
             Specifies the width of the texture subimage.
@@ -18880,7 +19074,7 @@ class GL45(GL44):
             Specifies a texel offset in the x direction within the texture array.
         yoffset: int
             Specifies a texel offset in the y direction within the texture array.
-        x, y: int
+        y: int
             Specify the window coordinates of the lower left corner of the rectangular region of pixels to be
             copied.
         width: int
@@ -18941,7 +19135,7 @@ class GL45(GL44):
             Specifies a texel offset in the y direction within the texture array.
         zoffset: int
             Specifies a texel offset in the z direction within the texture array.
-        x, y: int
+        y: int
             Specify the window coordinates of the lower left corner of the rectangular region of pixels to be
             copied.
         width: int
@@ -19242,9 +19436,6 @@ class GL45(GL44):
         bufs: POINTER(c_uint32)
             Points to an array of symbolic constants specifying the buffers into which fragment colors or data
             values will be written.
-        n: int
-            The fragment shader output value is written into the n th color attachment of the current
-            framebuffer. n may range from zero to the value of GL_MAX_COLOR_ATTACHMENTS.
 
         Raises
         ------
@@ -19682,6 +19873,9 @@ class GL45(GL44):
         level: int
             Specifies the level-of-detail number of the desired image. Level 0 is the base image level. Level
             $n$ is the $n$-th mipmap reduction image.
+        buf_size: int
+            Specifies the size of the buffer pixels for glGetCompressedTextureImage and
+            glGetnCompressedTexImage functions.
         pixels: c_void_p
             Returns the compressed texture image.
 
@@ -19720,6 +19914,9 @@ class GL45(GL44):
         level: int
             Specifies the level-of-detail number of the desired image. Level 0 is the base image level. Level
             $n$ is the $n$-th mipmap reduction image.
+        buf_size: int
+            Specifies the size of the buffer pixels for glGetCompressedTextureImage and
+            glGetnCompressedTexImage functions.
         pixels: c_void_p
             Returns the compressed texture image.
 
@@ -19775,6 +19972,8 @@ class GL45(GL44):
         depth: int
             Specifies the depth of the texture subimage. Must be a multiple of the compressed block's depth,
             unless the offset is zero and the size equals the texture image size.
+        buf_size: int
+            Specifies the size of the buffer to receive the retrieved pixel data.
         pixels: c_void_p
             Returns the texture subimage. Should be a pointer to an array of the type specified by type.
 
@@ -19948,6 +20147,8 @@ class GL45(GL44):
             GL_UNSIGNED_INT_8_8_8_8_REV, GL_UNSIGNED_INT_10_10_10_2, GL_UNSIGNED_INT_2_10_10_10_REV,
             GL_UNSIGNED_INT_24_8, GL_UNSIGNED_INT_10F_11F_11F_REV, GL_UNSIGNED_INT_5_9_9_9_REV, and
             GL_FLOAT_32_UNSIGNED_INT_24_8_REV.
+        buf_size: int
+            Specifies the size of the buffer pixels for glGetnTexImage and glGetTextureImage functions.
         pixels: c_void_p
             Returns the texture image. Should be a pointer to an array of the type specified by type.
 
@@ -19997,6 +20198,8 @@ class GL45(GL44):
             GL_UNSIGNED_INT_8_8_8_8_REV, GL_UNSIGNED_INT_10_10_10_2, GL_UNSIGNED_INT_2_10_10_10_REV,
             GL_UNSIGNED_INT_24_8, GL_UNSIGNED_INT_10F_11F_11F_REV, GL_UNSIGNED_INT_5_9_9_9_REV, and
             GL_FLOAT_32_UNSIGNED_INT_24_8_REV.
+        buf_size: int
+            Specifies the size of the buffer pixels for glGetnTexImage and glGetTextureImage functions.
         pixels: c_void_p
             Returns the texture image. Should be a pointer to an array of the type specified by type.
 
@@ -20290,6 +20493,8 @@ class GL45(GL44):
             GL_UNSIGNED_SHORT_5_6_5_REV, GL_UNSIGNED_SHORT_4_4_4_4, GL_UNSIGNED_SHORT_4_4_4_4_REV,
             GL_UNSIGNED_SHORT_5_5_5_1, GL_UNSIGNED_SHORT_1_5_5_5_REV, GL_UNSIGNED_INT_8_8_8_8,
             GL_UNSIGNED_INT_8_8_8_8_REV, GL_UNSIGNED_INT_10_10_10_2, and GL_UNSIGNED_INT_2_10_10_10_REV.
+        buf_size: int
+            Specifies the size of the buffer to receive the retrieved pixel data.
         pixels: c_void_p
             Returns the texture subimage. Should be a pointer to an array of the type specified by type.
 
@@ -20444,6 +20649,8 @@ class GL45(GL44):
             Specifies the program object to be queried.
         location: int
             Specifies the location of the uniform variable to be queried.
+        buf_size: int
+            Specifies the size of the buffer params.
         params: POINTER(c_float)
             Returns the value of the specified uniform variable.
 
@@ -20475,6 +20682,8 @@ class GL45(GL44):
             Specifies the program object to be queried.
         location: int
             Specifies the location of the uniform variable to be queried.
+        buf_size: int
+            Specifies the size of the buffer params.
         params: POINTER(c_int)
             Returns the value of the specified uniform variable.
 
@@ -20506,6 +20715,8 @@ class GL45(GL44):
             Specifies the program object to be queried.
         location: int
             Specifies the location of the uniform variable to be queried.
+        buf_size: int
+            Specifies the size of the buffer params.
         params: POINTER(c_uint)
             Returns the value of the specified uniform variable.
 
@@ -20537,6 +20748,8 @@ class GL45(GL44):
             Specifies the program object to be queried.
         location: int
             Specifies the location of the uniform variable to be queried.
+        buf_size: int
+            Specifies the size of the buffer params.
         params: POINTER(c_double)
             Returns the value of the specified uniform variable.
 
@@ -20669,6 +20882,8 @@ class GL45(GL44):
         ----------
         framebuffer: int
             Specifies the name of the framebuffer object for glInvalidateNamedFramebufferData.
+        num_attachments: int
+            Specifies the number of entries in the attachments array.
         attachments: POINTER(c_uint32)
             Specifies a pointer to an array identifying the attachments to be invalidated.
 
@@ -20700,6 +20915,8 @@ class GL45(GL44):
         ----------
         framebuffer: int
             Specifies the name of the framebuffer object for glInvalidateNamedFramebufferSubData.
+        num_attachments: int
+            Specifies the number of entries in the attachments array.
         attachments: POINTER(c_uint32)
             Specifies a pointer to an array identifying the attachments to be invalidated.
         x: int
@@ -20873,10 +21090,10 @@ class GL45(GL44):
 
         Parameters
         ----------
-        x, y: int
+        y: int
             Specify the window coordinates of the first pixel that is read from the frame buffer. This location
             is the lower left corner of a rectangular block of pixels.
-        width, height: int
+        height: int
             Specify the dimensions of the pixel rectangle. width and height of one correspond to a single
             pixel.
         format: int
@@ -20892,6 +21109,8 @@ class GL45(GL44):
             GL_UNSIGNED_INT_8_8_8_8_REV, GL_UNSIGNED_INT_10_10_10_2, GL_UNSIGNED_INT_2_10_10_10_REV,
             GL_UNSIGNED_INT_24_8, GL_UNSIGNED_INT_10F_11F_11F_REV, GL_UNSIGNED_INT_5_9_9_9_REV, or
             GL_FLOAT_32_UNSIGNED_INT_24_8_REV.
+        buf_size: int
+            Specifies the size of the buffer data for glReadnPixels function.
         data: c_void_p
             Returns the pixel data.
 

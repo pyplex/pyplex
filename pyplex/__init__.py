@@ -6,3 +6,7 @@ from .canvas import Canvas, CanvasConfig, CanvasEventFunction, \
     ImageCursor, ArrowCursor, IBeamCursor, CrosshairCursor, HandCursor, HResizeCursor, VResizeCursor
 
 from .glow import *
+
+import pyplex.transform as transform
+
+from .geometry import Cube, Sphere
