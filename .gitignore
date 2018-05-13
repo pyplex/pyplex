@@ -1,6 +1,5 @@
 .idea/
-tmp/
-test/
 __pycache__/
 crawl/
 old/
+tmp/
