@@ -1,6 +1,5 @@
 from pyplex import gl
 from pyplex.glow import abstract
-from pyplex.glow.type import Type
 import numpy as np
 from ctypes import *
 
@@ -12,7 +11,7 @@ class Buffer(abstract.BindableObject, abstract.Array):
         self._target = target
         self._usage = usage
 
-        self._type = self._dtype = self._size = self._itemsize = self._nbytes = self._ndim = self._shape = None
+        self._dtype = self._size = self._itemsize = self._nbytes = self._ndim = self._shape = None
 
         self._ptr = c_uint(0)
         self._ctx.gen_buffers(1, pointer(self._ptr))
@@ -23,10 +22,6 @@ class Buffer(abstract.BindableObject, abstract.Array):
     @property
     def ptr(self) -> int:
         return self._ptr
-
-    @property
-    def type(self) -> Type:
-        return self._type
 
     @property
     def dtype(self) -> np.dtype:
@@ -85,7 +80,6 @@ class Buffer(abstract.BindableObject, abstract.Array):
         self._ctx.delete_buffers(1, pointer(self._ptr))
 
     def _update_metadata(self, data: np.ndarray):
-        self._type = Type.from_np(data.shape[1:], data.dtype)
         self._dtype = data.dtype
         self._size = data.size
         self._itemsize = data.itemsize

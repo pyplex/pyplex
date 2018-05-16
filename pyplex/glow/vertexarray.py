@@ -1,5 +1,6 @@
 from pyplex import gl
 from pyplex.glow import abstract
+from pyplex.glow.type import Type
 from pyplex.glow.buffer import ArrayBuffer
 from ctypes import *
 
@@ -30,8 +31,10 @@ class VertexArray(abstract.BindableObject):
     def attribute(self, location: int, buffer: ArrayBuffer):
         with buffer, self:
             self._attributes[location] = buffer
+
+            buffertype = Type.from_np(buffer.shape[1:], buffer.dtype)
             self._ctx.enable_vertex_attrib_array(location)
-            self._ctx.vertex_attrib_pointer(location, buffer.type.count, buffer.type.gl_base, False, 0, c_void_p(0))
+            self._ctx.vertex_attrib_pointer(location, buffertype.count, buffertype.gl_base, False, 0, c_void_p(0))
 
     def bind(self):
         self._ctx.bind_vertex_array(self._ptr)
