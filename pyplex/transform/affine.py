@@ -5,7 +5,7 @@ import math
 
 
 def identity(dtype: np.dtype=np.float32) -> np.matrix:
-    return np.eye(4, dtype=dtype)
+    return np.matrix(np.eye(4, dtype=dtype))
 
 
 def translation(translation, dtype: np.dtype=np.float32) -> np.matrix:
@@ -78,5 +78,5 @@ def look_at(eye: np.ndarray, center: np.ndarray, up: np.ndarray, dtype: np.dtype
         [ s[0]          , u[0]         ,-f[0]          , 0],
         [ s[1]          , u[1]         ,-f[1]          , 0],
         [ s[2]          , u[2]         ,-f[2]          , 0],
-        [-np.dot(s, eye),-np.dot(u,eye),-np.dot(f, eye), 1]
+        [-np.dot(s, eye),-np.dot(u,eye),np.dot(f, eye), 1]
     ], dtype)

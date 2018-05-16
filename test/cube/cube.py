@@ -17,10 +17,10 @@ class CubeTest(px.Canvas):
 
         for i in range(N):
             vertices[i*8:(i+1)*8] = px.transform.apply(
-                px.Cube.VERTICES, px.transform.rotation(np.random.uniform(0, 2 * np.pi, 3))) * \
+                px.Cube._VERTICES, px.transform.rotation(np.random.uniform(0, 2 * np.pi, 3))) * \
                                     np.random.normal(0.5, 0.2, 1) + np.random.normal(0, 10, 3)
             colors[i*8:(i+1)*8] = np.random.uniform(size=3)
-            elements[i*36:(i+1)*36] = px.Cube.ELEMENTS + i*8
+            elements[i*36:(i+1)*36] = px.Cube._ELEMENTS + i * 8
 
         self.program['position'] = px.ArrayBuffer(self.ctx, vertices)
         self.program['color'] = px.ArrayBuffer(self.ctx, colors)
@@ -71,13 +71,11 @@ class CubeTest(px.Canvas):
         self._model = px.transform.rotation([self._theta, self._phi, 0])
 
         self.program['MVP'] = self._model * self._view * self._projection
-
         self._delta_x *= self._FRICTION
         self._delta_y *= self._FRICTION
 
     def on_scroll(self, x: float, y: float):
         self._r += y
-
         self._view = px.transform.translation([0, 0, self._r])
 
     def on_draw(self):

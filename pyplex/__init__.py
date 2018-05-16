@@ -9,4 +9,5 @@ from .glow import *
 
 import pyplex.transform as transform
 
-from .geometry import Cube, Sphere
+from .geometry import loader
+from .geometry.primitive import Quad, Plane, Cube, Sphere

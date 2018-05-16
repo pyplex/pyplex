@@ -8,4 +8,6 @@ def apply(vertices: np.ndarray, transform: np.matrix, normalize: bool=False) -> 
 
 
 def normalize(vector: np.ndarray) -> np.ndarray:
-    return vector / np.linalg.norm(vector)
+    norm = np.linalg.norm(vector)
+    if norm: return vector / norm
+    else: return vector

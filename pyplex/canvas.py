@@ -718,12 +718,12 @@ class Canvas:
                 gl.DebugType(type).name,
                 id,
                 message.decode()), file=stderr)
-        else:
-            print("{} {} Notification ({})\n\t{}".format(
-                gl.DebugSource(source).name,
-                gl.DebugType(type).name,
-                id,
-                message.decode()))
+        # else:
+        #     print("{} {} Notification ({})\n\t{}".format(
+        #         gl.DebugSource(source).name,
+        #         gl.DebugType(type).name,
+        #         id,
+        #         message.decode()))
 
 
 class VerboseCanvas(Canvas):

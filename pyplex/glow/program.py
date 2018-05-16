@@ -1,50 +1,29 @@
 from pyplex import gl
 from pyplex.glow.shader import Shader, VertexShader, FragmentShader, GeometryShader, TessEvaluationShader, TessControlShader, ComputeShader
 from pyplex.glow.buffer import ArrayBuffer, UniformBuffer, ElementArrayBuffer
+from pyplex.glow.vertexarray import VertexArray
 from pyplex.glow.texture import Texture
 from pyplex.glow.type import Type
 from pyplex.glow import abstract
 import numpy as np
 from ctypes import *
 
-from typing import List, Union, Dict, Iterable
+from typing import List, Union, Dict, Iterable, Optional
 
 
 class LinkError(Exception):
     pass
 
 
-class VertexArray(abstract.BindableObject):
-    def __init__(self, ctx: gl.GL30):
-        self._ctx = ctx
-
-        self._ptr = c_uint(0)
-        self._ctx.gen_vertex_arrays(1, pointer(self._ptr))
-        self._ptr = self._ptr.value
-
-    @property
-    def ptr(self) -> int:
-        return self._ptr
-
-    def bind(self):
-        self._ctx.bind_vertex_array(self._ptr)
-
-    def unbind(self):
-        self._ctx.bind_vertex_array(0)
-
-    def delete(self):
-        self._ctx.delete_vertex_arrays(1, pointer(self._ptr))
-
-
 class Program(abstract.BindableObject):
 
     TRANSPOSE_MATRICES = False
 
-    def __init__(self, ctx: gl.GL43, *shaders: Shader):
+    def __init__(self, ctx: gl.GL43, *shaders: Shader, vao: Optional[VertexArray]=None):
         self._ctx = ctx
 
         self._ptr = self._ctx.create_program()
-        self._vao = VertexArray(self._ctx)
+        self._vao = vao if vao else VertexArray(self._ctx)
         self._textures = {}
 
         for shader in shaders:
@@ -63,6 +42,14 @@ class Program(abstract.BindableObject):
         return self._ptr
 
     @property
+    def vao(self) -> VertexArray:
+        return self._vao
+
+    @vao.setter
+    def vao(self, value: VertexArray):
+        self._vao = value
+
+    @property
     def input_interface(self):
         return self._input_interface
 
@@ -74,32 +61,23 @@ class Program(abstract.BindableObject):
     def uniform_interface(self):
         return self._uniform_interface
 
-    def vertices(self, buffer: ArrayBuffer):
-        stride = buffer.dtype.itemsize
-
-        with self._vao, buffer:
-            for name, (dtype, offset) in buffer.dtype.fields.items():
-                index = self._ctx.get_program_resource_index(self._ptr, gl.Interface.PROGRAM_INPUT, name.encode())
-                location = self._ctx.get_program_resource_location(self._ptr, gl.Interface.PROGRAM_INPUT, name.encode())
-
-                t = Type(self._resource_parameters(gl.Interface.PROGRAM_INPUT, index, gl.ResourceParameter.TYPE)[0])
-
-                self._ctx.vertex_attrib_pointer(location, t.count, t.gl_base, False, stride, c_void_p(offset))
-                self._ctx.enable_vertex_attrib_array(location)
-
     def input(self, name: str, buffer: ArrayBuffer):
-        index = self._ctx.get_program_resource_index(self._ptr, gl.Interface.PROGRAM_INPUT, name.encode())
         location = self._ctx.get_program_resource_location(self._ptr, gl.Interface.PROGRAM_INPUT, name.encode())
 
-        t = Type(self._resource_parameters(gl.Interface.PROGRAM_INPUT, index, gl.ResourceParameter.TYPE)[0])
-
-        with buffer, self._vao:
-            self._ctx.vertex_attrib_pointer(location, t.count, t.gl_base, False, 0, c_void_p(0))
-            self._ctx.enable_vertex_attrib_array(location)
+        if location >= 0:
+            self._vao.attribute(location, buffer)
+        else:
+            print("WARNING: {} is not an active input".format(name))
 
     def uniform_block(self, name: str, buffer: UniformBuffer):
-        location = self._ctx.get_program_resource_index(self._ptr, gl.Interface.UNIFORM_BLOCK, name.encode())
-        self._ctx.uniform_block_binding(self._ptr, location, buffer.ptr)
+        binding = 1
+        index = self._ctx.get_uniform_block_index(self._ptr, name.encode())
+
+        if index != gl.Error.INVALID_INDEX:
+            self._ctx.uniform_block_binding(self._ptr, index, binding)
+            self._ctx.bind_buffer_base(buffer.target, binding, buffer.ptr)
+        else:
+            print("WARNING: {} is not an active uniform block".format(name))
 
     def texture(self, name: str, texture: Texture):
         if not name in self._textures:
@@ -113,14 +91,17 @@ class Program(abstract.BindableObject):
         index = self._ctx.get_program_resource_index(self._ptr, gl.Interface.UNIFORM, name.encode())
         location = self._ctx.get_program_resource_location(self._ptr, gl.Interface.UNIFORM, name.encode())
 
-        t = Type(self._resource_parameters(gl.Interface.UNIFORM, index, gl.ResourceParameter.TYPE)[0])
-        func = self._ctx.__getattribute__(t.uniform_func.__name__)
+        if location >= 0:
+            t = Type(self._resource_parameters(gl.Interface.UNIFORM, index, gl.ResourceParameter.TYPE)[0])
+            func = self._ctx.__getattribute__(t.uniform_func.__name__)
 
-        if t.gl_type.name in gl.MatrixType.__members__:
-            func(self._ptr, location, int(value.nbytes / t.nbytes),
-                 self.TRANSPOSE_MATRICES, value.ctypes.data_as(POINTER(t.ctypes)))
+            if t.gl_type.name in gl.MatrixType.__members__:
+                func(self._ptr, location, int(value.nbytes / t.nbytes),
+                     self.TRANSPOSE_MATRICES, value.ctypes.data_as(POINTER(t.ctypes)))
+            else:
+                func(self._ptr, location, int(value.nbytes / t.nbytes), value.ctypes.data_as(POINTER(t.ctypes)))
         else:
-            func(self._ptr, location, int(value.nbytes / t.nbytes), value.ctypes.data_as(POINTER(t.ctypes)))
+            print("WARNING: {} is not an active uniform".format(name))
 
     def draw_arrays(self, mode: gl.DrawMode, start: int, count: int):
         with self: self._ctx.draw_arrays(mode, start, count)

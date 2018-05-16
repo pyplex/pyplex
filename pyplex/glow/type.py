@@ -323,6 +323,7 @@ class Type:
             self._gl_base = self._GL_BASE[gl_type]
             self._ctypes = self._GL_CTYPES[self._gl_base]
             self._shape, self._dtype = self._GL_NP[gl_type]
+            if self._shape == (): self._shape = (1,)
             self._uniform = self._GL_UNIFORM[gl_type] if gl_type in self._GL_UNIFORM else None
 
     @classmethod

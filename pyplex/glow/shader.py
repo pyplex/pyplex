@@ -1,6 +1,7 @@
 from pyplex import gl
 from pyplex.glow import abstract
 from ctypes import *
+import os
 
 from typing import List
 
@@ -11,14 +12,18 @@ class CompilationError(Exception):
 
 class Shader(abstract.Object):
 
-    SOURCE_EXTENSION = '.glsl'
+    SOURCE_EXTENSIONS = (
+        '.glsl',  # General GLSL Shader
+        '.vs',    # Vertex Shader
+        '.fs'     # Fragment Shader
+    )
 
     def __init__(self, ctx: gl.GL20, type: gl.ShaderType, *sources: str):
 
         self._ctx = ctx
         self._type = type
 
-        self._paths = [source if source.endswith(Shader.SOURCE_EXTENSION) else None for source in sources]
+        self._paths = [source if source.endswith(Shader.SOURCE_EXTENSIONS) else None for source in sources]
         self._sources = [self._read(source) if path else source for (source, path) in zip(sources, self.paths)]
 
         self._ptr = self._ctx.create_shader(type)
