@@ -105,7 +105,7 @@ class InterfaceParameter(IntEnum):
     MAX_NUM_COMPATIBLE_SUBROUTINES = 0x92F8
 
 
-class DrawMode(IntEnum):
+class Primitive(IntEnum):
     POINTS = 0x0000
     LINES = 0x0001
     LINE_LOOP = 0x0002

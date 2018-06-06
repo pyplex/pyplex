@@ -19,12 +19,9 @@ class Program(abstract.BindableObject):
 
     TRANSPOSE_MATRICES = False
 
-    def __init__(self, ctx: gl.GL43, *shaders: Shader, vao: Optional[VertexArray]=None):
+    def __init__(self, ctx: gl.GL43, *shaders: Shader):
         self._ctx = ctx
-
         self._ptr = self._ctx.create_program()
-        self._vao = vao if vao else VertexArray(self._ctx)
-        self._textures = {}
 
         for shader in shaders:
             self._ctx.attach_shader(self._ptr, shader.ptr)
@@ -33,21 +30,16 @@ class Program(abstract.BindableObject):
         if not self._parameter(gl.ProgramParameter.LINK_STATUS):
             raise LinkError(self.log())
 
-        self._input_interface = InputInterface(self._ctx, self)
-        self._output_interface = OutputInterface(self._ctx, self)
-        self._uniform_interface = UniformInterface(self._ctx, self)
+        self._input_interface = InputInterface(ctx, self)
+        self._output_interface = OutputInterface(ctx, self)
+        self._uniform_interface = UniformInterface(ctx, self)
+
+        self._textures = {}
+        self._uniform_buffers = {}
 
     @property
     def ptr(self) -> int:
         return self._ptr
-
-    @property
-    def vao(self) -> VertexArray:
-        return self._vao
-
-    @vao.setter
-    def vao(self, value: VertexArray):
-        self._vao = value
 
     @property
     def input_interface(self):
@@ -61,16 +53,24 @@ class Program(abstract.BindableObject):
     def uniform_interface(self):
         return self._uniform_interface
 
-    def input(self, name: str, buffer: ArrayBuffer):
-        location = self._ctx.get_program_resource_location(self._ptr, gl.Interface.PROGRAM_INPUT, name.encode())
+    def uniform(self, name: str, value: np.ndarray):
+        resource = self._uniform_interface.resources.get(name)
 
-        if location >= 0:
-            self._vao.attribute(location, buffer)
+        if resource:
+            if resource.is_matrix:
+                resource.setter(self._ptr, resource.location, value.nbytes // resource.type.nbytes,
+                                self.TRANSPOSE_MATRICES, value.ctypes.data_as(POINTER(resource.type.ctypes)))
+            else:
+                resource.setter(self._ptr, resource.location, value.nbytes // resource.type.nbytes,
+                                value.ctypes.data_as(POINTER(resource.type.ctypes)))
         else:
-            print("WARNING: {} is not an active input".format(name))
+            print("WARNING: {} is not an active uniform".format(name))
 
     def uniform_block(self, name: str, buffer: UniformBuffer):
-        binding = 1
+        if not name in self._uniform_buffers:
+            self._uniform_buffers[name] = len(self._uniform_buffers)
+        binding = self._uniform_buffers[name]
+
         index = self._ctx.get_uniform_block_index(self._ptr, name.encode())
 
         if index != gl.Error.INVALID_INDEX:
@@ -87,28 +87,12 @@ class Program(abstract.BindableObject):
         location = self._ctx.get_program_resource_location(self._ptr, gl.Interface.UNIFORM, name.encode())
         self._ctx.program_uniform_1i(self._ptr, location, self._textures[name][1] - gl.TextureUnit.TEXTURE0)
 
-    def uniform(self, name: str, value: np.ndarray):
-        index = self._ctx.get_program_resource_index(self._ptr, gl.Interface.UNIFORM, name.encode())
-        location = self._ctx.get_program_resource_location(self._ptr, gl.Interface.UNIFORM, name.encode())
+    def draw_arrays(self, vao: VertexArray, mode: gl.Primitive, start: int, count: int):
+        with self, vao: self._ctx.draw_arrays(mode, start, count)
 
-        if location >= 0:
-            t = Type(self._resource_parameters(gl.Interface.UNIFORM, index, gl.ResourceParameter.TYPE)[0])
-            func = self._ctx.__getattribute__(t.uniform_func.__name__)
-
-            if t.gl_type.name in gl.MatrixType.__members__:
-                func(self._ptr, location, int(value.nbytes / t.nbytes),
-                     self.TRANSPOSE_MATRICES, value.ctypes.data_as(POINTER(t.ctypes)))
-            else:
-                func(self._ptr, location, int(value.nbytes / t.nbytes), value.ctypes.data_as(POINTER(t.ctypes)))
-        else:
-            print("WARNING: {} is not an active uniform".format(name))
-
-    def draw_arrays(self, mode: gl.DrawMode, start: int, count: int):
-        with self: self._ctx.draw_arrays(mode, start, count)
-
-    def draw_elements(self, mode: gl.DrawMode, buffer: ElementArrayBuffer):
-        gl_type = Type.from_np(buffer.shape[1:], buffer.dtype).gl_type
-        with self, buffer: self._ctx.draw_elements(mode, buffer.size, gl_type, c_void_p(0))
+    def draw_elements(self, vao: VertexArray, mode: gl.Primitive, indices: ElementArrayBuffer):
+        gl_type = Type.from_np((), indices.dtype).gl_type
+        with self, vao, indices: self._ctx.draw_elements(mode, indices.size, gl_type, c_void_p(0))
 
     def log(self):
         log_length = self._parameter(gl.ProgramParameter.INFO_LOG_LENGTH)
@@ -118,7 +102,6 @@ class Program(abstract.BindableObject):
 
     def bind(self):
         self._ctx.use_program(self._ptr)
-        self._vao.bind()
 
         for texture, unit in self._textures.values():
             self._ctx.active_texture(unit)
@@ -126,7 +109,6 @@ class Program(abstract.BindableObject):
 
     def unbind(self):
         self._ctx.use_program(0)
-        self._vao.unbind()
 
         for texture, unit in self._textures.values():
             self._ctx.active_texture(unit)
@@ -137,30 +119,14 @@ class Program(abstract.BindableObject):
         self._ctx.get_programiv(self._ptr, parameter, pointer(result))
         return result.value
 
-    def _resource_parameters(self, interface: gl.Interface, index: int, *properties: gl.ResourceParameter) -> List[int]:
-        num = len(properties)
-        props = (c_uint32 * len(properties))()
-        for i, prop in enumerate(properties): props[i] = c_uint32(prop)
-
-        results = (c_int * len(properties))()
-
-        self._ctx.get_program_resourceiv(
-            self._ptr, interface, index,    # Where to Look
-            num, props,                     # What to Query
-            num, None, results)    # Return
-
-        return [results[i] for i in range(num)]
-
     def __setitem__(self, name: str, value: Union[ArrayBuffer, UniformBuffer, Texture, np.ndarray]):
-        if isinstance(value, ArrayBuffer): self.input(name, value)
-        elif isinstance(value, Texture): self.texture(name, value)
+        if isinstance(value, np.ndarray): self.uniform(name, value)
         elif isinstance(value, UniformBuffer): self.uniform_block(name, value)
-        elif isinstance(value, np.ndarray): self.uniform(name, value)
+        elif isinstance(value, Texture): self.texture(name, value)
         else: raise TypeError("Inappropriate type for argument 'value', type should be:\n"
-                              "\tinput         : pyplex.glow.ArrayBuffer\n"
-                              "\ttexture       : pyplex.glow.Texture\n"
+                              "\tuniform       : numpy.ndarray\n"
                               "\tuniform block : pyplex.glow.UniformBuffer\n"
-                              "\tuniform       : numpy.ndarray")
+                              "\ttexture       : pyplex.glow.Texture")
 
 
 class Resource:
@@ -316,6 +282,9 @@ class UniformResource(Resource):
         )
 
         self._type = Type(parameters[0])
+        self._matrix_type = self._type.gl_type.name in gl.MatrixType.__members__
+        self._setter = ctx.__getattribute__(self._type.uniform_func.__name__)
+
         self._size = int(parameters[1])
         self._offset = int(parameters[2])
         self._block_index = int(parameters[3])
@@ -332,6 +301,14 @@ class UniformResource(Resource):
     @property
     def type(self) -> Type:
         return self._type
+
+    @property
+    def is_matrix(self) -> bool:
+        return self._matrix_type
+
+    @property
+    def setter(self):
+        return self._setter
 
     @property
     def size(self) -> int:
@@ -363,10 +340,11 @@ class UniformResource(Resource):
 
 
 class Interface:
-    def __init__(self, ctx: gl.GL_ANY, program: Program, interface: gl.Interface):
+    def __init__(self, ctx: gl.GL_ANY, program: Program, interface: gl.Interface, resources: List[Resource]):
         self._ctx = ctx
         self._program = program
         self._interface = interface
+        self._resources = {resource.name: resource for resource in resources}
 
     @property
     def program(self) -> Program:
@@ -377,17 +355,14 @@ class Interface:
         return self._interface
 
     @property
-    def resources(self) -> List[Resource]:
-        raise NotImplementedError()
+    def resources(self) -> Dict[str, Resource]:
+        return self._resources
 
-    def _num_active(self) -> int:
+    @staticmethod
+    def _num_active(ctx: gl.GL_ANY, program: Program, interface: gl.Interface) -> int:
         active = c_int(0)
-        self._ctx.get_program_interfaceiv(
-            self.program.ptr,self._interface,gl.InterfaceParameter.ACTIVE_RESOURCES, active)
+        ctx.get_program_interfaceiv(program.ptr, interface, gl.InterfaceParameter.ACTIVE_RESOURCES, active)
         return active.value
-
-    def __iter__(self):
-        return self.resources.__iter__()
 
     def _parameters(self, index: int, *properties: gl.ResourceParameter) -> List[int]:
         num = len(properties)
@@ -401,38 +376,32 @@ class Interface:
 
 class InputInterface(Interface):
     def __init__(self, ctx: gl.GL_ANY, program: Program):
-        super().__init__(ctx, program, gl.Interface.PROGRAM_INPUT)
-        self._resources = [InputResource(ctx, program, i) for i in range(self._num_active())]
+        super().__init__(ctx, program, gl.Interface.PROGRAM_INPUT,
+                         [InputResource(ctx, program, i) for i in range(self._num_active(
+                             ctx, program, gl.Interface.PROGRAM_INPUT))])
 
     @property
-    def resources(self) -> List[InputResource]:
+    def resources(self) -> Dict[str, InputResource]:
         return self._resources
-
-    def __iter__(self) -> Iterable[InputResource]:
-        return self.resources.__iter__()
 
 
 class OutputInterface(Interface):
     def __init__(self, ctx: gl.GL_ANY, program: Program):
-        super().__init__(ctx, program, gl.Interface.PROGRAM_OUTPUT)
-        self._resources = [OutputResource(ctx, program, i) for i in range(self._num_active())]
+        super().__init__(ctx, program, gl.Interface.PROGRAM_OUTPUT,
+                         [OutputResource(ctx, program, i) for i in range(self._num_active(
+                             ctx, program, gl.Interface.PROGRAM_OUTPUT))])
 
     @property
-    def resources(self) -> List[OutputResource]:
+    def resources(self) -> Dict[str, OutputResource]:
         return self._resources
-
-    def __iter__(self) -> Iterable[OutputResource]:
-        return self.resources.__iter__()
 
 
 class UniformInterface(Interface):
     def __init__(self, ctx: gl.GL_ANY, program: Program):
-        super().__init__(ctx, program, gl.Interface.UNIFORM)
-        self._resources = [UniformResource(ctx, program, i) for i in range(self._num_active())]
+        super().__init__(ctx, program, gl.Interface.UNIFORM,
+                         [UniformResource(ctx, program, i) for i in range(self._num_active(
+                             ctx, program, gl.Interface.UNIFORM))])
 
     @property
-    def resources(self) -> List[UniformResource]:
+    def resources(self) -> Dict[str, UniformResource]:
         return self._resources
-
-    def __iter__(self) -> Iterable[UniformResource]:
-        return self.resources.__iter__()

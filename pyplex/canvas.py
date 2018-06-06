@@ -7,6 +7,8 @@ from threading import Thread
 from typing import List, Optional
 from enum import Enum
 
+from time import time
+
 
 class GLError(Exception):
     pass
@@ -506,13 +508,18 @@ class Canvas:
 
         if self._config.visible: self.show()
 
+        t0 = time()
         while not Canvas.GLFW.window_should_close(self._window):
+            t1 = time()
+            self.on_update(t1 - t0)
+            t0 = t1
 
-            self.on_update()
             self.on_draw()
+
 
             Canvas.GLFW.swap_buffers(self._window)
             self._event_function()
+            print("\r{:3.0f} fps".format(1/(time() - t0)), end="")
 
         Canvas.GLFW.destroy_window(self._window)
 
@@ -523,7 +530,7 @@ class Canvas:
     def on_start(self, ctx: gl.GL_ANY):
         pass
 
-    def on_update(self):
+    def on_update(self, dt: float):
         pass
 
     def on_draw(self):
@@ -730,7 +737,7 @@ class VerboseCanvas(Canvas):
     def on_start(self, ctx: gl.GL_ANY):
         print("on_start({})".format(ctx))
 
-    def on_update(self):
+    def on_update(self, dt: float):
         print("on_update()")
 
     def on_draw(self):

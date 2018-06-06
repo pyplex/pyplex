@@ -75,8 +75,8 @@ def look_at(eye: np.ndarray, center: np.ndarray, up: np.ndarray, dtype: np.dtype
     u = np.cross(s, f)
 
     return np.matrix([
-        [ s[0]          , u[0]         ,-f[0]          , 0],
-        [ s[1]          , u[1]         ,-f[1]          , 0],
-        [ s[2]          , u[2]         ,-f[2]          , 0],
-        [-np.dot(s, eye),-np.dot(u,eye),np.dot(f, eye), 1]
+        [ s[0]          , u[0]          ,-f[0]          , 0],
+        [ s[1]          , u[1]          ,-f[1]          , 0],
+        [ s[2]          , u[2]          ,-f[2]          , 0],
+        [-np.dot(s,eye) ,-np.dot(u,eye) , np.dot(f,eye) , 1]
     ], dtype)

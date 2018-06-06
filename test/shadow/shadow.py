@@ -59,12 +59,12 @@ class ShadowTest(px.Canvas):
             px.VertexShader(self.ctx, 'depth_vertex.glsl'),
             px.FragmentShader(self.ctx, 'depth_fragment.glsl'))
 
-        self.shadow_resolution = 2048
+        self.shadow_resolution = 1024
         self.shadow_area = 1
         self.shadow_near = 1
         self.shadow_far = 20
         self.shadow_bias = 0.001
-        self.depth_map = px.DepthTexture2D(self.ctx, self.shadow_resolution, self.shadow_resolution)
+        self.depth_map = px.DepthTexture2D(self.ctx, self.shadow_resolution, self.shadow_resolution, px.TextureFilter.nearest())
         self.depth_map_fbo = px.FrameBuffer(self.ctx, depth=self.depth_map)
         self.light_projection = px.transform.orthographic(-self.shadow_area, self.shadow_area,
                                                           -self.shadow_area, self.shadow_area,
@@ -163,15 +163,15 @@ class ShadowTest(px.Canvas):
             self.ctx.viewport(0, 0, self.shadow_resolution, self.shadow_resolution)
             self.ctx.clear(gl.BufferBit.DEPTH)
             self.ctx.disable(gl.Enableable.CULL_FACE)
-            self.shadow_program.draw_elements(gl.DrawMode.TRIANGLES, self.cube_elements)
+            self.shadow_program.draw_elements(gl.Primitive.TRIANGLES, self.cube_elements)
             self.ctx.enable(gl.Enableable.CULL_FACE)
 
         self.ctx.viewport(0, 0, self.framebuffer_size[0], self.framebuffer_size[1])
 
         self.ctx.clear(gl.BufferBit.COLOR | gl.BufferBit.DEPTH)
         self.ctx.cull_face(px.gl.CullFace.BACK)
-        self.plane_program.draw_elements(gl.DrawMode.TRIANGLES, self.plane_elements)
-        self.cube_program.draw_elements(gl.DrawMode.TRIANGLES, self.cube_elements)
+        self.plane_program.draw_elements(gl.Primitive.TRIANGLES, self.plane_elements)
+        self.cube_program.draw_elements(gl.Primitive.TRIANGLES, self.cube_elements)
 
         # # Debug View :)
         # self.ctx.disable(px.gl.Enableable.DEPTH_TEST)

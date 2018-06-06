@@ -80,7 +80,7 @@ class CubeTest(px.Canvas):
 
     def on_draw(self):
         self.ctx.clear(px.gl.BufferBit.COLOR | px.gl.BufferBit.DEPTH)
-        self.program.draw_elements(px.gl.DrawMode.TRIANGLES, self.elements)
+        self.program.draw_elements(px.gl.Primitive.TRIANGLES, self.elements)
 
 
 if __name__ == "__main__":

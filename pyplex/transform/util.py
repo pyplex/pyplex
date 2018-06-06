@@ -11,3 +11,11 @@ def normalize(vector: np.ndarray) -> np.ndarray:
     norm = np.linalg.norm(vector)
     if norm: return vector / norm
     else: return vector
+
+
+def transpose(matrix: np.matrix) -> np.matrix:
+    return np.asmatrix(np.ascontiguousarray(np.transpose(matrix)))
+
+
+def invert(matrix: np.matrix) -> np.matrix:
+    return np.asmatrix(np.ascontiguousarray(np.linalg.inv(matrix)))

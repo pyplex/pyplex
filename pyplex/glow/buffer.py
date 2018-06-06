@@ -87,6 +87,16 @@ class Buffer(abstract.BindableObject, abstract.Array):
         self._ndim = data.ndim
         self._shape = data.shape
 
+    def __setitem__(self, key: str, value: np.ndarray):
+        dtype, offset = self.dtype.fields[key]
+
+        self._ctx.bind_buffer(self._target, self._ptr)
+        self._ctx.buffer_sub_data(self._target, offset, value.nbytes, value.ctypes.data_as(c_void_p))
+        self._ctx.bind_buffer(self._target, 0)
+
+    def __str__(self):
+        return "{}({} : {})".format(self.__class__.__name__, self.dtype, self.shape)
+
 
 class ArrayBuffer(Buffer):
     def __init__(self, ctx: gl.GL20, data: np.ndarray, usage: gl.BufferUsage = gl.BufferUsage.STATIC_DRAW):

@@ -33,7 +33,7 @@ class SphereTest(px.Canvas):
         self.program['projection'] = px.transform.perspective(60, width / height, 1, 10)
         self.ctx.viewport(0, 0, width, height)
 
-    def on_update(self):
+    def on_update(self, dt: float):
         view = px.transform.translation([0, 0, -5])
         model = px.transform.rotation([0, time()/np.pi, 0])
         modelview = model * view
@@ -47,7 +47,7 @@ class SphereTest(px.Canvas):
 
     def on_draw(self):
         self.ctx.clear(px.gl.BufferBit.COLOR | px.gl.BufferBit.DEPTH)
-        self.program.draw_elements(px.gl.DrawMode.TRIANGLES, self.elements)
+        self.program.draw_elements(px.gl.Primitive.TRIANGLES, self.elements)
 
 
 if __name__ == "__main__":
